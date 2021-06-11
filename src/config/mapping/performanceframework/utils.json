@@ -1,0 +1,22 @@
+{
+  "dataPath": "value",
+  "defaultSelect": "$select=indicatorSet,indicatorName,valueAchievementRate,disaggregationValue,disaggregationGroup,valueType,reportingPeriodStartDate,reportingPeriodEndDate",
+  "defaultExpand": "&$expand=activityAreaModule,ActivityAreaIntervention",
+  "defaultFilter": "&$filter=(reportingPeriodStartDate ne null and reportingPeriodEndDate ne null and grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq 'BFA-H-SPCNLS' and grantAgreementImplementationPeriod/implementationPeriodNumber eq 2)",
+  "valueAchievementRateColors": [
+    "#fa7355",
+    "#fa9a55",
+    "#ffaa46",
+    "#ffd646",
+    "#daff46",
+    "#97ff46",
+    "#60ff46",
+    "#11ad6b"
+  ],
+  "indicatorSetOrder": {
+    "Coverage / Output indicator": 0,
+    "Impact indicator": 1,
+    "Outcome indicator": 2,
+    "Process indicator / WPTM": 3
+  }
+}

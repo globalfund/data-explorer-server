@@ -1,0 +1,12 @@
+{
+  "dataPath": "value",
+  "aggregateByFields": [
+    "componentName",
+    "geographicAreaName"
+  ],
+  "status": "isEligible",
+  "yes": "Eligible",
+  "no": "Not Eligible",
+  "transition funding": "Transition Funding",
+  "eligibilityAggregation": "$select=componentName,geographicAreaName,isEligible,incomeLevelClassificationName,diseaseBurdenName&$filter=eligibilityYear eq 2020"
+}

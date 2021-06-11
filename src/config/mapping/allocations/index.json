@@ -1,0 +1,11 @@
+{
+  "dataPath": "value",
+  "amount": "amount",
+  "component": "component.componentName",
+  "componentColors": {
+    "HIV": "#DFE3E6",
+    "Tuberculosis": "#ADB5BD",
+    "Malaria": "#868E96"
+  },
+  "allocationsAggregation": "$apply=groupby((component/componentName),aggregate(allocationAmount with sum as amount))"
+}

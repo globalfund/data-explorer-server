@@ -1,0 +1,16 @@
+{
+  "dataPath": "value",
+  "year": "budgetPeriodStartYear",
+  "amount": "amount",
+  "component": "activityArea.activityAreaParent.activityAreaName",
+  "componentColors": {
+    "HIV": "#70777E",
+    "Tuberculosis": "#252C34",
+    "Malaria": "#495057",
+    "RSSH": "#ADB5BD",
+    "Multicomponent": "#373D43",
+    "Other": "#868E96",
+    "Emergency Response": "#98A1AA"
+  },
+  "budgetsTimeCycleAggregation": "$apply=groupby((activityArea/activityAreaParent/activityAreaName,budgetPeriodStartYear),aggregate(budgetAmount with sum as amount))"
+}

@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "label": "implementerClassificationName",
+  "value": "implementerClassificationName",
+  "children": "members",
+  "childLabel": "implementerClassificationName",
+  "childValue": "implementerClassificationCode"
+}

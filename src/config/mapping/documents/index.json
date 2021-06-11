@@ -1,0 +1,15 @@
+[
+  "value[]",
+  {
+    "id": "programDocumentId",
+    "category": "documentTypeDescription",
+    "country": "geographicAreaName",
+    "component": "componentName",
+    "processName": "processName",
+    "processYear": "processYear",
+    "processWindow": "processWindow",
+    "fileIndex": "fileIndex",
+    "fileURL": "fileURL",
+    "organizationId": "organizationId"
+  }
+]

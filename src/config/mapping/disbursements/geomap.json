@@ -1,0 +1,8 @@
+{
+  "component": "componentName",
+  "locationCode": "geographicAreaCode_ISO3",
+  "disbursed": "disbursed",
+  "committed": "committed",
+  "signed": "signed",
+  "disbursementsGeomapAggregation": "$apply=groupby((GeographicAreaCode_ISO3,ComponentName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))"
+}

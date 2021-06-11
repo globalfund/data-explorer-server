@@ -1,0 +1,5 @@
+{
+  "defaultFilter": "$filter=documentTypeDescription in ('Application','Country Profiles')&",
+  "defaultOrderBy": "$orderby=processYear desc, processWindow desc&",
+  "defaultSelect": "$select=programDocumentId,processName,componentName,processWindow,processYear,fileURL,fileIndex,geographicAreaName,organizationId,documentTypeDescription&"
+}
