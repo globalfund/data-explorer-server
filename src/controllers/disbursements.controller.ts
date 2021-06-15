@@ -15,6 +15,7 @@ import TimeCycleFieldsMapping from '../config/mapping/disbursements/timeCycle.js
 import TreemapFieldsMapping from '../config/mapping/disbursements/treemap.json';
 import urls from '../config/urls/index.json';
 import {DisbursementsTreemapDataItem} from '../interfaces/disbursementsTreemap';
+import {getFilterString} from '../utils/filtering/grants/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 // import geojson from '../static-assets/custom.geo.json';
 
@@ -162,6 +163,10 @@ export class DisbursementsController {
   @get('/disbursements/time-cycle')
   @response(200, DISBURSEMENTS_TIME_CYCLE_RESPONSE)
   timeCycle(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      TimeCycleFieldsMapping.disbursementsTimeCycleAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -170,7 +175,7 @@ export class DisbursementsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.disbursements}/?${filtering.default_q_param}${params}${TimeCycleFieldsMapping.disbursementsTimeCycleAggregation}`;
+    const url = `${urls.disbursements}/?${params}${filterString}`;
 
     return axios
       .get(url)
@@ -265,6 +270,10 @@ export class DisbursementsController {
   @get('/disbursements/treemap')
   @response(200, DISBURSEMENTS_TREEMAP_RESPONSE)
   treemap(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      TreemapFieldsMapping.disbursementsTreemapAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -273,7 +282,7 @@ export class DisbursementsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.grants}/?${filtering.default_q_param}${params}${TreemapFieldsMapping.disbursementsTreemapAggregation}`;
+    const url = `${urls.grantsNoCount}/?${params}${filterString}`;
 
     return axios
       .get(url)
@@ -363,6 +372,10 @@ export class DisbursementsController {
   @get('/disbursements/geomap')
   @response(200, DISBURSEMENTS_TIME_CYCLE_RESPONSE)
   geomap(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      GeomapFieldsMapping.disbursementsGeomapAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -371,7 +384,7 @@ export class DisbursementsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.grants}/?${filtering.default_q_param}${params}${GeomapFieldsMapping.disbursementsGeomapAggregation}`;
+    const url = `${urls.grantsNoCount}/?${params}${filterString}`;
 
     return axios
       .all([

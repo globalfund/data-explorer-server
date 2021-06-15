@@ -9,14 +9,16 @@ import {
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
-// import querystring from 'querystring';
-import filtering from '../config/filtering/index.json';
 // import {getPage} from '../config/filtering/utils';
 import resultsMap from '../config/mapping/results/index.json';
 import resultStatsMap from '../config/mapping/results/stats.json';
 import resultsUtils from '../config/mapping/results/utils.json';
 import urls from '../config/urls/index.json';
 import {ResultListItemModel} from '../interfaces/resultList';
+import {
+  getFilterString,
+  getFilterStringForStats,
+} from '../utils/filtering/results/getFilterString';
 
 const RESULTS_RESPONSE: ResponseObject = {
   description: 'Results Response',
@@ -87,6 +89,10 @@ export class ResultsController {
   @response(200, RESULTS_RESPONSE)
   results(): object {
     const mapper = mapTransform(resultsMap);
+    const filterString = getFilterString(
+      this.req.query,
+      resultsUtils.defaultFilter,
+    );
     // const page = (this.req.query.page ?? '1').toString();
     // const pageSize = (this.req.query.pageSize ?? '10').toString();
     // const orderBy = this.req.query.orderBy ?? resultsUtils.defaultOrderBy;
@@ -101,7 +107,7 @@ export class ResultsController {
     //     encodeURIComponent: (str: string) => str,
     //   },
     // );
-    const url = `${urls.results}/?${resultsUtils.defaultSelect}${resultsUtils.defaultFilter}${filtering.default_q_param}`;
+    const url = `${urls.results}/?${resultsUtils.defaultSelect}${filterString}`;
 
     return axios
       .get(url)
@@ -141,6 +147,10 @@ export class ResultsController {
   @get('/results-stats')
   @response(200, RESULT_STATS_RESPONSE)
   resultStats(): object {
+    const filterString = getFilterStringForStats(
+      this.req.query,
+      resultStatsMap.ResultStatsAggregation,
+    );
     // const params = querystring.stringify(
     //   {
     //     ...getPage(filtering.page, parseInt(page, 10), parseInt(pageSize, 10)),
@@ -152,7 +162,7 @@ export class ResultsController {
     //     encodeURIComponent: (str: string) => str,
     //   },
     // );
-    const url = `${urls.results}/?${resultsUtils.defaultFilter}${filtering.default_q_param}${resultStatsMap.ResultStatsAggregation}`;
+    const url = `${urls.results}/?${filterString}`;
 
     return axios
       .get(url)

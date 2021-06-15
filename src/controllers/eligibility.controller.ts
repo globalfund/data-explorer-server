@@ -15,6 +15,7 @@ import ScatterplotFieldsMapping from '../config/mapping/eligibility/scatterplot.
 import urls from '../config/urls/index.json';
 import {EligibilityDotDataItem} from '../interfaces/eligibilityDot';
 import {EligibilityScatterplotDataItem} from '../interfaces/eligibilityScatterplot';
+import {getFilterString} from '../utils/filtering/eligibility/getFilterString';
 
 const ELIGIBILITY_RESPONSE: ResponseObject = {
   description: 'Eligibility Response',
@@ -99,6 +100,10 @@ export class EligibilityController {
       this.req.query.nonAggregateBy ??
       EligibilityFieldsMapping.aggregateByFields[1]
     ).toString();
+    const filterString = getFilterString(
+      this.req.query,
+      EligibilityFieldsMapping.defaultFilter,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -107,7 +112,7 @@ export class EligibilityController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.eligibility}/?${filtering.default_q_param}${params}${EligibilityFieldsMapping.eligibilityAggregation}`;
+    const url = `${urls.eligibility}/?${params}${filterString}&${EligibilityFieldsMapping.defaultSelect}`;
 
     return axios
       .get(url)
@@ -153,6 +158,13 @@ export class EligibilityController {
   @get('/eligibility/country')
   @response(200, ELIGIBILITY_COUNTRY_RESPONSE)
   eligibilityCountry(): object {
+    if (_.get(this.req.query, 'locations', '').length === 0) {
+      return {
+        count: 0,
+        data: [],
+      };
+    }
+    const filterString = getFilterString(this.req.query);
     const params = querystring.stringify(
       {},
       '&',
@@ -161,7 +173,7 @@ export class EligibilityController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.eligibility}/?${filtering.default_q_param}${params}${ScatterplotFieldsMapping.defaultFilter}${ScatterplotFieldsMapping.defaultSelect}`;
+    const url = `${urls.eligibility}/?${params}${filterString}&${ScatterplotFieldsMapping.defaultSelect}`;
 
     return axios
       .get(url)

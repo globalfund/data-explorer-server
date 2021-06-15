@@ -4,5 +4,5 @@
   "level1": "budgetCategory.budgetCategoryParent.budgetCategoryParent.budgetCategoryName",
   "level2": "budgetCategory.budgetCategoryParent.budgetCategoryName",
   "costCategory": "budgetCategory.budgetCategoryName",
-  "budgetsFlowAggregation": "$apply=groupby((activityArea/activityAreaParent/activityAreaName,budgetCategory/budgetCategoryName,budgetCategory/budgetCategoryParent/budgetCategoryName,budgetCategory/budgetCategoryParent/budgetCategoryParent/budgetCategoryName),aggregate(budgetAmount with sum as amount))"
+  "budgetsFlowAggregation": "$apply=<filterString>groupby((activityArea/activityAreaParent/activityAreaName,budgetCategory/budgetCategoryName,budgetCategory/budgetCategoryParent/budgetCategoryName,budgetCategory/budgetCategoryParent/budgetCategoryParent/budgetCategoryName),aggregate(budgetAmount with sum as amount))"
 }

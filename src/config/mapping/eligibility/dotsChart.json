@@ -8,5 +8,6 @@
   "yes": "Eligible",
   "no": "Not Eligible",
   "transition funding": "Transition Funding",
-  "eligibilityAggregation": "$select=componentName,geographicAreaName,isEligible,incomeLevelClassificationName,diseaseBurdenName&$filter=eligibilityYear eq 2020"
+  "defaultFilter": "$filter=eligibilityYear eq 2020",
+  "defaultSelect": "$select=componentName,geographicAreaName,isEligible,incomeLevelClassificationName,diseaseBurdenName"
 }

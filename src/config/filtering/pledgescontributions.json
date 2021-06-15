@@ -1,0 +1,4 @@
+{
+  "donors": "donor/donorId",
+  "period": "replenishmentPeriod/replenishmentPeriodName"
+}

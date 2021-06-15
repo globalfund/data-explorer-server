@@ -12,6 +12,7 @@ import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import AllocationsFieldsMapping from '../config/mapping/allocations/index.json';
 import urls from '../config/urls/index.json';
+import {getFilterString} from '../utils/filtering/allocations/getFilterString';
 
 const ALLOCATIONS_RESPONSE: ResponseObject = {
   description: 'Allocations Response',
@@ -42,6 +43,10 @@ export class AllocationsController {
   @get('/allocations')
   @response(200, ALLOCATIONS_RESPONSE)
   allocations(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      AllocationsFieldsMapping.allocationsAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -50,7 +55,7 @@ export class AllocationsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.allocations}/?${filtering.default_q_param}${params}${AllocationsFieldsMapping.allocationsAggregation}`;
+    const url = `${urls.allocations}/?${params}${filterString}`;
 
     return axios
       .get(url)

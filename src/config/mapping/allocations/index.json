@@ -7,5 +7,5 @@
     "Tuberculosis": "#ADB5BD",
     "Malaria": "#868E96"
   },
-  "allocationsAggregation": "$apply=groupby((component/componentName),aggregate(allocationAmount with sum as amount))"
+  "allocationsAggregation": "$apply=<filterString>groupby((component/componentName),aggregate(allocationAmount with sum as amount))"
 }

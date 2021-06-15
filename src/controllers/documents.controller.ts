@@ -9,12 +9,11 @@ import {
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
-// import querystring from 'querystring';
-import filtering from '../config/filtering/index.json';
 import docsMap from '../config/mapping/documents/index.json';
 import docsUtils from '../config/mapping/documents/utils.json';
 import urls from '../config/urls/index.json';
 import {DocumentsTableRow} from '../interfaces/documentsTable';
+import {getFilterString} from '../utils/filtering/documents/getFilterString';
 
 const RESULTS_RESPONSE: ResponseObject = {
   description: 'Results Response',
@@ -60,6 +59,10 @@ export class DocumentsController {
   @response(200, RESULTS_RESPONSE)
   documents(): object {
     const mapper = mapTransform(docsMap);
+    const filterString = getFilterString(
+      this.req.query,
+      docsUtils.defaultFilter,
+    );
     // const params = querystring.stringify(
     //   {
     //     ...getPage(filtering.page, parseInt(page, 10), parseInt(pageSize, 10)),
@@ -71,7 +74,7 @@ export class DocumentsController {
     //     encodeURIComponent: (str: string) => str,
     //   },
     // );
-    const url = `${urls.documents}/?${docsUtils.defaultSelect}${docsUtils.defaultFilter}${docsUtils.defaultOrderBy}${filtering.default_q_param}`;
+    const url = `${urls.documents}/?${docsUtils.defaultSelect}${docsUtils.defaultOrderBy}${filterString}`;
 
     return axios
       .get(url)

@@ -15,7 +15,7 @@ import grantsMap from '../config/mapping/grants/index.json';
 import grantsUtils from '../config/mapping/grants/utils.json';
 import urls from '../config/urls/index.json';
 import {GrantListItemModel} from '../interfaces/grantList';
-import {getFilterString} from '../utils/filtering/getFilterString';
+import {getFilterString} from '../utils/filtering/grants/getFilterString';
 
 const GRANTS_RESPONSE: ResponseObject = {
   description: 'Grants Response',

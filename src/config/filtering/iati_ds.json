@@ -1,6 +1,0 @@
-{
-  "page_size": "rows",
-  "param_assign_operator": ":",
-  "default_q_param": "q=*:*&",
-  "fields": "fl"
-}

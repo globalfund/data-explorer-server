@@ -5,7 +5,6 @@
   "default_q_param": "",
   "fields": "$select",
   "orderby": "$orderby",
-  "country": "geographicAreaCode_ISO3",
   "filter_operator": "$filter",
   "and_operator": "AND",
   "or_operator": "OR",

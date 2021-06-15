@@ -1,0 +1,7 @@
+{
+  "country": "grantAgreementImplementationPeriod/grantAgreement/geographicArea/geographicAreaCode_ISO3",
+  "component": "grantAgreementImplementationPeriod/grantAgreement/component/componentName",
+  "status": "grantAgreementImplementationPeriod/implementationPeriodStatusType/programStatusTypeName",
+  "partner": "principalRecipientName",
+  "partner_type": "implementerClassificationSubType/implementerClassificationName"
+}

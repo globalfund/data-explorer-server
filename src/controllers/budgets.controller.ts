@@ -15,6 +15,7 @@ import BudgetsTimeCycleFieldsMapping from '../config/mapping/budgets/timeCycle.j
 import urls from '../config/urls/index.json';
 import {BudgetsFlowData} from '../interfaces/budgetsFlow';
 import {BudgetsTimeCycleData} from '../interfaces/budgetsTimeCycle';
+import {getFilterString} from '../utils/filtering/budgets/getFilterString';
 
 const BUDGETS_FLOW_RESPONSE: ResponseObject = {
   description: 'Budgets Flow Response',
@@ -79,6 +80,10 @@ export class BudgetsController {
   @get('/budgets/flow')
   @response(200, BUDGETS_FLOW_RESPONSE)
   flow(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      BudgetsFlowFieldsMapping.budgetsFlowAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -87,7 +92,7 @@ export class BudgetsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.budgets}/?${filtering.default_q_param}${params}${BudgetsFlowFieldsMapping.budgetsFlowAggregation}`;
+    const url = `${urls.budgets}/?${params}${filterString}`;
 
     return axios
       .get(url)
@@ -200,6 +205,10 @@ export class BudgetsController {
   @get('/budgets/time-cycle')
   @response(200, BUDGETS_TIME_CYCLE_RESPONSE)
   timeCycle(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      BudgetsTimeCycleFieldsMapping.budgetsTimeCycleAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -208,7 +217,7 @@ export class BudgetsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.budgets}/?${filtering.default_q_param}${params}${BudgetsTimeCycleFieldsMapping.budgetsTimeCycleAggregation}`;
+    const url = `${urls.budgets}/?${params}${filterString}`;
 
     return axios
       .get(url)

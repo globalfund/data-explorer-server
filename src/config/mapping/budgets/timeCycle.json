@@ -12,5 +12,5 @@
     "Other": "#868E96",
     "Emergency Response": "#98A1AA"
   },
-  "budgetsTimeCycleAggregation": "$apply=groupby((activityArea/activityAreaParent/activityAreaName,budgetPeriodStartYear),aggregate(budgetAmount with sum as amount))"
+  "budgetsTimeCycleAggregation": "$apply=<filterString>groupby((activityArea/activityAreaParent/activityAreaName,budgetPeriodStartYear),aggregate(budgetAmount with sum as amount))"
 }

@@ -1,5 +1,6 @@
 {
   "grants": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements/?$count=true&",
+  "grantsNoCount": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements",
   "results": "https://data-service.theglobalfund.org/v3.3/odata/VReportingResults",
   "documents": "https://data-service.theglobalfund.org/v3.3/odata/VProgramDocuments",
   "disbursements": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreementDisbursements",

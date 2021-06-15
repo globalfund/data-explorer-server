@@ -10,5 +10,5 @@
     "RSSH": "#ADB5BD",
     "Multicomponent": "#373D43"
   },
-  "disbursementsTimeCycleAggregation": "$apply=groupby((DisbursementYear,ComponentName),aggregate(DisbursementAmount with sum as disbursed))"
+  "disbursementsTimeCycleAggregation": "$apply=<filterString>groupby((DisbursementYear,ComponentName),aggregate(DisbursementAmount with sum as disbursed))"
 }

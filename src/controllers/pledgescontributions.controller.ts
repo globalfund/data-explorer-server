@@ -14,6 +14,7 @@ import PledgesContributionsGeoFieldsMapping from '../config/mapping/pledgescontr
 import PledgesContributionsTimeCycleFieldsMapping from '../config/mapping/pledgescontributions/timeCycle.json';
 import urls from '../config/urls/index.json';
 import {FilterGroupOption} from '../interfaces/filters';
+import {getFilterString} from '../utils/filtering/pledges-contributions/getFilterString';
 import {getD2HCoordinates} from '../utils/pledgescontributions/getD2HCoordinates';
 
 const PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE: ResponseObject = {
@@ -47,6 +48,10 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/time-cycle')
   @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
   timeCycle(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      PledgesContributionsTimeCycleFieldsMapping.pledgescontributionsTimeCycleAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -55,7 +60,7 @@ export class PledgescontributionsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.pledgescontributions}/?${filtering.default_q_param}${params}${PledgesContributionsTimeCycleFieldsMapping.pledgescontributionsTimeCycleAggregation}`;
+    const url = `${urls.pledgescontributions}/?${params}${filterString}`;
 
     return axios
       .get(url)
@@ -116,6 +121,10 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/geomap')
   @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
   geomap(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      PledgesContributionsGeoFieldsMapping.pledgescontributionsGeoMapAggregation,
+    );
     const params = querystring.stringify(
       {},
       '&',
@@ -127,7 +136,7 @@ export class PledgescontributionsController {
     const valueType = (
       this.req.query.valueType ?? PledgesContributionsGeoFieldsMapping.pledge
     ).toString();
-    const url = `${urls.pledgescontributions}/?${filtering.default_q_param}${params}${PledgesContributionsGeoFieldsMapping.pledgescontributionsGeoMapAggregation}`;
+    const url = `${urls.pledgescontributions}/?${params}${filterString}`;
 
     return axios
       .all([
