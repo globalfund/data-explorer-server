@@ -55,6 +55,14 @@ export function getFilterString(params: any, aggregationString?: string) {
     }(${partnerTypes.join(filtering.multi_param_separator)})`;
   }
 
+  const search = _.get(params, 'q', '');
+  if (search.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.search.replace(
+      '<value>',
+      `'${search}'`,
+    )}`;
+  }
+
   if (str.length > 0) {
     str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;
     if (aggregationString) {

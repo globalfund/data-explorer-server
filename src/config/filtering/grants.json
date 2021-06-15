@@ -3,5 +3,6 @@
   "component": "componentName",
   "status": "grantAgreementStatusTypeName",
   "partner": "principalRecipientName",
-  "partner_type": "principalRecipientClassificationName"
+  "partner_type": "principalRecipientClassificationName",
+  "search": "contains(grantAgreementTitle,<value>)"
 }
