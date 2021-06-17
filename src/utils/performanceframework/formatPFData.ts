@@ -19,7 +19,7 @@ export function getColorBasedOnValue(
     if (value === 3) return !isReversed ? rateColors[4] : rateColors[0];
     return '#E2E2E2';
   }
-  if (rates.length === 6) {
+  if (rates.length === 8) {
     if (
       (rates[0].value < value || rates[0].value === value) &&
       rates[1].value > value
@@ -66,7 +66,7 @@ export function getColorBasedOnValue(
   return '#E2E2E2';
 }
 
-function getAchievementRateLegendValues() {
+export function getAchievementRateLegendValues() {
   return [
     {
       value: 0,
@@ -156,7 +156,17 @@ export function formatPFData(
 
   const groupedByIndicatorSet = _.groupBy(filteredRawData, 'indicatorSet');
   Object.keys(groupedByIndicatorSet).forEach(indicatorSetKey => {
-    const instance = groupedByIndicatorSet[indicatorSetKey];
+    const instance = groupedByIndicatorSet[indicatorSetKey].map(
+      (indicator: any) => {
+        if (!indicator.module) {
+          return {
+            ...indicator,
+            module: 'Other',
+          };
+        }
+        return indicator;
+      },
+    );
     const groupedByActivityAreaModule = _.groupBy(instance, 'module');
     const children: any[] = [];
     Object.keys(groupedByActivityAreaModule).forEach(activityAreaModuleKey => {
@@ -267,57 +277,75 @@ export function formatPFData(
       ...set,
       children: set.children.map((aaModule: any) => ({
         ...aaModule,
-        children: aaModule.children.map((indicator: any) => ({
-          ...indicator,
-          color: getColorBasedOnValue(
-            aaModule.name === 'Process indicator / WPTM'
-              ? indicator.result.valueNumerator ||
-                  indicator.target.valueNumerator
-              : indicator.result.achievementRate ||
-                  indicator.target.achievementRate,
-            achievementRatesLegendValues,
-            _.get(indicator.result, 'instance.isIndicatorReversed', false) ||
-              _.get(indicator.target, 'instance.isIndicatorReversed', false),
-            aaModule.name === 'Process indicator / WPTM',
-            indicator.result.instance,
-          ),
-          target: {
-            ...indicator.target,
-            color: getColorBasedOnValue(
-              aaModule.name === 'Process indicator / WPTM'
-                ? indicator.target.valueNumerator
-                : indicator.target.achievementRate,
-              achievementRatesLegendValues,
-              _.get(indicator.target, 'instance.isIndicatorReversed', false),
-              aaModule.name === 'Process indicator / WPTM',
-              indicator.target.instance,
-            ),
-          },
-          result: {
-            ...indicator.result,
-            color: getColorBasedOnValue(
-              aaModule.name === 'Process indicator / WPTM'
-                ? indicator.result.valueNumerator
-                : indicator.result.achievementRate,
-              achievementRatesLegendValues,
+        children: aaModule.children.map((indicator: any) => {
+          if (aaModule.name === 'TB/HIV') {
+            console.log(
+              indicator.result.achievementRate,
+              indicator.target.achievementRate,
+            );
+            console.log(achievementRatesLegendValues.length);
+            console.log(
               _.get(indicator.result, 'instance.isIndicatorReversed', false),
+              _.get(indicator.target, 'instance.isIndicatorReversed', false),
+            );
+            console.log(indicator.result.instance);
+          }
+          return {
+            ...indicator,
+            color: getColorBasedOnValue(
+              aaModule.name === 'Process indicator / WPTM'
+                ? indicator.result.valueNumerator ||
+                    indicator.target.valueNumerator
+                : indicator.result.achievementRate ||
+                    indicator.target.achievementRate,
+              achievementRatesLegendValues,
+              _.get(indicator.result, 'instance.isIndicatorReversed', false) ||
+                _.get(indicator.target, 'instance.isIndicatorReversed', false),
               aaModule.name === 'Process indicator / WPTM',
               indicator.result.instance,
             ),
-          },
-          baseline: {
-            ...indicator.baseline,
-            color: getColorBasedOnValue(
-              aaModule.name === 'Process indicator / WPTM'
-                ? indicator.baseline.valueNumerator
-                : indicator.baseline.achievementRate,
-              achievementRatesLegendValues,
-              _.get(indicator.baseline, 'instance.isIndicatorReversed', false),
-              aaModule.name === 'Process indicator / WPTM',
-              indicator.baseline.instance,
-            ),
-          },
-        })),
+            target: {
+              ...indicator.target,
+              color: getColorBasedOnValue(
+                aaModule.name === 'Process indicator / WPTM'
+                  ? indicator.target.valueNumerator
+                  : indicator.target.achievementRate,
+                achievementRatesLegendValues,
+                _.get(indicator.target, 'instance.isIndicatorReversed', false),
+                aaModule.name === 'Process indicator / WPTM',
+                indicator.target.instance,
+              ),
+            },
+            result: {
+              ...indicator.result,
+              color: getColorBasedOnValue(
+                aaModule.name === 'Process indicator / WPTM'
+                  ? indicator.result.valueNumerator
+                  : indicator.result.achievementRate,
+                achievementRatesLegendValues,
+                _.get(indicator.result, 'instance.isIndicatorReversed', false),
+                aaModule.name === 'Process indicator / WPTM',
+                indicator.result.instance,
+              ),
+            },
+            baseline: {
+              ...indicator.baseline,
+              color: getColorBasedOnValue(
+                aaModule.name === 'Process indicator / WPTM'
+                  ? indicator.baseline.valueNumerator
+                  : indicator.baseline.achievementRate,
+                achievementRatesLegendValues,
+                _.get(
+                  indicator.baseline,
+                  'instance.isIndicatorReversed',
+                  false,
+                ),
+                aaModule.name === 'Process indicator / WPTM',
+                indicator.baseline.instance,
+              ),
+            },
+          };
+        }),
       })),
     }));
 

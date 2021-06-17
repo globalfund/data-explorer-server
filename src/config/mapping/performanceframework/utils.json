@@ -2,7 +2,7 @@
   "dataPath": "value",
   "defaultSelect": "$select=indicatorSet,indicatorName,valueAchievementRate,disaggregationValue,disaggregationGroup,valueType,reportingPeriodStartDate,reportingPeriodEndDate",
   "defaultExpand": "&$expand=activityAreaModule,ActivityAreaIntervention",
-  "defaultFilter": "&$filter=(reportingPeriodStartDate ne null and reportingPeriodEndDate ne null and grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq 'BFA-H-SPCNLS' and grantAgreementImplementationPeriod/implementationPeriodNumber eq 2)",
+  "defaultFilter": "&$filter=(reportingPeriodStartDate ne null and reportingPeriodEndDate ne null and grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq <grantId> AND grantAgreementImplementationPeriod/implementationPeriodNumber eq <IPnumber>)",
   "valueAchievementRateColors": [
     "#fa7355",
     "#fa9a55",

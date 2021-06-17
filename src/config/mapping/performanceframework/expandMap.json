@@ -1,0 +1,21 @@
+[
+  "value[]",
+  {
+    "indicatorName": "indicatorName",
+    "isIndicatorReversed": "isIndicatorReversed",
+    "indicatorAggregationTypeName": "indicatorAggregationTypeName",
+    "geographicCoverage": "geographicCoverage",
+    "valueNumerator": "valueNumerator",
+    "valueDenominator": "valueDenominator",
+    "valuePercentage": "valuePercentage",
+    "valueText": "valueText",
+    "disaggregationGroup": "disaggregationGroup",
+    "disaggregationValue": "disaggregationValue",
+    "valueType": "valueType",
+    "valueYear": "valueYear",
+    "startDate": "reportingPeriodStartDate",
+    "endDate": "reportingPeriodEndDate",
+    "valueAchievementRate": "valueAchievementRate",
+    "intervention": "activityAreaIntervention.activityAreaName"
+  }
+]
