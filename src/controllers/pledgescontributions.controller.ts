@@ -296,7 +296,7 @@ export class PledgescontributionsController {
           }
           const features = geoJSONData.map((feature: any) => {
             const fItem = _.find(publicSectorCountries, {
-              code: feature.properties.iso_a3,
+              code: feature.id,
             });
             let itemValue = 0;
             if (fItem) {
@@ -382,6 +382,7 @@ export class PledgescontributionsController {
               ...feature,
               properties: {
                 ...feature.properties,
+                iso_a3: feature.id,
                 value: itemValue,
                 data: fItem ? fItem : {},
               },

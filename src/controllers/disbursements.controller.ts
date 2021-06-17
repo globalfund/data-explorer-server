@@ -17,7 +17,6 @@ import urls from '../config/urls/index.json';
 import {DisbursementsTreemapDataItem} from '../interfaces/disbursementsTreemap';
 import {getFilterString} from '../utils/filtering/grants/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
-// import geojson from '../static-assets/custom.geo.json';
 
 const DISBURSEMENTS_TIME_CYCLE_RESPONSE: ResponseObject = {
   description: 'Disbursements Time Cycle Response',
@@ -390,7 +389,7 @@ export class DisbursementsController {
       .all([
         axios.get(url),
         // TODO: check how to serve static geojson in-app
-        axios.get('https://v2.tgf.nyuki.io/static/custom.geo.json'),
+        axios.get('https://v2.tgf.nyuki.io/static/simple.geo.json'),
       ])
       .then(
         axios.spread((...responses) => {
@@ -433,7 +432,7 @@ export class DisbursementsController {
             intervals.push(interval * i);
           }
           const features = geoJSONData.map((feature: any) => {
-            const fItem = _.find(data, {code: feature.properties.iso_a3});
+            const fItem = _.find(data, {code: feature.id});
             let itemValue = 0;
             if (fItem) {
               if (
@@ -537,6 +536,7 @@ export class DisbursementsController {
               properties: {
                 ...feature.properties,
                 value: itemValue,
+                iso_a3: feature.id,
                 data: fItem
                   ? {
                       components: fItem.components,
