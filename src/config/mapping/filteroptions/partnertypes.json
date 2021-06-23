@@ -4,5 +4,5 @@
   "value": "implementerClassificationName",
   "children": "members",
   "childLabel": "implementerClassificationName",
-  "childValue": "implementerClassificationCode"
+  "childValue": "implementerClassificationName"
 }

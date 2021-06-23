@@ -66,22 +66,20 @@ export class AllocationsController {
           'desc',
         );
         return {
-          data: {
-            total: _.sumBy(rawData, 'amount'),
-            values: rawData.map((item: any) =>
-              _.get(item, AllocationsFieldsMapping.amount),
-            ),
-            keys: rawData.map((item: any) =>
+          total: _.sumBy(rawData, 'amount'),
+          values: rawData.map((item: any) =>
+            _.get(item, AllocationsFieldsMapping.amount),
+          ),
+          keys: rawData.map((item: any) =>
+            _.get(item, AllocationsFieldsMapping.component),
+          ),
+          colors: rawData.map((item: any) =>
+            _.get(
+              AllocationsFieldsMapping.componentColors,
               _.get(item, AllocationsFieldsMapping.component),
+              '',
             ),
-            colors: rawData.map((item: any) =>
-              _.get(
-                AllocationsFieldsMapping.componentColors,
-                _.get(item, AllocationsFieldsMapping.component),
-                '',
-              ),
-            ),
-          },
+          ),
         };
       })
       .catch((error: AxiosError) => {

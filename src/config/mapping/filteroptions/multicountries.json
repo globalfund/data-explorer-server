@@ -1,6 +1,6 @@
 {
   "dataPath": "value",
   "label": "multiCountryName",
-  "value": "multiCountryShortName",
+  "value": "multiCountryName",
   "childCountry": "multiCountryComposition[0].geographicArea.geographicAreaName"
 }
