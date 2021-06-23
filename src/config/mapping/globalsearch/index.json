@@ -1,0 +1,119 @@
+{
+  "categories": [
+    {
+      "name": "Location(s)",
+      "type": "Country",
+      "link": "/location/<code>/investments",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(contains(GeographicAreaCode_ISO3,<value>) OR contains(GeographicAreaName,<value>) OR contains(ComponentName,<value>) OR contains(GrantAgreementTitle,<value>))/groupby((GeographicAreaCode_ISO3,GeographicAreaName),aggregate(GrantAgreementId with countdistinct as count))&$orderby=count desc",
+      "itemname": "",
+      "mappings": [
+        "value[]",
+        {
+          "name": "geographicAreaName",
+          "code": "geographicAreaCode_ISO3",
+          "count": "count"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Grant(s)",
+      "type": "<type>",
+      "link": "/grant/<code>/investments",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$select=grantAgreementTitle,grantAgreementNumber,grantAgreementStatusTypeName&$filter=(contains(GeographicAreaCode_ISO3,<value>) OR contains(GeographicAreaName,<value>) OR contains(ComponentName,<value>) OR contains(GrantAgreementTitle,<value>) OR contains(GrantAgreementNumber,<value>) OR contains(PrincipalRecipientName,<value>) OR contains(PrincipalRecipientShortName,<value>) OR contains(GrantAgreementStatusTypeName,<value>))&$orderby=GrantAgreementStatusTypeName asc,GrantAgreementTitle asc",
+      "itemname": "",
+      "mappings": [
+        "value[]",
+        {
+          "name": "grantAgreementTitle",
+          "code": "grantAgreementNumber",
+          "type": "grantAgreementStatusTypeName"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Result(s)",
+      "type": "",
+      "link": "/results/#<code>",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VReportingResults?$apply=filter(reportingResultYear eq 2019 AND (contains(GeographicAreaCode_ISO3,<value>) OR contains(GeographicAreaName,<value>) OR contains(componentName,<value>) OR contains(ReportingResultIndicatorName,<value>)))/groupby((reportingResultIndicatorName,reportingResultIndicatorId), aggregate(ReportingResultValue with sum as value))&$orderby=value desc",
+      "itemname": "",
+      "mappings": [
+        "value[]",
+        {
+          "name": "reportingResultIndicatorName",
+          "code": "reportingResultIndicatorId"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Document(s)",
+      "type": "<type>",
+      "link": "<code>",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VProgramDocuments?$select=programDocumentId,processName,componentName,processYear,processWindow,fileURL,documentTypeDescription&$filter=documentTypeDescription in ('Application','Country Profiles') AND (contains(GeographicAreaCode_ISO3,'HIV') OR contains(GeographicAreaName,'HIV') OR contains(ComponentName,'HIV'))&$orderby=processYear desc, processWindow desc",
+      "itemname": "<processName> <componentName> - <processYear> <processWindow>",
+      "mappings": [
+        "value[]",
+        {
+          "name": "processName",
+          "code": "fileURL",
+          "type": "documentTypeDescription",
+          "processName": "processName",
+          "componentName": "componentName",
+          "processYear": "processYear",
+          "processWindow": "processWindow"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Finance",
+      "type": "",
+      "link": "",
+      "url": "",
+      "mappings": [],
+      "options": [
+        {
+          "type": "Investment",
+          "label": "Disbursements",
+          "value": "Disbursements",
+          "link": "/viz/investments/disbursements"
+        },
+        {
+          "type": "Investment",
+          "label": "Budget",
+          "value": "Budget",
+          "link": "/viz/budgets/flow"
+        },
+        {
+          "type": "Investment",
+          "label": "Allocation",
+          "value": "Allocation",
+          "link": "/viz/allocations"
+        },
+        {
+          "type": "Donor",
+          "label": "Pledges & Contributions",
+          "value": "Pledges & Contributions",
+          "link": "/viz/pledges-contributions/time-cycle"
+        }
+      ]
+    },
+    {
+      "name": "Other(s)",
+      "type": "",
+      "link": "",
+      "url": "",
+      "mappings": [],
+      "options": [
+        {
+          "type": "",
+          "label": "Eligibility",
+          "value": "Eligibility",
+          "link": "/viz/eligibility"
+        }
+      ]
+    }
+  ]
+}

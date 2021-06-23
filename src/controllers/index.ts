@@ -10,3 +10,4 @@ export * from './documents.controller';
 export * from './performancerating.controller';
 export * from './performanceframework.controller';
 export * from './filteroptions.controller';
+export * from './global-search.controller';
