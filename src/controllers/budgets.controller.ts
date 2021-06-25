@@ -206,7 +206,86 @@ export class BudgetsController {
       });
   }
 
-  @get('/budgets/flow/drilldown')
+  @get('/budgets/time-cycle')
+  @response(200, BUDGETS_TIME_CYCLE_RESPONSE)
+  timeCycle(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      BudgetsTimeCycleFieldsMapping.budgetsTimeCycleAggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.budgets}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        let rawData = _.get(
+          resp.data,
+          BudgetsTimeCycleFieldsMapping.dataPath,
+          [],
+        );
+        if (rawData.length > 0) {
+          if (
+            _.get(rawData[0], BudgetsTimeCycleFieldsMapping.year, '').length > 4
+          ) {
+            rawData = _.filter(
+              rawData,
+              (item: any) => item[BudgetsTimeCycleFieldsMapping.year],
+            ).map((item: any) => ({
+              ...item,
+              [BudgetsTimeCycleFieldsMapping.year]: item[
+                BudgetsTimeCycleFieldsMapping.year
+              ].slice(0, 4),
+            }));
+          }
+        }
+        const returnData: BudgetsTimeCycleData = {data: []};
+        const groupedYears = _.groupBy(
+          rawData,
+          BudgetsTimeCycleFieldsMapping.year,
+        );
+        Object.keys(groupedYears).forEach(yKey => {
+          const instance = groupedYears[yKey];
+          let components = {};
+          const groupedYComponents = _.groupBy(
+            instance,
+            BudgetsTimeCycleFieldsMapping.component,
+          );
+          Object.keys(groupedYComponents).forEach(ycKey => {
+            components = {
+              ...components,
+              [ycKey]: _.sumBy(
+                groupedYComponents[ycKey],
+                BudgetsTimeCycleFieldsMapping.amount,
+              ),
+              [`${ycKey}Color`]: _.get(
+                BudgetsTimeCycleFieldsMapping.componentColors,
+                ycKey,
+                '#000',
+              ),
+            };
+          });
+          returnData.data.push({
+            year: yKey,
+            ...components,
+            amount: _.sumBy(instance, BudgetsTimeCycleFieldsMapping.amount),
+          });
+        });
+        return returnData;
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/budgets/drilldown')
   @response(200, BUDGETS_FLOW_RESPONSE)
   flowDrilldown(): object {
     if (!this.req.query.levelParam) {
@@ -288,85 +367,6 @@ export class BudgetsController {
           count: data.length,
           data: _.orderBy(data, 'value', 'desc'),
         };
-      })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
-  }
-
-  @get('/budgets/time-cycle')
-  @response(200, BUDGETS_TIME_CYCLE_RESPONSE)
-  timeCycle(): object {
-    const filterString = getFilterString(
-      this.req.query,
-      BudgetsTimeCycleFieldsMapping.budgetsTimeCycleAggregation,
-    );
-    const params = querystring.stringify(
-      {},
-      '&',
-      filtering.param_assign_operator,
-      {
-        encodeURIComponent: (str: string) => str,
-      },
-    );
-    const url = `${urls.budgets}/?${params}${filterString}`;
-
-    return axios
-      .get(url)
-      .then((resp: AxiosResponse) => {
-        let rawData = _.get(
-          resp.data,
-          BudgetsTimeCycleFieldsMapping.dataPath,
-          [],
-        );
-        if (rawData.length > 0) {
-          if (
-            _.get(rawData[0], BudgetsTimeCycleFieldsMapping.year, '').length > 4
-          ) {
-            rawData = _.filter(
-              rawData,
-              (item: any) => item[BudgetsTimeCycleFieldsMapping.year],
-            ).map((item: any) => ({
-              ...item,
-              [BudgetsTimeCycleFieldsMapping.year]: item[
-                BudgetsTimeCycleFieldsMapping.year
-              ].slice(0, 4),
-            }));
-          }
-        }
-        const returnData: BudgetsTimeCycleData = {data: []};
-        const groupedYears = _.groupBy(
-          rawData,
-          BudgetsTimeCycleFieldsMapping.year,
-        );
-        Object.keys(groupedYears).forEach(yKey => {
-          const instance = groupedYears[yKey];
-          let components = {};
-          const groupedYComponents = _.groupBy(
-            instance,
-            BudgetsTimeCycleFieldsMapping.component,
-          );
-          Object.keys(groupedYComponents).forEach(ycKey => {
-            components = {
-              ...components,
-              [ycKey]: _.sumBy(
-                groupedYComponents[ycKey],
-                BudgetsTimeCycleFieldsMapping.amount,
-              ),
-              [`${ycKey}Color`]: _.get(
-                BudgetsTimeCycleFieldsMapping.componentColors,
-                ycKey,
-                '#000',
-              ),
-            };
-          });
-          returnData.data.push({
-            year: yKey,
-            ...components,
-            amount: _.sumBy(instance, BudgetsTimeCycleFieldsMapping.amount),
-          });
-        });
-        return returnData;
       })
       .catch((error: AxiosError) => {
         console.error(error);
