@@ -4,7 +4,7 @@ import {
   Request,
   response,
   ResponseObject,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
@@ -296,7 +296,7 @@ export class DisbursementsController {
           const componentLocations: DisbursementsTreemapDataItem[] = [];
           dataItems.forEach((item: any) => {
             componentLocations.push({
-              name: item[TreemapFieldsMapping.locationCode],
+              name: item[TreemapFieldsMapping.locationName],
               value: item[TreemapFieldsMapping.disbursed],
               formattedValue: formatFinancialValue(
                 item[TreemapFieldsMapping.disbursed],
@@ -306,7 +306,7 @@ export class DisbursementsController {
                 header: component,
                 componentsStats: [
                   {
-                    name: item[TreemapFieldsMapping.locationCode],
+                    name: item[TreemapFieldsMapping.locationName],
                     count: item.count,
                     investment: item[TreemapFieldsMapping.disbursed],
                   },
