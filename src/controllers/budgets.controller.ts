@@ -11,11 +11,15 @@ import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import BudgetsFlowFieldsMapping from '../config/mapping/budgets/flow.json';
+import BudgetsFlowDrilldownFieldsMapping from '../config/mapping/budgets/flowDrilldown.json';
 import BudgetsTimeCycleFieldsMapping from '../config/mapping/budgets/timeCycle.json';
 import urls from '../config/urls/index.json';
 import {BudgetsFlowData} from '../interfaces/budgetsFlow';
 import {BudgetsTimeCycleData} from '../interfaces/budgetsTimeCycle';
+import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
+import {getDrilldownFilterString} from '../utils/filtering/budgets/getDrilldownFilterString';
 import {getFilterString} from '../utils/filtering/budgets/getFilterString';
+import {formatFinancialValue} from '../utils/formatFinancialValue';
 
 const BUDGETS_FLOW_RESPONSE: ResponseObject = {
   description: 'Budgets Flow Response',
@@ -193,8 +197,96 @@ export class BudgetsController {
         data.links = _.sortBy(data.links, ['source', 'target']);
 
         return {
-          data,
+          ...data,
           totalBudget,
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/budgets/flow/drilldown')
+  @response(200, BUDGETS_FLOW_RESPONSE)
+  flowDrilldown(): object {
+    if (!this.req.query.levelParam) {
+      return {
+        count: 0,
+        data: [],
+        message: '"level" and "levelParam" parameters are required.',
+      };
+    }
+    const filterString = getDrilldownFilterString(
+      this.req.query,
+      BudgetsFlowDrilldownFieldsMapping.aggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.budgets}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const groupedDataByComponent = _.groupBy(
+          _.get(resp.data, BudgetsFlowDrilldownFieldsMapping.dataPath, []),
+          BudgetsFlowDrilldownFieldsMapping.component,
+        );
+        const data: BudgetsTreemapDataItem[] = [];
+        Object.keys(groupedDataByComponent).forEach((component: string) => {
+          const dataItems = groupedDataByComponent[component];
+          const children: BudgetsTreemapDataItem[] = [];
+          dataItems.forEach((item: any) => {
+            children.push({
+              name: _.get(item, BudgetsFlowDrilldownFieldsMapping.child, ''),
+              value: item[BudgetsFlowDrilldownFieldsMapping.amount],
+              formattedValue: formatFinancialValue(
+                item[BudgetsFlowDrilldownFieldsMapping.amount],
+              ),
+              color: '#70777E',
+              tooltip: {
+                header: component,
+                componentsStats: [
+                  {
+                    name: _.get(
+                      item,
+                      BudgetsFlowDrilldownFieldsMapping.child,
+                      '',
+                    ),
+                    value: item[BudgetsFlowDrilldownFieldsMapping.amount],
+                  },
+                ],
+                value: item[BudgetsFlowDrilldownFieldsMapping.amount],
+              },
+            });
+          });
+          const value = _.sumBy(children, 'value');
+          data.push({
+            name: component,
+            color: '#DFE3E5',
+            value,
+            formattedValue: formatFinancialValue(value),
+            _children: _.orderBy(children, 'value', 'desc'),
+            tooltip: {
+              header: component,
+              value,
+              componentsStats: [
+                {
+                  name: component,
+                  value: _.sumBy(children, 'value'),
+                },
+              ],
+            },
+          });
+        });
+        return {
+          count: data.length,
+          data: _.orderBy(data, 'value', 'desc'),
         };
       })
       .catch((error: AxiosError) => {
