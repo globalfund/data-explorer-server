@@ -4,3 +4,19 @@ export interface Allocations {
   colors: string[]; // component colors
   values: number[]; // component values
 }
+
+export interface AllocationsTreemapDataItem {
+  name: string;
+  value: number;
+  formattedValue: string;
+  color: string;
+  _children?: AllocationsTreemapDataItem[];
+  tooltip: {
+    header: string;
+    componentsStats: {
+      name: string;
+      value: number;
+    }[];
+    value: number;
+  };
+}
