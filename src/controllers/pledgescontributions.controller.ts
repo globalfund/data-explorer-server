@@ -12,9 +12,12 @@ import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import PledgesContributionsGeoFieldsMapping from '../config/mapping/pledgescontributions/geo.json';
 import PledgesContributionsTimeCycleFieldsMapping from '../config/mapping/pledgescontributions/timeCycle.json';
+import PledgesContributionsTimeCycleDrilldownFieldsMapping from '../config/mapping/pledgescontributions/timeCycleDrilldown.json';
 import urls from '../config/urls/index.json';
 import {FilterGroupOption} from '../interfaces/filters';
+import {PledgesContributionsTreemapDataItem} from '../interfaces/pledgesContributions';
 import {getFilterString} from '../utils/filtering/pledges-contributions/getFilterString';
+import {formatFinancialValue} from '../utils/formatFinancialValue';
 import {getD2HCoordinates} from '../utils/pledgescontributions/getD2HCoordinates';
 
 const PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE: ResponseObject = {
@@ -396,6 +399,125 @@ export class PledgescontributionsController {
           };
         }),
       )
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/pledges-contributions/time-cycle/drilldown')
+  @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
+  timeCycleDrilldown(): object {
+    const valueType =
+      (_.get(this.req.query, 'levelParam', '') as string)
+        .split('-')
+        .indexOf('pledge') > -1
+        ? 'pledge'
+        : 'contribution';
+    const filterString = getFilterString(
+      this.req.query,
+      PledgesContributionsTimeCycleDrilldownFieldsMapping.aggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.pledgescontributions}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.filter(
+          _.get(
+            resp.data,
+            PledgesContributionsTimeCycleDrilldownFieldsMapping.dataPath,
+            [],
+          ),
+          {
+            [PledgesContributionsTimeCycleDrilldownFieldsMapping.indicator]:
+              PledgesContributionsTimeCycleDrilldownFieldsMapping[valueType],
+          },
+        );
+        const levelComponent = _.get(
+          rawData,
+          `[0].${PledgesContributionsTimeCycleDrilldownFieldsMapping.year}`,
+          '',
+        );
+        const value = _.sumBy(
+          rawData,
+          PledgesContributionsTimeCycleDrilldownFieldsMapping.amount,
+        );
+        const data: PledgesContributionsTreemapDataItem[] = [
+          {
+            name: levelComponent,
+            value,
+            formattedValue: formatFinancialValue(value),
+            color: '#DFE3E5',
+            _children: _.orderBy(
+              rawData.map((item: any) => ({
+                name: _.get(
+                  item,
+                  PledgesContributionsTimeCycleDrilldownFieldsMapping.donor,
+                  '',
+                ),
+                value: _.get(
+                  item,
+                  PledgesContributionsTimeCycleDrilldownFieldsMapping.amount,
+                  0,
+                ),
+                formattedValue: formatFinancialValue(
+                  _.get(
+                    item,
+                    PledgesContributionsTimeCycleDrilldownFieldsMapping.amount,
+                    0,
+                  ),
+                ),
+                color: '#70777E',
+                tooltip: {
+                  header: levelComponent,
+                  componentsStats: [
+                    {
+                      name: _.get(
+                        item,
+                        PledgesContributionsTimeCycleDrilldownFieldsMapping.donor,
+                        '',
+                      ),
+                      value: _.get(
+                        item,
+                        PledgesContributionsTimeCycleDrilldownFieldsMapping.amount,
+                        0,
+                      ),
+                    },
+                  ],
+                  value: _.get(
+                    item,
+                    PledgesContributionsTimeCycleDrilldownFieldsMapping.amount,
+                    0,
+                  ),
+                },
+              })),
+              'value',
+              'desc',
+            ),
+            tooltip: {
+              header: levelComponent,
+              value,
+              componentsStats: [
+                {
+                  name: levelComponent,
+                  value,
+                },
+              ],
+            },
+          },
+        ];
+        return {
+          data,
+        };
+      })
       .catch((error: AxiosError) => {
         console.error(error);
       });

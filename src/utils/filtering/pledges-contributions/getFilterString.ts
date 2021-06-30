@@ -32,6 +32,17 @@ export function getFilterString(params: any, aggregationString?: string) {
     }${filtering.in}(${periods.join(filtering.multi_param_separator)})`;
   }
 
+  if (_.get(params, 'levelParam', '').length > 0) {
+    const lParam = _.get(params, 'levelParam', '').split('-');
+    if (lParam.length === 1 || lParam.length > 2) {
+      str += `${str.length > 0 ? ' AND ' : ''}${_.get(
+        lParam,
+        '[0]',
+        '',
+      )}-${_.get(lParam, '[1]', '')}`;
+    }
+  }
+
   if (str.length > 0) {
     if (aggregationString) {
       str = aggregationString.replace('<filterString>', ` AND ${str}`);
