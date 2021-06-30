@@ -88,6 +88,16 @@ export class PerformanceframeworkController {
       .get(url)
       .then((resp: AxiosResponse) => {
         const mappedData = mapper(resp.data) as never[];
+        if (mappedData.length === 0) {
+          return {
+            data: {
+              nodes: [],
+              links: [],
+            },
+            periods: [],
+            timeframes: [],
+          };
+        }
         const timeframes = getTimeframes(mappedData);
 
         const timeframeIndexParam = this.req.query.timeframeIndex
@@ -97,20 +107,31 @@ export class PerformanceframeworkController {
 
         if (
           timeframeIndexParam < 0 ||
-          timeframeIndexParam > timeframes.length - 2
+          timeframeIndexParam > timeframes.length / 2 - 1
         ) {
           selectedTimeframes = timeframes;
         } else {
           selectedTimeframes = [
-            timeframes[timeframeIndexParam],
-            timeframes[timeframeIndexParam + 1],
+            timeframes[timeframeIndexParam * 2],
+            timeframes[timeframeIndexParam * 2 + 1],
           ];
         }
 
         const data = formatPFData(mappedData, selectedTimeframes);
 
+        const periods: string[][] = [];
+        timeframes.forEach((timeframe: any, index: number) => {
+          if (index % 2 === 0 && index + 1 < timeframes.length) {
+            periods.push([
+              timeframe.formatted,
+              timeframes[index + 1].formatted,
+            ]);
+          }
+        });
+
         return {
           data,
+          periods,
           timeframes,
         };
       })
