@@ -55,6 +55,13 @@ export function getFilterString(params: any, aggregationString?: string) {
     }(${partnerTypes.join(filtering.multi_param_separator)})`;
   }
 
+  const grantId = _.get(params, 'grantId', null);
+  if (grantId) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.grantId}${
+      filtering.eq
+    }${grantId}`;
+  }
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.search.replace(

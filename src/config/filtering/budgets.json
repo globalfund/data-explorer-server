@@ -3,5 +3,6 @@
   "component": "grantAgreementImplementationPeriod/grantAgreement/component/componentName",
   "status": "grantAgreementImplementationPeriod/implementationPeriodStatusType/programStatusTypeName",
   "partner": "principalRecipientName",
+  "grantId": "grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber",
   "partner_type": "implementerClassificationSubType/implementerClassificationName"
 }

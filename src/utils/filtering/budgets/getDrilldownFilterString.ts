@@ -58,6 +58,13 @@ export function getDrilldownFilterString(
     }(${partnerTypes.join(filtering.multi_param_separator)})`;
   }
 
+  const grantId = _.get(params, 'grantId', null);
+  if (grantId) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.grantId}${
+      filtering.eq
+    }${grantId}`;
+  }
+
   str += `${str.length > 0 ? ' AND ' : ''}${_.get(params, 'levelParam', '')}`;
 
   if (str.length > 0) {

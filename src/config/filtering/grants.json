@@ -4,5 +4,6 @@
   "status": "grantAgreementStatusTypeName",
   "partner": "principalRecipientName",
   "partner_type": "principalRecipientClassificationName",
+  "grantId": "grantAgreementNumber",
   "search": "contains(grantAgreementTitle,<value>)"
 }

@@ -143,4 +143,46 @@ export class DocumentsController {
         console.error(error);
       });
   }
+
+  @get('/grant-documents')
+  @response(200, RESULTS_RESPONSE)
+  grantDocuments(): object {
+    const mapper = mapTransform(docsMap);
+    const filterString = getFilterString(this.req.query);
+    const url = `${urls.documents}/?${docsUtils.defaultSelect}${docsUtils.defaultOrderBy}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const mappedData = mapper(resp.data) as never[];
+        const data: DocumentsTableRow[] = [];
+
+        const groupedByCategory = _.groupBy(mappedData, 'category');
+        _.orderBy(Object.keys(groupedByCategory), undefined, 'asc').forEach(
+          (category: string) => {
+            data.push({
+              name: category,
+              count: groupedByCategory[category].length,
+              docs: _.orderBy(
+                groupedByCategory[category].map((item: any) => ({
+                  title: `${item.processName}${
+                    item.fileIndex ? ` - ${item.fileIndex}` : ''
+                  }`,
+                  link: item.fileURL,
+                })),
+                'title',
+                'asc',
+              ),
+            });
+          },
+        );
+        return {
+          count: data.length,
+          data,
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
 }

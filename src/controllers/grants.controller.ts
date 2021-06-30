@@ -7,13 +7,16 @@ import {
   RestBindings,
 } from '@loopback/rest';
 import axios, {AxiosError, AxiosResponse} from 'axios';
+import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import {getPage} from '../config/filtering/utils';
+import grantDetailMap from '../config/mapping/grants/grantDetail.json';
 import grantsMap from '../config/mapping/grants/index.json';
 import grantsUtils from '../config/mapping/grants/utils.json';
 import urls from '../config/urls/index.json';
+import {GrantDetailInformation} from '../interfaces/grantDetail';
 import {GrantListItemModel} from '../interfaces/grantList';
 import {getFilterString} from '../utils/filtering/grants/getFilterString';
 
@@ -79,6 +82,32 @@ export class GrantsController {
         const res: GrantListItemModel[] = mapper(resp.data) as never[];
         return {
           count: resp.data[grantsUtils.countPath],
+          data: res,
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/grant/detail')
+  @response(200, GRANTS_RESPONSE)
+  grantDetail(): object {
+    const grantNumber = _.get(this.req.query, 'grantNumber', null);
+    if (!grantNumber) {
+      return {
+        data: {},
+        message: '"grantNumber" parameter is required.',
+      };
+    }
+    const mapper = mapTransform(grantDetailMap);
+    const url = `${urls.grantsNoCount}/?$top=1&$filter=grantAgreementNumber eq '${grantNumber}'`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const res: GrantDetailInformation[] = mapper(resp.data) as never[];
+        return {
           data: res,
         };
       })

@@ -279,16 +279,16 @@ export function formatPFData(
         ...aaModule,
         children: aaModule.children.map((indicator: any) => {
           if (aaModule.name === 'TB/HIV') {
-            console.log(
-              indicator.result.achievementRate,
-              indicator.target.achievementRate,
-            );
-            console.log(achievementRatesLegendValues.length);
-            console.log(
-              _.get(indicator.result, 'instance.isIndicatorReversed', false),
-              _.get(indicator.target, 'instance.isIndicatorReversed', false),
-            );
-            console.log(indicator.result.instance);
+            // console.log(
+            //   indicator.result.achievementRate,
+            //   indicator.target.achievementRate,
+            // );
+            // console.log(achievementRatesLegendValues.length);
+            // console.log(
+            //   _.get(indicator.result, 'instance.isIndicatorReversed', false),
+            //   _.get(indicator.target, 'instance.isIndicatorReversed', false),
+            // );
+            // console.log(indicator.result.instance);
           }
           return {
             ...indicator,

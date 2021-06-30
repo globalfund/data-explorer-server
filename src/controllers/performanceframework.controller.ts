@@ -66,7 +66,7 @@ export class PerformanceframeworkController {
     if (!this.req.query.grantId || !this.req.query.IPnumber) {
       return {
         data: [],
-        message: 'Invalid parameters',
+        message: '"grantId" and "IPnumber" parameters are required.',
       };
     }
     const filterString = getFilterString(
@@ -211,14 +211,20 @@ export class PerformanceframeworkController {
 
               results.push({
                 type: 'Percentage',
-                baseline: baselineInstance
-                  ? `${baselineInstance.valuePercentage}%`
+                baseline: !_.isEmpty(baselineInstance)
+                  ? baselineInstance.valuePercentage
+                    ? `${baselineInstance.valuePercentage}%`
+                    : null
                   : null,
-                target: targetInstance
-                  ? `${targetInstance.valuePercentage}%`
+                target: !_.isEmpty(targetInstance)
+                  ? targetInstance.valuePercentage
+                    ? `${targetInstance.valuePercentage}%`
+                    : null
                   : null,
-                result: resultInstance
-                  ? `${resultInstance.valuePercentage}%`
+                result: !_.isEmpty(resultInstance)
+                  ? resultInstance.valuePercentage
+                    ? `${resultInstance.valuePercentage}%`
+                    : null
                   : null,
                 achievementRate,
                 color: getColorBasedOnValue(

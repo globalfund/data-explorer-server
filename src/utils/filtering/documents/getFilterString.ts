@@ -25,6 +25,13 @@ export function getFilterString(params: any, defaultFilter?: string) {
     }(${components.join(filtering.multi_param_separator)})`;
   }
 
+  const grantId = _.get(params, 'grantId', null);
+  if (grantId) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringDocuments.grantId}${
+      filtering.eq
+    }${grantId}`;
+  }
+
   if (str.length > 0) {
     str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;
   }
