@@ -25,7 +25,9 @@ export function getFilterString(params: any, aggregationString?: string) {
     }(${components.join(filtering.multi_param_separator)})`;
   }
 
-  str += `${str.length > 0 ? ' AND ' : ''}${_.get(params, 'levelParam', '')}`;
+  str += `${
+    str.length > 0 && _.get(params, 'levelParam', '').length > 0 ? ' AND ' : ''
+  }${_.get(params, 'levelParam', '')}`;
 
   if (str.length > 0) {
     str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;

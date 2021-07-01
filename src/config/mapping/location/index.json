@@ -1,0 +1,14 @@
+{
+  "multiCountriesFilterString": "$filter=multiCountryComposition/any(composition: composition/geographicArea/geographicAreaCode_ISO3 eq '<location>')&$select=multiCountryName,multiCountryShortName",
+  "multiCountriesDataPath": "value",
+  "multiCountryName": "multiCountryName",
+  "multiCountryCode": "multiCountryShortName",
+  "locationFinancialAggregation": "$apply=<filterString>groupby((GeographicAreaName,PortfolioManager,PortfolioManagerEmailAddress),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed))",
+  "locationFinancialDataPath": "value[0]",
+  "locationName": "geographicAreaName",
+  "disbursed": "disbursed",
+  "committed": "committed",
+  "signed": "signed",
+  "portfolioManager": "portfolioManager",
+  "portfolioManagerEmail": "portfolioManagerEmailAddress"
+}

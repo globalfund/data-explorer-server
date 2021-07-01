@@ -702,8 +702,6 @@ export class DisbursementsController {
     );
     const url = `${urls.grantDetailGrants}/?${params}${filterString}`;
 
-    console.log(url);
-
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {

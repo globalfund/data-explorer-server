@@ -13,6 +13,7 @@
   "pledgescontributions": "https://data-service.theglobalfund.org/v3.3/odata/PledgesAndContributions",
   "performancerating": "https://data-service.theglobalfund.org/v3.3/odata/GrantAgreementProgressUpdates",
   "performanceframework": "https://data-service.theglobalfund.org/v3.3/odata/GrantAgreementImplementationPeriodPerformanceFrameworks",
+  "multicountries": "https://data-service.theglobalfund.org/v3.3/odata/MultiCountries",
   "filteroptionslocations": "https://data-service.theglobalfund.org/v3.3/odata/GeographicAreas?$select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId&$expand=members($select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId;$expand=members($select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId;$expand=members($select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId;$expand=members)))&$filter=geographicAreaName eq 'World'",
   "filteroptionsmulticountries": "https://data-service.theglobalfund.org/v3.3/odata/MultiCountries?$expand=MultiCountryComposition($expand=GeographicArea($expand=GeographicAreaLevel))",
   "filteroptionscomponents": "https://data-service.theglobalfund.org/v3.3/odata/Components",
