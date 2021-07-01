@@ -62,6 +62,13 @@ export function getFilterString(params: any, aggregationString?: string) {
     }${grantId}`;
   }
 
+  const IPnumber = _.get(params, 'IPnumber', null);
+  if (IPnumber) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.IPnumber}${
+      filtering.eq
+    }${IPnumber}`;
+  }
+
   if (str.length > 0) {
     str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;
     if (aggregationString) {

@@ -1,0 +1,10 @@
+{
+  "periodInfoDataPath": "value[0]",
+  "defaultSelectFields": "$select=implementationPeriodNumber,implementationPeriodStartDate,implementationPeriodEndDate&",
+  "defaultSort": "$orderby=implementationPeriodNumber desc&",
+  "periodInfoSelectFields": "$select=totalSignedAmount,totalCommittedAmount,totalDisbursedAmount&",
+  "periodInfoRatingSelectFields": "$select=performanceRating&",
+  "periodInfoRatingSort": "$orderby=periodStartDate desc&",
+  "periodInfoRatingExpand": "$expand=performanceRating&",
+  "periodInfoRatingPageSize": "$top=1&"
+}

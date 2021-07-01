@@ -65,6 +65,13 @@ export function getDrilldownFilterString(
     }${grantId}`;
   }
 
+  const IPnumber = _.get(params, 'IPnumber', null);
+  if (IPnumber) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.IPnumber}${
+      filtering.eq
+    }${IPnumber}`;
+  }
+
   str += `${str.length > 0 ? ' AND ' : ''}${_.get(params, 'levelParam', '')}`;
 
   if (str.length > 0) {

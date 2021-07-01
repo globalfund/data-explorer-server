@@ -1,0 +1,8 @@
+[
+  {
+    "disbursed": "totalDisbursedAmount",
+    "committed": "totalCommittedAmount",
+    "signed": "totalSignedAmount",
+    "rating": "performanceRating.performanceRatingCode"
+  }
+]

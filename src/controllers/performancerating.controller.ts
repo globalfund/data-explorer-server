@@ -44,10 +44,10 @@ export class PerformanceratingController {
   @get('/performance-rating')
   @response(200, PERFORMANCE_RATING_RESPONSE)
   performancerating(): object {
-    if (!this.req.query.grantId) {
+    if (!this.req.query.grantId && !this.req.query.IPnumber) {
       return {
         data: [],
-        message: '"grantId" parameter is required.',
+        message: '"grantId" and "IPnumber" parameters is required.',
       };
     }
     const params = querystring.stringify(
@@ -58,7 +58,7 @@ export class PerformanceratingController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.performancerating}/?${performanceratingMapping.defaultSelect}${performanceratingMapping.defaultOrderBy}${performanceratingMapping.defaultExpand}&$filter=performanceRating/performanceRatingCode ne null and grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq ${this.req.query.grantId} and grantAgreementImplementationPeriod/implementationPeriodNumber eq 1&${filtering.default_q_param}${params}`;
+    const url = `${urls.performancerating}/?${performanceratingMapping.defaultSelect}${performanceratingMapping.defaultOrderBy}${performanceratingMapping.defaultExpand}&$filter=performanceRating/performanceRatingCode ne null and grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq ${this.req.query.grantId} and grantAgreementImplementationPeriod/implementationPeriodNumber eq ${this.req.query.IPnumber}&${filtering.default_q_param}${params}`;
 
     return axios
       .get(url)

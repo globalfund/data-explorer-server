@@ -13,10 +13,17 @@ import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import {getPage} from '../config/filtering/utils';
 import grantDetailMap from '../config/mapping/grants/grantDetail.json';
+import grantDetailUtils from '../config/mapping/grants/grantDetail.utils.json';
+import grantPeriodInfoMap from '../config/mapping/grants/grantPeriodInfo.json';
+import grantPeriodsMap from '../config/mapping/grants/grantPeriods.json';
 import grantsMap from '../config/mapping/grants/index.json';
 import grantsUtils from '../config/mapping/grants/utils.json';
 import urls from '../config/urls/index.json';
-import {GrantDetailInformation} from '../interfaces/grantDetail';
+import {
+  GrantDetailInformation,
+  GrantDetailPeriod,
+  GrantDetailPeriodInformation,
+} from '../interfaces/grantDetail';
 import {GrantListItemModel} from '../interfaces/grantList';
 import {getFilterString} from '../utils/filtering/grants/getFilterString';
 
@@ -111,6 +118,82 @@ export class GrantsController {
           data: res,
         };
       })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/grant/periods')
+  @response(200, GRANTS_RESPONSE)
+  grantDetailPeriods(): object {
+    const grantNumber = _.get(this.req.query, 'grantNumber', null);
+    if (!grantNumber) {
+      return {
+        data: {},
+        message: '"grantNumber" parameter is required.',
+      };
+    }
+    const mapper = mapTransform(grantPeriodsMap);
+    const url = `${urls.grantPeriods}/?${grantDetailUtils.defaultSelectFields}${grantDetailUtils.defaultSort}$filter=grantAgreement/grantAgreementNumber eq '${grantNumber}'`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const res: GrantDetailPeriod[] = mapper(resp.data) as never[];
+        return {
+          data: res.map((period: GrantDetailPeriod) => ({
+            ...period,
+            startDate: period.startDate.split('T')[0],
+            endDate: period.endDate.split('T')[0],
+          })),
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/grant/period/info')
+  @response(200, GRANTS_RESPONSE)
+  grantDetailPeriodInfo(): object {
+    const grantNumber = _.get(this.req.query, 'grantNumber', null);
+    const IPnumber = _.get(this.req.query, 'IPnumber', null);
+    if (!grantNumber && !IPnumber) {
+      return {
+        data: [],
+        message: '"grantId" and "IPnumber" parameters is required.',
+      };
+    }
+    const mapper = mapTransform(grantPeriodInfoMap);
+    const financialUrl = `${urls.grantPeriods}/?${grantDetailUtils.periodInfoSelectFields}$filter=grantAgreement/grantAgreementNumber eq '${grantNumber}' and implementationPeriodNumber eq ${IPnumber}`;
+    const ratingUrl = `${urls.performancerating}/?${grantDetailUtils.periodInfoRatingSelectFields}${grantDetailUtils.periodInfoRatingPageSize}${grantDetailUtils.periodInfoRatingExpand}${grantDetailUtils.periodInfoRatingSort}$filter=grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq '${grantNumber}' and grantAgreementImplementationPeriod/implementationPeriodNumber eq ${IPnumber} and performanceRating ne null`;
+
+    return axios
+      .all([axios.get(financialUrl), axios.get(ratingUrl)])
+      .then(
+        axios.spread((...responses) => {
+          const respData = [
+            {
+              ..._.get(
+                responses[0].data,
+                grantDetailUtils.periodInfoDataPath,
+                {},
+              ),
+              ..._.get(
+                responses[1].data,
+                grantDetailUtils.periodInfoDataPath,
+                {},
+              ),
+            },
+          ];
+          const res: GrantDetailPeriodInformation[] = mapper(
+            respData,
+          ) as never[];
+          return {
+            data: res,
+          };
+        }),
+      )
       .catch((error: AxiosError) => {
         console.error(error);
       });

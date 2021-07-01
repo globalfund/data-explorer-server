@@ -16,3 +16,16 @@ export interface GrantDetailInformation {
     email: string;
   };
 }
+
+export interface GrantDetailPeriod {
+  number: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface GrantDetailPeriodInformation {
+  disbursed: number;
+  committed: number;
+  signed: number;
+  rating: string;
+}

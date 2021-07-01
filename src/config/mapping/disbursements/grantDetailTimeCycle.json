@@ -1,0 +1,14 @@
+{
+  "dataPath": "value",
+  "year": "disbursementYear",
+  "disbursed": "disbursed",
+  "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName",
+  "componentColors": {
+    "HIV": "#70777E",
+    "Tuberculosis": "#252C34",
+    "Malaria": "#495057",
+    "RSSH": "#ADB5BD",
+    "Multicomponent": "#373D43"
+  },
+  "disbursementsTimeCycleAggregation": "$apply=<filterString>groupby((DisbursementYear,grantAgreementImplementationPeriod/grantAgreement/component/componentName),aggregate(DisbursementAmount with sum as disbursed))"
+}
