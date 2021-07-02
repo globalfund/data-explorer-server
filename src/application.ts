@@ -36,7 +36,7 @@ export class ApiApplication extends BootMixin(
       controllers: {
         // Customize ControllerBooter Conventions here
         dirs: ['controllers'],
-        extensions: ['.controller.ts'],
+        extensions: ['.controller.js'],
         nested: true,
       },
     };
