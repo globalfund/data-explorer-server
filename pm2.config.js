@@ -2,8 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'the-data-explorer-api',
-      script: 'yarn',
-      args: 'start',
+      script: 'dist/index.js',
       instances: 'max',
       exec_mode: 'cluster',
       max_memory_restart: '2G',
@@ -13,6 +12,7 @@ module.exports = {
       out_file: '/home/zim/app-logs/the-data-explorer-api/out.log',
       watch: true,
       ignore_watch: [
+        '.git',
         '.circle',
         '.vscode',
         'README.md',
