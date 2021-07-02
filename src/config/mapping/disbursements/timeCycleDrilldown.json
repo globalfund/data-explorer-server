@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "disbursed": "disbursed",
+  "component": "componentName",
+  "locationName": "geographicAreaName",
+  "locationCode": "geographicAreaCode_ISO3",
+  "disbursementsTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,ComponentName),aggregate(DisbursementAmount with sum as disbursed))"
+}

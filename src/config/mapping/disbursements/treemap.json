@@ -6,5 +6,6 @@
   "disbursed": "disbursed",
   "committed": "committed",
   "signed": "signed",
-  "disbursementsTreemapAggregation": "$apply=<filterString>groupby((ComponentName,GeographicAreaCode_ISO3,GeographicAreaName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))"
+  "disbursementsTreemapAggregation": "$apply=<filterString>groupby((ComponentName,GeographicAreaCode_ISO3,GeographicAreaName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))",
+  "disbursementsTreemapDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,ComponentName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))"
 }

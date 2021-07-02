@@ -14,8 +14,10 @@ import GeomapFieldsMapping from '../config/mapping/disbursements/geomap.json';
 import GrantDetailTimeCycleFieldsMapping from '../config/mapping/disbursements/grantDetailTimeCycle.json';
 import GrantDetailTreemapFieldsMapping from '../config/mapping/disbursements/grantDetailTreemap.json';
 import TimeCycleFieldsMapping from '../config/mapping/disbursements/timeCycle.json';
+import TimeCycleDrilldownFieldsMapping from '../config/mapping/disbursements/timeCycleDrilldown.json';
 import TreemapFieldsMapping from '../config/mapping/disbursements/treemap.json';
 import urls from '../config/urls/index.json';
+import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {DisbursementsTreemapDataItem} from '../interfaces/disbursementsTreemap';
 import {
   grantDetailGetFilterString,
@@ -272,6 +274,88 @@ export class DisbursementsController {
       });
   }
 
+  @get('/disbursements/time-cycle/drilldown')
+  @response(200, DISBURSEMENTS_TIME_CYCLE_RESPONSE)
+  timeCycleDrilldown(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      TimeCycleDrilldownFieldsMapping.disbursementsTimeCycleDrilldownAggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.disbursements}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const apiData = _.get(
+          resp.data,
+          TimeCycleDrilldownFieldsMapping.dataPath,
+          [],
+        );
+        const groupedDataByComponent = _.groupBy(
+          apiData,
+          TimeCycleDrilldownFieldsMapping.component,
+        );
+        const data: BudgetsTreemapDataItem[] = [];
+        Object.keys(groupedDataByComponent).forEach((component: string) => {
+          const dataItems = groupedDataByComponent[component];
+          const componentLocations: BudgetsTreemapDataItem[] = [];
+          dataItems.forEach((item: any) => {
+            componentLocations.push({
+              name: item[TimeCycleDrilldownFieldsMapping.locationName],
+              value: item[TimeCycleDrilldownFieldsMapping.disbursed],
+              formattedValue: formatFinancialValue(
+                item[TimeCycleDrilldownFieldsMapping.disbursed],
+              ),
+              color: '#70777E',
+              tooltip: {
+                header: component,
+                componentsStats: [
+                  {
+                    name: item[TimeCycleDrilldownFieldsMapping.locationName],
+                    value: item[TimeCycleDrilldownFieldsMapping.disbursed],
+                  },
+                ],
+                value: item[TimeCycleDrilldownFieldsMapping.disbursed],
+              },
+            });
+          });
+          const disbursed = _.sumBy(componentLocations, 'value');
+          data.push({
+            name: component,
+            color: '#DFE3E5',
+            value: disbursed,
+            formattedValue: formatFinancialValue(disbursed),
+            _children: _.orderBy(componentLocations, 'value', 'desc'),
+            tooltip: {
+              header: component,
+              componentsStats: [
+                {
+                  name: component,
+                  value: _.sumBy(componentLocations, 'value'),
+                },
+              ],
+              value: _.sumBy(componentLocations, 'value'),
+            },
+          });
+        });
+        return {
+          count: data.length,
+          data: _.orderBy(data, 'value', 'desc'),
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
   @get('/disbursements/treemap')
   @response(200, DISBURSEMENTS_TREEMAP_RESPONSE)
   treemap(): object {
@@ -303,6 +387,7 @@ export class DisbursementsController {
           dataItems.forEach((item: any) => {
             componentLocations.push({
               name: item[TreemapFieldsMapping.locationName],
+              code: item[TreemapFieldsMapping.locationCode],
               value: item[TreemapFieldsMapping.disbursed],
               formattedValue: formatFinancialValue(
                 item[TreemapFieldsMapping.disbursed],
@@ -357,6 +442,108 @@ export class DisbursementsController {
                 disbursed,
                 signed: _.sumBy(
                   componentLocations,
+                  'tooltip.totalInvestments.signed',
+                ),
+              },
+              percValue: ((disbursed * 100) / committed).toString(),
+            },
+          });
+        });
+        return {
+          count: data.length,
+          data: _.orderBy(data, 'value', 'desc'),
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/disbursements/treemap/drilldown')
+  @response(200, DISBURSEMENTS_TREEMAP_RESPONSE)
+  treemapDrilldown(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      TreemapFieldsMapping.disbursementsTreemapDrilldownAggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.grantsNoCount}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const groupedDataByCountry = _.groupBy(
+          _.get(resp.data, TreemapFieldsMapping.dataPath, []),
+          TreemapFieldsMapping.locationName,
+        );
+        const data: DisbursementsTreemapDataItem[] = [];
+        Object.keys(groupedDataByCountry).forEach((location: string) => {
+          const dataItems = groupedDataByCountry[location];
+          const locationComponents: DisbursementsTreemapDataItem[] = [];
+          dataItems.forEach((item: any) => {
+            locationComponents.push({
+              name: item[TreemapFieldsMapping.component],
+              value: item[TreemapFieldsMapping.disbursed],
+              formattedValue: formatFinancialValue(
+                item[TreemapFieldsMapping.disbursed],
+              ),
+              color: '#70777E',
+              tooltip: {
+                header: location,
+                componentsStats: [
+                  {
+                    name: item[TreemapFieldsMapping.component],
+                    count: item.count,
+                    investment: item[TreemapFieldsMapping.disbursed],
+                  },
+                ],
+                totalInvestments: {
+                  committed: item[TreemapFieldsMapping.committed],
+                  disbursed: item[TreemapFieldsMapping.disbursed],
+                  signed: item[TreemapFieldsMapping.signed],
+                },
+                percValue: (
+                  (item[TreemapFieldsMapping.disbursed] * 100) /
+                  item[TreemapFieldsMapping.committed]
+                ).toString(),
+              },
+            });
+          });
+          const disbursed = _.sumBy(locationComponents, 'value');
+          const committed = _.sumBy(
+            locationComponents,
+            'tooltip.totalInvestments.committed',
+          );
+          data.push({
+            name: location,
+            color: '#DFE3E5',
+            value: disbursed,
+            formattedValue: formatFinancialValue(disbursed),
+            _children: _.orderBy(locationComponents, 'value', 'desc'),
+            tooltip: {
+              header: location,
+              componentsStats: [
+                {
+                  name: location,
+                  count: _.sumBy(
+                    locationComponents,
+                    'tooltip.componentsStats[0].count',
+                  ),
+                  investment: _.sumBy(locationComponents, 'value'),
+                },
+              ],
+              totalInvestments: {
+                committed,
+                disbursed,
+                signed: _.sumBy(
+                  locationComponents,
                   'tooltip.totalInvestments.signed',
                 ),
               },

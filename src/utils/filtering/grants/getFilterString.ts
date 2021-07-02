@@ -62,6 +62,13 @@ export function getFilterString(params: any, aggregationString?: string) {
     }${grantId}`;
   }
 
+  const barPeriod = _.get(params, 'barPeriod', null);
+  if (barPeriod) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.barPeriod}${
+      filtering.eq
+    }${barPeriod}`;
+  }
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.search.replace(

@@ -1,5 +1,6 @@
 export interface DisbursementsTreemapDataItem {
   name: string;
+  code?: string;
   value: number;
   formattedValue: string;
   color: string;
