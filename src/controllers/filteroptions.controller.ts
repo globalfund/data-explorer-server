@@ -213,26 +213,61 @@ export class FilteroptionsController {
       .then((resp: AxiosResponse) => {
         const rawData = _.get(resp.data, mappingPartnertypes.dataPath, []);
 
+        const groupedByPartnerType = _.groupBy(
+          rawData,
+          mappingPartnertypes.partnerType,
+        );
+
+        const options: FilterGroupOption[] = [];
+
+        Object.keys(groupedByPartnerType).forEach((partnerType: string) => {
+          const groupedBySubPartnerType = _.groupBy(
+            groupedByPartnerType[partnerType],
+            mappingPartnertypes.partnerSubType,
+          );
+          const subOptions: FilterGroupOption[] = [];
+          Object.keys(groupedBySubPartnerType).forEach(
+            (subPartnerType: string) => {
+              subOptions.push({
+                label:
+                  subPartnerType && subPartnerType !== 'null'
+                    ? subPartnerType
+                    : 'Not Classified',
+                value: _.get(
+                  groupedBySubPartnerType[subPartnerType][0],
+                  mappingPartnertypes.partnerSubTypeId,
+                  '',
+                ),
+                subOptions: _.orderBy(
+                  groupedBySubPartnerType[subPartnerType].map(
+                    (partner: any) => ({
+                      label: _.get(partner, mappingPartnertypes.partner, ''),
+                      value: _.get(partner, mappingPartnertypes.partnerId, ''),
+                    }),
+                  ),
+                  'label',
+                  'asc',
+                ),
+              });
+            },
+          );
+          options.push({
+            label:
+              partnerType && partnerType !== 'null'
+                ? partnerType
+                : 'Not Classified',
+            value: _.get(
+              groupedByPartnerType[partnerType][0],
+              mappingPartnertypes.partnerTypeId,
+              '',
+            ),
+            subOptions: _.orderBy(subOptions, 'label', 'asc'),
+          });
+        });
+
         return {
           name: 'Partner types',
-          options: _.orderBy(
-            rawData.map((item: any) => ({
-              label: _.get(item, mappingPartnertypes.label, ''),
-              value: _.get(item, mappingPartnertypes.value, ''),
-              subOptions: _.orderBy(
-                _.get(item, mappingPartnertypes.children, []).map(
-                  (child: any) => ({
-                    label: _.get(child, mappingPartnertypes.childLabel, ''),
-                    value: _.get(child, mappingPartnertypes.childValue, ''),
-                  }),
-                ),
-                'label',
-                'asc',
-              ),
-            })),
-            'label',
-            'asc',
-          ),
+          options: _.orderBy(options, 'label', 'asc'),
         };
       })
       .catch((error: AxiosError) => {

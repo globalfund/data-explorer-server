@@ -2,8 +2,9 @@
   "country": "geographicAreaCode_ISO3",
   "component": "componentName",
   "status": "grantAgreementStatusTypeName",
-  "partner": "principalRecipientName",
-  "partner_type": "principalRecipientClassificationName",
+  "partner": "principalRecipientId",
+  "partner_sub_type": "principalRecipientSubClassificationId",
+  "partner_type": "principalRecipientClassificationId",
   "grantId": "grantAgreementNumber",
   "barPeriod": "disbursementYear",
   "search": "contains(grantAgreementTitle,<value>)"

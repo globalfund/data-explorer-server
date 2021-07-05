@@ -1,8 +1,9 @@
 {
   "dataPath": "value",
-  "label": "implementerClassificationName",
-  "value": "implementerClassificationName",
-  "children": "members",
-  "childLabel": "implementerClassificationName",
-  "childValue": "implementerClassificationName"
+  "partner": "principalRecipientName",
+  "partnerId": "principalRecipientId",
+  "partnerSubType": "principalRecipientSubClassificationName",
+  "partnerSubTypeId": "principalRecipientSubClassificationId",
+  "partnerType": "principalRecipientClassificationName",
+  "partnerTypeId": "principalRecipientClassificationId"
 }
