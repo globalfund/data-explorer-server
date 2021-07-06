@@ -45,6 +45,16 @@ export function getFilterString(params: any, aggregationString?: string) {
   //   }(${partners.join(filtering.multi_param_separator)})`;
   // }
 
+  const partnerSubTypes = _.filter(
+    _.get(params, 'partnerSubTypes', '').split(','),
+    (type: string) => type.length > 0,
+  ).map((type: string) => `'${type}'`);
+  if (partnerSubTypes.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringBudgets.partner_sub_type
+    }${filtering.in}(${partnerSubTypes.join(filtering.multi_param_separator)})`;
+  }
+
   const partnerTypes = _.filter(
     _.get(params, 'partnerTypes', '').split(','),
     (type: string) => type.length > 0,

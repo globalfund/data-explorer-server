@@ -127,10 +127,14 @@ export class ResultsController {
               '[0].component',
               '',
             ),
-            geoLocations: groupedByIndicator[indicator].map((item: any) => ({
-              name: item.country,
-              value: item.value,
-            })),
+            geoLocations: _.orderBy(
+              groupedByIndicator[indicator].map((item: any) => ({
+                name: item.country,
+                value: item.value,
+              })),
+              'name',
+              'asc',
+            ),
           });
         });
 

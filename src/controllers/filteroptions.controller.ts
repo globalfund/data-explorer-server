@@ -88,48 +88,71 @@ export class FilteroptionsController {
             value: _.get(item1, mappingLocations.value, ''),
             subOptions:
               subOptions && subOptions.length > 0
-                ? subOptions.map((item2: any) => {
-                    const item2SubOptions = _.get(
-                      item2,
-                      mappingLocations.children,
-                      [],
-                    );
-                    return {
-                      label: _.get(item2, mappingLocations.label, ''),
-                      value: _.get(item2, mappingLocations.value, ''),
-                      subOptions:
-                        item2SubOptions && item2SubOptions.length > 0
-                          ? item2SubOptions.map((item3: any) => {
-                              const item3SubOptions = _.get(
-                                item3,
-                                mappingLocations.children,
-                                [],
-                              );
-                              return {
-                                label: _.get(item3, mappingLocations.label, ''),
-                                value: _.get(item3, mappingLocations.value, ''),
-                                subOptions:
-                                  item3SubOptions && item3SubOptions.length > 0
-                                    ? item3SubOptions.map((item4: any) => {
-                                        return {
-                                          label: _.get(
-                                            item4,
-                                            mappingLocations.label,
-                                            '',
-                                          ),
-                                          value: _.get(
-                                            item4,
-                                            mappingLocations.value,
-                                            '',
-                                          ),
-                                        };
-                                      })
-                                    : undefined,
-                              };
-                            })
-                          : undefined,
-                    };
-                  })
+                ? _.orderBy(
+                    subOptions.map((item2: any) => {
+                      const item2SubOptions = _.get(
+                        item2,
+                        mappingLocations.children,
+                        [],
+                      );
+                      return {
+                        label: _.get(item2, mappingLocations.label, ''),
+                        value: _.get(item2, mappingLocations.value, ''),
+                        subOptions:
+                          item2SubOptions && item2SubOptions.length > 0
+                            ? _.orderBy(
+                                item2SubOptions.map((item3: any) => {
+                                  const item3SubOptions = _.get(
+                                    item3,
+                                    mappingLocations.children,
+                                    [],
+                                  );
+                                  return {
+                                    label: _.get(
+                                      item3,
+                                      mappingLocations.label,
+                                      '',
+                                    ),
+                                    value: _.get(
+                                      item3,
+                                      mappingLocations.value,
+                                      '',
+                                    ),
+                                    subOptions:
+                                      item3SubOptions &&
+                                      item3SubOptions.length > 0
+                                        ? _.orderBy(
+                                            item3SubOptions.map(
+                                              (item4: any) => {
+                                                return {
+                                                  label: _.get(
+                                                    item4,
+                                                    mappingLocations.label,
+                                                    '',
+                                                  ),
+                                                  value: _.get(
+                                                    item4,
+                                                    mappingLocations.value,
+                                                    '',
+                                                  ),
+                                                };
+                                              },
+                                            ),
+                                            'label',
+                                            'asc',
+                                          )
+                                        : undefined,
+                                  };
+                                }),
+                                'label',
+                                'asc',
+                              )
+                            : undefined,
+                      };
+                    }),
+                    'label',
+                    'asc',
+                  )
                 : undefined,
           });
         });
@@ -171,7 +194,7 @@ export class FilteroptionsController {
         } else {
           return {
             name: 'Locations',
-            options: data,
+            options: _.orderBy(data, 'label', 'asc'),
           };
         }
       })

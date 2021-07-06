@@ -1,9 +1,9 @@
 {
   "country": "grantAgreementImplementationPeriod/grantAgreement/geographicArea/geographicAreaCode_ISO3",
-  "component": "grantAgreementImplementationPeriod/grantAgreement/component/componentName",
+  "component": "activityArea/activityAreaParent/activityAreaName",
   "status": "grantAgreementImplementationPeriod/implementationPeriodStatusType/programStatusTypeName",
-  "partner": "principalRecipientName",
+  "partner_sub_type": "implementerClassificationSubTypeId",
+  "partner_type": "implementerClassificationSubType/implementerClassificationParentId",
   "grantId": "grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber",
-  "IPnumber": "grantAgreementImplementationPeriod/implementationPeriodNumber",
-  "partner_type": "implementerClassificationSubType/implementerClassificationName"
+  "IPnumber": "grantAgreementImplementationPeriod/implementationPeriodNumber"
 }
