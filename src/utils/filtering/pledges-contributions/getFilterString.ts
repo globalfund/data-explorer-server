@@ -22,6 +22,16 @@ export function getFilterString(params: any, aggregationString?: string) {
     })`;
   }
 
+  const donorCategories = _.filter(
+    _.get(params, 'donorCategories', '').split(','),
+    (loc: string) => loc.length > 0,
+  ).map((donorCat: string) => `'${donorCat}'`);
+  if (donorCategories.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringPledgesContributions.donorCategory
+    }${filtering.in}(${donorCategories.join(filtering.multi_param_separator)})`;
+  }
+
   const periods = _.filter(
     _.get(params, 'periods', '').split(','),
     (period: string) => period.length > 0,

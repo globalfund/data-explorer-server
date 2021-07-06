@@ -191,20 +191,21 @@ export class PledgescontributionsController {
                 geoName: items[0].donor.geographicArea.geographicAreaName,
                 id: items[0].donorId,
                 amounts: [
-                  {
-                    label: 'Pledge',
-                    value: _.sumBy(
-                      pledges,
-                      PledgesContributionsGeoFieldsMapping.amount,
-                    ),
-                  },
-                  {
-                    label: 'Contribution',
-                    value: _.sumBy(
-                      contributions,
-                      PledgesContributionsGeoFieldsMapping.amount,
-                    ),
-                  },
+                  valueType === PledgesContributionsGeoFieldsMapping.pledge
+                    ? {
+                        label: 'Pledge',
+                        value: _.sumBy(
+                          pledges,
+                          PledgesContributionsGeoFieldsMapping.amount,
+                        ),
+                      }
+                    : {
+                        label: 'Contribution',
+                        value: _.sumBy(
+                          contributions,
+                          PledgesContributionsGeoFieldsMapping.amount,
+                        ),
+                      },
                 ],
               });
             } else {
@@ -258,20 +259,22 @@ export class PledgescontributionsController {
                         multiCoordinates ? multiCoordinates[0][1] : long,
                       ),
                       amounts: [
-                        {
-                          label: 'Pledge',
-                          value: _.sumBy(
-                            pledges,
-                            PledgesContributionsGeoFieldsMapping.amount,
-                          ),
-                        },
-                        {
-                          label: 'Contribution',
-                          value: _.sumBy(
-                            contributions,
-                            PledgesContributionsGeoFieldsMapping.amount,
-                          ),
-                        },
+                        valueType ===
+                        PledgesContributionsGeoFieldsMapping.pledge
+                          ? {
+                              label: 'Pledge',
+                              value: _.sumBy(
+                                pledges,
+                                PledgesContributionsGeoFieldsMapping.amount,
+                              ),
+                            }
+                          : {
+                              label: 'Contribution',
+                              value: _.sumBy(
+                                contributions,
+                                PledgesContributionsGeoFieldsMapping.amount,
+                              ),
+                            },
                       ],
                       subType,
                       d2hCoordinates: multiCoordinates,
