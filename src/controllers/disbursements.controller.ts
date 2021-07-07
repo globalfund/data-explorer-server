@@ -582,7 +582,7 @@ export class DisbursementsController {
       .all([
         axios.get(url),
         // TODO: check how to serve static geojson in-app
-        axios.get('https://v2.tgf.nyuki.io/static/simple.geo.json'),
+        axios.get('https://the.data.explorer.nyuki.io/static/simple.geo.json'),
       ])
       .then(
         axios.spread((...responses) => {
