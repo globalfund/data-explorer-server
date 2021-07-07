@@ -1,7 +1,7 @@
 [
   "value[]",
   {
-    "id": "reportingResultId",
+    "id": "reportingResultIndicatorId",
     "title": "reportingResultIndicatorName",
     "value": "reportingResultValue",
     "component": "componentName",

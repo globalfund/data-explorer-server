@@ -1,5 +1,5 @@
 {
   "defaultFilter": "$filter=reportingResultYear eq 2019",
   "defaultOrderBy": "reportingResultIndicatorName asc",
-  "defaultSelect": "$select=reportingResultId,reportingResultIndicatorName,reportingResultValue,componentName,geographicAreaName&$orderby=isTopThree desc&"
+  "defaultSelect": "$select=reportingResultIndicatorId,reportingResultIndicatorName,reportingResultValue,componentName,geographicAreaName&$orderby=isTopThree desc&"
 }
