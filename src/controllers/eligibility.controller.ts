@@ -96,9 +96,12 @@ export class EligibilityController {
     const aggregateByField =
       this.req.query.aggregateBy ??
       EligibilityFieldsMapping.aggregateByFields[0];
-    const nonAggregateByField = (
-      this.req.query.nonAggregateBy ??
-      EligibilityFieldsMapping.aggregateByFields[1]
+    const nonAggregateByField = (this.req.query.nonAggregateBy
+      ? this.req.query.nonAggregateBy
+      : this.req.query.aggregateBy ===
+        EligibilityFieldsMapping.aggregateByFields[0]
+      ? EligibilityFieldsMapping.aggregateByFields[1]
+      : EligibilityFieldsMapping.aggregateByFields[0]
     ).toString();
     const filterString = getFilterString(
       this.req.query,
