@@ -134,8 +134,12 @@ export class AllocationsController {
               rawData.map((item: any) => ({
                 name: _.get(
                   item,
-                  AllocationsDrilldownFieldsMapping.locationName,
-                  '',
+                  AllocationsDrilldownFieldsMapping.multicountry,
+                  _.get(
+                    item,
+                    AllocationsDrilldownFieldsMapping.locationName,
+                    '',
+                  ),
                 ),
                 value: _.get(item, AllocationsDrilldownFieldsMapping.amount, 0),
                 formattedValue: formatFinancialValue(
@@ -148,8 +152,12 @@ export class AllocationsController {
                     {
                       name: _.get(
                         item,
-                        AllocationsDrilldownFieldsMapping.locationName,
-                        '',
+                        AllocationsDrilldownFieldsMapping.multicountry,
+                        _.get(
+                          item,
+                          AllocationsDrilldownFieldsMapping.locationName,
+                          '',
+                        ),
                       ),
                       value: _.get(
                         item,
