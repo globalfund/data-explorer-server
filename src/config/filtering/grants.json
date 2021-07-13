@@ -1,5 +1,6 @@
 {
   "country": "geographicAreaCode_ISO3",
+  "multicountry": "multiCountryName",
   "component": "componentName",
   "status": "grantAgreementStatusTypeName",
   "partner": "principalRecipientId",

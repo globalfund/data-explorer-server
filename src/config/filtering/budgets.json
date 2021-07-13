@@ -1,5 +1,6 @@
 {
   "country": "grantAgreementImplementationPeriod/grantAgreement/geographicArea/geographicAreaCode_ISO3",
+  "multicountry": "grantAgreementImplementationPeriod/grantAgreement/multiCountry/multiCountryName",
   "component": "activityArea/activityAreaParent/activityAreaName",
   "status": "grantAgreementImplementationPeriod/implementationPeriodStatusType/programStatusTypeName",
   "partner_sub_type": "implementerClassificationSubTypeId",

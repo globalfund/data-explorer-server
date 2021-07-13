@@ -13,9 +13,11 @@ export function getDrilldownFilterString(
     (loc: string) => loc.length > 0,
   ).map((loc: string) => `'${loc}'`);
   if (locations.length > 0) {
-    str += `${filteringBudgets.country}${filtering.in}(${locations.join(
+    str += `(${filteringBudgets.country}${filtering.in}(${locations.join(
       filtering.multi_param_separator,
-    )})`;
+    )}) OR ${filteringBudgets.multicountry}${filtering.in}(${locations.join(
+      filtering.multi_param_separator,
+    )}))`;
   }
 
   const components = _.filter(

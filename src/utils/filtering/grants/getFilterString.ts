@@ -10,9 +10,11 @@ export function getFilterString(params: any, aggregationString?: string) {
     (loc: string) => loc.length > 0,
   ).map((loc: string) => `'${loc}'`);
   if (locations.length > 0) {
-    str += `${filteringGrants.country}${filtering.in}(${locations.join(
+    str += `(${filteringGrants.country}${filtering.in}(${locations.join(
       filtering.multi_param_separator,
-    )})`;
+    )}) OR ${filteringGrants.multicountry}${filtering.in}(${locations.join(
+      filtering.multi_param_separator,
+    )}))`;
   }
 
   const components = _.filter(

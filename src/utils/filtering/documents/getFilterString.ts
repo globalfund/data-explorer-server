@@ -32,6 +32,16 @@ export function getFilterString(params: any, defaultFilter?: string) {
     }${grantId}`;
   }
 
+  const multicountries = _.filter(
+    _.get(params, 'multicountries', '').split(','),
+    (loc: string) => loc.length > 0,
+  ).map((loc: string) => `'${loc}'`);
+  if (multicountries.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringDocuments.multicountry}${
+      filtering.in
+    }(${multicountries.join(filtering.multi_param_separator)})`;
+  }
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${filteringDocuments.search.replace(

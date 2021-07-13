@@ -1,14 +1,20 @@
 {
   "multiCountriesFilterString": "$filter=multiCountryComposition/any(composition: composition/geographicArea/geographicAreaCode_ISO3 eq '<location>')&$select=multiCountryName,multiCountryShortName",
+  "countriesFilterString": "$filter=multiCountryName eq '<location>'&$expand=multiCountryComposition($select=geographicArea;$expand=geographicArea($select=geographicAreaCode_ISO3,geographicAreaName))&$select=multiCountryComposition",
   "multiCountriesDataPath": "value",
+  "countriesDataPath": "value[0].multiCountryComposition",
   "multiCountryName": "multiCountryName",
   "multiCountryCode": "multiCountryShortName",
-  "locationFinancialAggregation": "$apply=<filterString>groupby((GeographicAreaName,PortfolioManager,PortfolioManagerEmailAddress),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed))",
+  "countryName": "geographicArea.geographicAreaName",
+  "countryCode": "geographicArea.geographicAreaCode_ISO3",
+  "locationFinancialAggregation": "$apply=<filterString>groupby((GeographicAreaName,GeographicAreaId,MultiCountryName,MultiCountryId,PortfolioManager,PortfolioManagerEmailAddress),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed))",
   "locationFinancialDataPath": "value[0]",
   "locationName": "geographicAreaName",
   "disbursed": "disbursed",
   "committed": "committed",
   "signed": "signed",
   "portfolioManager": "portfolioManager",
-  "portfolioManagerEmail": "portfolioManagerEmailAddress"
+  "portfolioManagerEmail": "portfolioManagerEmailAddress",
+  "multiCountryId": "multiCountryId",
+  "geoId": "geographicAreaId"
 }

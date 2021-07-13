@@ -38,12 +38,12 @@ export class LocationController {
         message: '"locations" parameter is required.',
       };
     }
-    const multicountriesUrl = `${
-      urls.multicountries
-    }/?${locationMappingFields.multiCountriesFilterString.replace(
-      '<location>',
-      locations.split(',')[0] as string,
-    )}`;
+    const location = locations.split(',')[0];
+    const multicountriesUrl = `${urls.multicountries}/?${locationMappingFields[
+      location.length > 3
+        ? 'countriesFilterString'
+        : 'multiCountriesFilterString'
+    ].replace('<location>', location as string)}`;
     const filterString = getFilterString(
       this.req.query,
       locationMappingFields.locationFinancialAggregation,
@@ -59,58 +59,107 @@ export class LocationController {
             locationMappingFields.multiCountriesDataPath,
             [],
           );
+          const countriesResp = _.get(
+            responses[0].data,
+            locationMappingFields.countriesDataPath,
+            [],
+          );
           const locationFinancialResp = _.get(
             responses[1].data,
             locationMappingFields.locationFinancialDataPath,
             {
               locationName: '',
+              multiCountryName: '',
               disbursed: 0,
               committed: 0,
               signed: 0,
               portfolioManager: '',
               portfolioManagerEmail: '',
+              geoId: '',
+              multiCountryId: '',
             },
           );
 
           return {
             data: [
               {
-                ...{
-                  locationName: _.get(
-                    locationFinancialResp,
-                    locationMappingFields.locationName,
-                    '',
-                  ),
-                  disbursed: _.get(
-                    locationFinancialResp,
-                    locationMappingFields.disbursed,
-                    0,
-                  ),
-                  committed: _.get(
-                    locationFinancialResp,
-                    locationMappingFields.committed,
-                    0,
-                  ),
-                  signed: _.get(
-                    locationFinancialResp,
-                    locationMappingFields.signed,
-                    0,
-                  ),
-                  portfolioManager: _.get(
-                    locationFinancialResp,
-                    locationMappingFields.portfolioManager,
-                    '',
-                  ),
-                  portfolioManagerEmail: _.get(
-                    locationFinancialResp,
-                    locationMappingFields.portfolioManagerEmail,
-                    '',
-                  ),
-                },
-                multicountries: multicountriesResp.map((mc: any) => ({
-                  name: _.get(mc, locationMappingFields.multiCountryName, ''),
-                  code: _.get(mc, locationMappingFields.multiCountryCode, ''),
-                })),
+                id: _.get(
+                  locationFinancialResp,
+                  location.length > 3
+                    ? locationMappingFields.multiCountryId
+                    : locationMappingFields.geoId,
+                  '',
+                ),
+                locationName: _.get(
+                  locationFinancialResp,
+                  location.length > 3
+                    ? locationMappingFields.multiCountryName
+                    : locationMappingFields.locationName,
+                  '',
+                ),
+                disbursed: _.get(
+                  locationFinancialResp,
+                  locationMappingFields.disbursed,
+                  0,
+                ),
+                committed: _.get(
+                  locationFinancialResp,
+                  locationMappingFields.committed,
+                  0,
+                ),
+                signed: _.get(
+                  locationFinancialResp,
+                  locationMappingFields.signed,
+                  0,
+                ),
+                portfolioManager: _.get(
+                  locationFinancialResp,
+                  locationMappingFields.portfolioManager,
+                  '',
+                ),
+                portfolioManagerEmail: _.get(
+                  locationFinancialResp,
+                  locationMappingFields.portfolioManagerEmail,
+                  '',
+                ),
+                multicountries:
+                  location.length > 3
+                    ? []
+                    : _.orderBy(
+                        multicountriesResp.map((mc: any) => ({
+                          name: _.get(
+                            mc,
+                            locationMappingFields.multiCountryName,
+                            '',
+                          ),
+                          code: _.get(
+                            mc,
+                            locationMappingFields.multiCountryName,
+                            '',
+                          ).replace(/\//g, '|'),
+                        })),
+                        'name',
+                        'asc',
+                      ),
+                countries:
+                  location.length > 3
+                    ? _.orderBy(
+                        countriesResp.map((loc: any) => ({
+                          name: _.get(
+                            loc,
+                            locationMappingFields.countryName,
+                            '',
+                          ),
+                          code: _.get(
+                            loc,
+                            locationMappingFields.countryCode,
+                            '',
+                          ),
+                        })),
+                        'name',
+                        'asc',
+                      )
+                    : [],
               },
             ],
           };

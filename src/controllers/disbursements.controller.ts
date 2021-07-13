@@ -832,7 +832,7 @@ export class DisbursementsController {
             }
             data.push({
               id: mc,
-              code: mc,
+              code: mc.replace(/\//g, '|'),
               geoName: mc,
               components: groupedByMulticountry[mc].map((item: any) => ({
                 name: _.get(

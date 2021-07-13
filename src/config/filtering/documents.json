@@ -2,5 +2,6 @@
   "country": "geographicAreaCode_ISO3",
   "component": "componentName",
   "grantId": "grantAgreementNumber",
+  "multicountry": "organizationId",
   "search": "(contains(processName,<value>) OR contains(componentName,<value>) OR contains(processWindow,<value>) OR contains(grantAgreementNumber,<value>) OR contains(geographicAreaName,<value>))"
 }

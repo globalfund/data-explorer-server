@@ -1,4 +1,5 @@
 {
   "country": "geographicArea/geographicAreaCode_ISO3",
-  "component": "component/componentName"
+  "component": "component/componentName",
+  "multicountry": "multiCountryName"
 }
