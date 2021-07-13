@@ -25,6 +25,16 @@ export function getFilterString(params: any, defaultFilter?: string) {
     }(${components.join(filtering.multi_param_separator)})`;
   }
 
+  const periods = _.filter(
+    _.get(params, 'periods', '').split(','),
+    (period: string) => period.length > 0,
+  ).map((period: string) => period);
+  if (periods.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringEligibility.period}${
+      filtering.in
+    }(${periods.join(filtering.multi_param_separator)})`;
+  }
+
   if (str.length > 0) {
     if (!defaultFilter) {
       str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;

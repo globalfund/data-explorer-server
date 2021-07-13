@@ -12,6 +12,7 @@ import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import EligibilityFieldsMapping from '../config/mapping/eligibility/dotsChart.json';
 import ScatterplotFieldsMapping from '../config/mapping/eligibility/scatterplot.json';
+import EligibilityYearsFieldsMapping from '../config/mapping/eligibility/years.json';
 import urls from '../config/urls/index.json';
 import {EligibilityDotDataItem} from '../interfaces/eligibilityDot';
 import {EligibilityScatterplotDataItem} from '../interfaces/eligibilityScatterplot';
@@ -103,10 +104,7 @@ export class EligibilityController {
       ? EligibilityFieldsMapping.aggregateByFields[1]
       : EligibilityFieldsMapping.aggregateByFields[0]
     ).toString();
-    const filterString = getFilterString(
-      this.req.query,
-      EligibilityFieldsMapping.defaultFilter,
-    );
+    const filterString = getFilterString(this.req.query);
     const params = querystring.stringify(
       {},
       '&',
@@ -151,6 +149,29 @@ export class EligibilityController {
         return {
           count: data.length,
           data,
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/eligibility/years')
+  @response(200, ELIGIBILITY_RESPONSE)
+  eligibilityYears(): object {
+    const url = `${urls.eligibility}/?${EligibilityYearsFieldsMapping.aggregation}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return {
+          data: _.get(
+            resp.data,
+            EligibilityYearsFieldsMapping.dataPath,
+            [],
+          ).map((item: any) =>
+            _.get(item, EligibilityYearsFieldsMapping.year, ''),
+          ),
         };
       })
       .catch((error: AxiosError) => {
