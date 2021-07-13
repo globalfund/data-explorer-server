@@ -21,5 +21,6 @@
   "filteroptionsstatus": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=groupby((grantAgreementStatusTypeName))",
   "filteroptionsstatus1": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreementImplementationPeriods?$apply=groupby((implementationPeriodStatusTypeName))",
   "filteroptionsdonors": "https://data-service.theglobalfund.org/v3.3/odata/Donors?$filter=donorName%20in%20(%27Public%20Sector%27,%27Private%20Sector%20%26%20Nongovernment%27,%20%27Affordable%20Medicines%20Facility%20-%20malaria%20(AMFm)%27,%20%27Debt2Health%27)&$expand=members($expand=members($expand=members,donorspatialshapes($expand=spatialshape),geographicArea($expand=geographicAreaspatialshapes($expand=spatialShape))),donorspatialshapes($expand=spatialshape),geographicArea($expand=geographicAreaspatialshapes($expand=spatialShape)))",
-  "filteroptionsreplenishmentperiods": "https://data-service.theglobalfund.org/v3.3/odata/replenishmentperiods"
+  "filteroptionsreplenishmentperiods": "https://data-service.theglobalfund.org/v3.3/odata/replenishmentperiods",
+  "multicountriescountriesdata": "https://data-service.theglobalfund.org/v3.3/odata/MultiCountries?$expand=MultiCountryComposition($select=GeographicArea;$expand=GeographicArea($select=GeographicAreaCode_ISO3))&$select=MultiCountryName,MultiCountryComposition"
 }

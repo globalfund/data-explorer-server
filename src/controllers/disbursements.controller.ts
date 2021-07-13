@@ -6,6 +6,8 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
+import center from '@turf/center';
+import {points, Position} from '@turf/helpers';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
@@ -19,10 +21,12 @@ import TreemapFieldsMapping from '../config/mapping/disbursements/treemap.json';
 import urls from '../config/urls/index.json';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {DisbursementsTreemapDataItem} from '../interfaces/disbursementsTreemap';
+import staticCountries from '../static-assets/countries.json';
 import {
   grantDetailGetFilterString,
   grantDetailTreemapGetFilterString,
 } from '../utils/filtering/disbursements/grantDetailGetFilterString';
+import {getGeoMultiCountriesFilterString} from '../utils/filtering/disbursements/multicountries/getFilterString';
 import {getFilterString} from '../utils/filtering/grants/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 
@@ -745,6 +749,118 @@ export class DisbursementsController {
             count: features.length,
             data: features,
             maxValue,
+          };
+        }),
+      )
+      .catch((error: AxiosError) => {
+        console.error(error.message);
+      });
+  }
+
+  @get('/disbursements/geomap/multicountries')
+  @response(200, DISBURSEMENTS_TIME_CYCLE_RESPONSE)
+  geomapMulticountries(): object {
+    const filterString = getGeoMultiCountriesFilterString(
+      this.req.query,
+      GeomapFieldsMapping.disbursementsMulticountryGeomapAggregation,
+      'GrantAgreement/MultiCountryId ne null',
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.grantPeriods}/?${params}${filterString}`;
+
+    return axios
+      .all([axios.get(url), axios.get(urls.multicountriescountriesdata)])
+      .then(
+        axios.spread((...responses) => {
+          const rawData = _.get(
+            responses[0].data,
+            GeomapFieldsMapping.dataPath,
+            [],
+          );
+          const mcGeoData = _.get(
+            responses[1].data,
+            GeomapFieldsMapping.dataPath,
+            [],
+          );
+          const data: any = [];
+          const groupedByMulticountry = _.groupBy(
+            rawData,
+            GeomapFieldsMapping.multicountry,
+          );
+          Object.keys(groupedByMulticountry).forEach((mc: string) => {
+            const fMCGeoItem = _.find(
+              mcGeoData,
+              (mcGeoItem: any) =>
+                _.get(
+                  mcGeoItem,
+                  GeomapFieldsMapping.geoDataMulticountry,
+                  '',
+                ) === mc,
+            );
+            let latitude = 0;
+            let longitude = 0;
+            if (fMCGeoItem) {
+              const coordinates: Position[] = [];
+              const composition = _.get(
+                fMCGeoItem,
+                GeomapFieldsMapping.multiCountryComposition,
+                [],
+              );
+              composition.forEach((item: any) => {
+                const iso3 = _.get(
+                  item,
+                  GeomapFieldsMapping.multiCountryCompositionItem,
+                  '',
+                );
+                const fCountry = _.find(staticCountries, {iso3: iso3});
+                if (fCountry) {
+                  coordinates.push([fCountry.longitude, fCountry.latitude]);
+                }
+              });
+              if (coordinates.length > 0) {
+                const lonlat = center(points(coordinates));
+                longitude = lonlat.geometry.coordinates[0];
+                latitude = lonlat.geometry.coordinates[1];
+              }
+            }
+            data.push({
+              id: mc,
+              code: mc,
+              geoName: mc,
+              components: groupedByMulticountry[mc].map((item: any) => ({
+                name: _.get(
+                  item,
+                  GeomapFieldsMapping.multicountryComponent,
+                  '',
+                ),
+                activitiesCount: _.get(item, GeomapFieldsMapping.count, 0),
+                value: _.get(item, GeomapFieldsMapping.disbursed, 0),
+              })),
+              disbursed: _.sumBy(
+                groupedByMulticountry[mc],
+                GeomapFieldsMapping.disbursed,
+              ),
+              committed: _.sumBy(
+                groupedByMulticountry[mc],
+                GeomapFieldsMapping.committed,
+              ),
+              signed: _.sumBy(
+                groupedByMulticountry[mc],
+                GeomapFieldsMapping.signed,
+              ),
+              latitude: latitude,
+              longitude: longitude,
+            });
+          });
+          return {
+            pins: data,
           };
         }),
       )
