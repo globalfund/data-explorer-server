@@ -499,8 +499,11 @@ export class DisbursementsController {
         );
         const data: DisbursementsTreemapDataItem[] = [];
         const countryKeys = Object.keys(groupedDataByCountry);
-        const multicountryKeys = Object.keys(groupedDataByMulticountry);
-        if (countryKeys.length > 1 && multicountryKeys.length === 0) {
+        const multicountryKeys = _.filter(
+          Object.keys(groupedDataByMulticountry),
+          (key: string) => key !== 'null',
+        );
+        if (multicountryKeys.length === 0) {
           countryKeys.forEach((location: string) => {
             const dataItems = groupedDataByCountry[location];
             const locationComponents: DisbursementsTreemapDataItem[] = [];
