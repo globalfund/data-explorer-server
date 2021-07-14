@@ -3,5 +3,5 @@
   "name": "componentName",
   "value": "reportingresultvalue",
   "description": "reportingResultIndicatorName",
-  "ResultStatsAggregation": "$apply=filter(isTopThree eq true AND reportingResultYear eq 2019<filterString>)/groupby((reportingresultindicatorid,reportingResultIndicatorName,componentId,componentName,reportingresultyear),aggregate(reportingresultvalue with sum as reportingresultvalue))"
+  "ResultStatsAggregation": "$apply=filter(isTopThree eq true<filterString>)/groupby((reportingresultindicatorid,reportingResultIndicatorName,componentId,componentName,reportingresultyear),aggregate(reportingresultvalue with sum as reportingresultvalue))"
 }

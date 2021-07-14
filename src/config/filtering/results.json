@@ -1,5 +1,6 @@
 {
   "country": "geographicAreaCode_ISO3",
   "component": "componentName",
-  "search": "contains(reportingResultIndicatorName,<value>)"
+  "search": "contains(reportingResultIndicatorName,<value>)",
+  "period": "reportingResultYear"
 }

@@ -9,10 +9,10 @@ import {
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
-// import {getPage} from '../config/filtering/utils';
 import resultsMap from '../config/mapping/results/index.json';
 import resultStatsMap from '../config/mapping/results/stats.json';
 import resultsUtils from '../config/mapping/results/utils.json';
+import ResultsYearsMappingFields from '../config/mapping/results/years.json';
 import urls from '../config/urls/index.json';
 import {ResultListItemModel} from '../interfaces/resultList';
 import {
@@ -89,24 +89,7 @@ export class ResultsController {
   @response(200, RESULTS_RESPONSE)
   results(): object {
     const mapper = mapTransform(resultsMap);
-    const filterString = getFilterString(
-      this.req.query,
-      resultsUtils.defaultFilter,
-    );
-    // const page = (this.req.query.page ?? '1').toString();
-    // const pageSize = (this.req.query.pageSize ?? '10').toString();
-    // const orderBy = this.req.query.orderBy ?? resultsUtils.defaultOrderBy;
-    // const params = querystring.stringify(
-    //   {
-    //     ...getPage(filtering.page, parseInt(page, 10), parseInt(pageSize, 10)),
-    //     [filtering.page_size]: pageSize,
-    //   },
-    //   '&',
-    //   filtering.param_assign_operator,
-    //   {
-    //     encodeURIComponent: (str: string) => str,
-    //   },
-    // );
+    const filterString = getFilterString(this.req.query);
     const url = `${urls.results}/?${resultsUtils.defaultSelect}${filterString}`;
 
     return axios
@@ -148,6 +131,27 @@ export class ResultsController {
       });
   }
 
+  @get('/results/years')
+  @response(200, RESULTS_RESPONSE)
+  resultYears(): object {
+    const url = `${urls.results}/?${ResultsYearsMappingFields.aggregation}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return {
+          data: _.get(
+            resp.data,
+            ResultsYearsMappingFields.dataPath,
+            [],
+          ).map((item: any) => _.get(item, ResultsYearsMappingFields.year, '')),
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
   @get('/results-stats')
   @response(200, RESULT_STATS_RESPONSE)
   resultStats(): object {
@@ -155,17 +159,6 @@ export class ResultsController {
       this.req.query,
       resultStatsMap.ResultStatsAggregation,
     );
-    // const params = querystring.stringify(
-    //   {
-    //     ...getPage(filtering.page, parseInt(page, 10), parseInt(pageSize, 10)),
-    //     [filtering.page_size]: pageSize,
-    //   },
-    //   '&',
-    //   filtering.param_assign_operator,
-    //   {
-    //     encodeURIComponent: (str: string) => str,
-    //   },
-    // );
     const url = `${urls.results}/?${filterString}`;
 
     return axios

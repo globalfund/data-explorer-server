@@ -25,6 +25,16 @@ export function getFilterString(params: any, defaultFilter?: string) {
     }(${components.join(filtering.multi_param_separator)})`;
   }
 
+  const periods = _.filter(
+    _.get(params, 'periods', '').split(','),
+    (period: string) => period.length > 0,
+  ).map((period: string) => period);
+  if (periods.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringResults.period}${
+      filtering.in
+    }(${periods.join(filtering.multi_param_separator)})`;
+  }
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${filteringResults.search.replace(
@@ -66,6 +76,16 @@ export function getFilterStringForStats(
     str += `${str.length > 0 ? ' AND ' : ''}${filteringResults.component}${
       filtering.in
     }(${components.join(filtering.multi_param_separator)})`;
+  }
+
+  const periods = _.filter(
+    _.get(params, 'periods', '').split(','),
+    (period: string) => period.length > 0,
+  ).map((period: string) => period);
+  if (periods.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringResults.period}${
+      filtering.in
+    }(${periods.join(filtering.multi_param_separator)})`;
   }
 
   if (str.length > 0) {
