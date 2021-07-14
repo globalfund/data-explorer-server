@@ -132,15 +132,17 @@ export class AllocationsController {
             color: '#DFE3E5',
             _children: _.orderBy(
               rawData.map((item: any) => ({
-                name: _.get(
-                  item,
-                  AllocationsDrilldownFieldsMapping.multicountry,
+                name:
+                  _.get(
+                    item,
+                    AllocationsDrilldownFieldsMapping.multicountry,
+                    null,
+                  ) ??
                   _.get(
                     item,
                     AllocationsDrilldownFieldsMapping.locationName,
                     '',
                   ),
-                ),
                 value: _.get(item, AllocationsDrilldownFieldsMapping.amount, 0),
                 formattedValue: formatFinancialValue(
                   _.get(item, AllocationsDrilldownFieldsMapping.amount, 0),
@@ -150,15 +152,17 @@ export class AllocationsController {
                   header: levelComponent,
                   componentsStats: [
                     {
-                      name: _.get(
-                        item,
-                        AllocationsDrilldownFieldsMapping.multicountry,
+                      name:
+                        _.get(
+                          item,
+                          AllocationsDrilldownFieldsMapping.multicountry,
+                          null,
+                        ) ??
                         _.get(
                           item,
                           AllocationsDrilldownFieldsMapping.locationName,
                           '',
                         ),
-                      ),
                       value: _.get(
                         item,
                         AllocationsDrilldownFieldsMapping.amount,
