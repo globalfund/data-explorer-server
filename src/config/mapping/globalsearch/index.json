@@ -28,7 +28,7 @@
       "type": "<type>",
       "link": "/grant/<code>/investments",
       "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$select=grantAgreementTitle,grantAgreementNumber,grantAgreementStatusTypeName&$filter=(<filterStr>)&$orderby=GrantAgreementStatusTypeName asc,GrantAgreementTitle asc",
-      "itemname": "",
+      "itemname": "<code> | <name>",
       "filterFields": [
         "GeographicAreaCode_ISO3",
         "GeographicAreaName",
@@ -83,7 +83,7 @@
         "GeographicAreaName",
         "ComponentName"
       ],
-      "filterTemplate": "contains(<field>,<value>)",
+      "filterTemplate": "contains(tolower(<field>),tolower(<value>))",
       "mappings": [
         "value[]",
         {
