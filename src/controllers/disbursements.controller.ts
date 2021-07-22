@@ -396,7 +396,7 @@ export class DisbursementsController {
               grantCode = item[TreemapFieldsMapping.multicountry];
             }
             componentGrants.push({
-              name: grantName,
+              name: `${grantName} | ${grantCode}`,
               code: grantCode,
               value: item[TreemapFieldsMapping.disbursed],
               formattedValue: formatFinancialValue(
