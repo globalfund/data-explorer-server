@@ -360,6 +360,115 @@ export class DisbursementsController {
       });
   }
 
+  @get('/location/disbursements/treemap')
+  @response(200, DISBURSEMENTS_TREEMAP_RESPONSE)
+  locationDetailTreemap(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      TreemapFieldsMapping.locationDisbursementsTreemapAggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.grantsNoCount}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const groupedDataByComponent = _.groupBy(
+          _.get(resp.data, TreemapFieldsMapping.dataPath, []),
+          TreemapFieldsMapping.component,
+        );
+        const data: DisbursementsTreemapDataItem[] = [];
+        Object.keys(groupedDataByComponent).forEach((component: string) => {
+          const dataItems = groupedDataByComponent[component];
+          const componentGrants: DisbursementsTreemapDataItem[] = [];
+          dataItems.forEach((item: any) => {
+            let grantName = item[TreemapFieldsMapping.grantName];
+            let grantCode = item[TreemapFieldsMapping.grantCode];
+            if (item[TreemapFieldsMapping.multicountry] !== null) {
+              grantName = item[TreemapFieldsMapping.multicountry];
+              grantCode = item[TreemapFieldsMapping.multicountry];
+            }
+            componentGrants.push({
+              name: grantName,
+              code: grantCode,
+              value: item[TreemapFieldsMapping.disbursed],
+              formattedValue: formatFinancialValue(
+                item[TreemapFieldsMapping.disbursed],
+              ),
+              color: '#70777E',
+              tooltip: {
+                header: component,
+                componentsStats: [
+                  {
+                    name: grantName,
+                    count: item.count,
+                    investment: item[TreemapFieldsMapping.disbursed],
+                  },
+                ],
+                totalInvestments: {
+                  committed: item[TreemapFieldsMapping.committed],
+                  disbursed: item[TreemapFieldsMapping.disbursed],
+                  signed: item[TreemapFieldsMapping.signed],
+                },
+                percValue: (
+                  (item[TreemapFieldsMapping.disbursed] * 100) /
+                  item[TreemapFieldsMapping.committed]
+                ).toString(),
+              },
+            });
+          });
+          const disbursed = _.sumBy(componentGrants, 'value');
+          const committed = _.sumBy(
+            componentGrants,
+            'tooltip.totalInvestments.committed',
+          );
+          data.push({
+            name: component,
+            color: '#DFE3E5',
+            value: disbursed,
+            formattedValue: formatFinancialValue(disbursed),
+            _children: _.orderBy(componentGrants, 'value', 'desc'),
+            tooltip: {
+              header: component,
+              componentsStats: [
+                {
+                  name: component,
+                  count: _.sumBy(
+                    componentGrants,
+                    'tooltip.componentsStats[0].count',
+                  ),
+                  investment: _.sumBy(componentGrants, 'value'),
+                },
+              ],
+              totalInvestments: {
+                committed,
+                disbursed,
+                signed: _.sumBy(
+                  componentGrants,
+                  'tooltip.totalInvestments.signed',
+                ),
+              },
+              percValue: ((disbursed * 100) / committed).toString(),
+            },
+          });
+        });
+        return {
+          count: data.length,
+          data: _.orderBy(data, 'value', 'desc'),
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
   @get('/disbursements/treemap')
   @response(200, DISBURSEMENTS_TREEMAP_RESPONSE)
   treemap(): object {
