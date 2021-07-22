@@ -11,6 +11,7 @@ import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import globalSearchMapping from '../config/mapping/globalsearch/index.json';
 import {SearchResultsTabModel} from '../interfaces/globalSearch';
+import {buildGlobalSearchFilterString} from '../utils/filtering/globalsearch';
 import {stringReplaceKeyValue} from '../utils/stringReplaceKeyValue';
 
 const GLOBAL_SEARCH_RESPONSE: ResponseObject = {
@@ -51,18 +52,28 @@ export class GlobalSearchController {
   @get('/global-search')
   @response(200, GLOBAL_SEARCH_RESPONSE)
   globalSearch(): object {
-    const keyword = (this.req.query.q ?? '').toString();
+    const keyword = (this.req.query.q ?? '').toString().trim();
     if (keyword.length === 0) {
       return {
         data: [],
         message: '"q" param is required.',
       };
     }
+    const keywords = keyword.split(' ');
     const calls = _.filter(
       globalSearchMapping.categories,
       (category: any) => category.url.length > 0,
     ).map((category: any) => {
-      return axios.get(category.url.replace(/<value>/g, `'${keyword}'`));
+      return axios.get(
+        category.url.replace(
+          '<filterStr>',
+          buildGlobalSearchFilterString(
+            category.filterFields,
+            category.filterTemplate,
+            keywords,
+          ),
+        ),
+      );
     });
     return axios
       .all(calls)
