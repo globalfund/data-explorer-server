@@ -12,6 +12,7 @@ import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import AllocationsDrilldownFieldsMapping from '../config/mapping/allocations/drilldown.json';
 import AllocationsFieldsMapping from '../config/mapping/allocations/index.json';
+import AllocationsPeriodsFieldsMapping from '../config/mapping/allocations/periods.json';
 import urls from '../config/urls/index.json';
 import {AllocationsTreemapDataItem} from '../interfaces/allocations';
 import {getFilterString} from '../utils/filtering/allocations/getFilterString';
@@ -82,6 +83,50 @@ export class AllocationsController {
               _.get(item, AllocationsFieldsMapping.component),
               '',
             ),
+          ),
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/allocations/periods')
+  @response(200, ALLOCATIONS_RESPONSE)
+  allocationsPeriods(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      AllocationsPeriodsFieldsMapping.aggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.allocations}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return {
+          data: _.get(
+            resp.data,
+            AllocationsPeriodsFieldsMapping.dataPath,
+            [],
+          ).map(
+            (item: any) =>
+              `${_.get(
+                item,
+                AllocationsPeriodsFieldsMapping.periodStart,
+                '',
+              )} - ${_.get(
+                item,
+                AllocationsPeriodsFieldsMapping.periodEnd,
+                '',
+              )}`,
           ),
         };
       })

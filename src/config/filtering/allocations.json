@@ -1,5 +1,7 @@
 {
   "country": "geographicArea/geographicAreaCode_ISO3",
   "component": "component/componentName",
-  "multicountry": "multiCountryName"
+  "multicountry": "multiCountryName",
+  "periodStart": "periodStartYear",
+  "periodEnd": "periodEndYear"
 }

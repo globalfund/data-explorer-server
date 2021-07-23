@@ -27,6 +27,25 @@ export function getFilterString(params: any, aggregationString?: string) {
     }(${components.join(filtering.multi_param_separator)})`;
   }
 
+  const periods = _.filter(
+    _.get(params, 'periods', '').split(','),
+    (period: string) => period.length > 0,
+  ).map((period: string) => period);
+  if (periods.length > 0) {
+    const startPeriods = periods.map((period: string) =>
+      period.split('-')[0].trim(),
+    );
+    const endPeriods = periods.map((period: string) =>
+      period.split('-')[1].trim(),
+    );
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringAllocations.periodStart
+    }${filtering.in}(${startPeriods.join(filtering.multi_param_separator)})`;
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringAllocations.periodEnd}${
+      filtering.in
+    }(${endPeriods.join(filtering.multi_param_separator)})`;
+  }
+
   str += `${
     str.length > 0 && _.get(params, 'levelParam', '').length > 0 ? ' AND ' : ''
   }${_.get(params, 'levelParam', '')}`;
