@@ -109,25 +109,44 @@
           "type": "Investment",
           "label": "Disbursements",
           "value": "Disbursements",
-          "link": "/viz/investments/disbursements"
+          "link": "/viz/investments/disbursements",
+          "terms": [
+            "financial",
+            "money"
+          ]
         },
         {
           "type": "Investment",
           "label": "Budget",
           "value": "Budget",
-          "link": "/viz/budgets/flow"
+          "link": "/viz/budgets/flow",
+          "terms": [
+            "financial",
+            "money",
+            "budgets"
+          ]
         },
         {
           "type": "Investment",
           "label": "Allocation",
           "value": "Allocation",
-          "link": "/viz/allocations"
+          "link": "/viz/allocations",
+          "terms": [
+            "financial",
+            "money",
+            "allocations"
+          ]
         },
         {
           "type": "Donor",
           "label": "Pledges & Contributions",
           "value": "Pledges & Contributions",
-          "link": "/viz/pledges-contributions/time-cycle"
+          "link": "/viz/pledges-contributions/time-cycle",
+          "terms": [
+            "financial",
+            "money",
+            "donors"
+          ]
         }
       ]
     },
@@ -142,7 +161,10 @@
           "type": "",
           "label": "Eligibility",
           "value": "Eligibility",
-          "link": "/viz/eligibility"
+          "link": "/viz/eligibility",
+          "terms": [
+            "eligibility"
+          ]
         }
       ]
     }

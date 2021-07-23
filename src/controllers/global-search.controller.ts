@@ -102,7 +102,13 @@ export class GlobalSearchController {
                         -1 ||
                       option.value
                         .toLowerCase()
-                        .indexOf(keyword.toLowerCase()) > -1,
+                        .indexOf(keyword.toLowerCase()) > -1 ||
+                      _.find(
+                        option.terms,
+                        (term: string) =>
+                          term.toLowerCase().indexOf(keyword.toLowerCase()) >
+                          -1,
+                      ),
                   );
             results.push({
               name: cat.name,
