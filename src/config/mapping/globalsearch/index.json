@@ -24,6 +24,28 @@
       "options": []
     },
     {
+      "name": "Donor(s)",
+      "type": "Donor",
+      "link": "/viz/pledges-contributions/time-cycle/?donors=<code>",
+      "url": "http://localhost:4200/filter-options/donors?q=<keyword>",
+      "itemname": "",
+      "filterFields": [
+        "GeographicAreaCode_ISO3",
+        "GeographicAreaName",
+        "ComponentName",
+        "GrantAgreementTitle"
+      ],
+      "filterTemplate": "contains(<field>,<value>)",
+      "mappings": [
+        "options[].subOptions",
+        {
+          "name": "label",
+          "code": "value"
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Grant(s)",
       "type": "<type>",
       "link": "/grant/<code>/investments",
@@ -99,7 +121,7 @@
       "options": []
     },
     {
-      "name": "Finance",
+      "name": "Datasets",
       "type": "",
       "link": "",
       "url": "",
@@ -107,8 +129,8 @@
       "options": [
         {
           "type": "Investment",
-          "label": "Disbursements",
-          "value": "Disbursements",
+          "label": "Disbursements Treemap",
+          "value": "Disbursements Treemap",
           "link": "/viz/investments/disbursements",
           "terms": [
             "financial",
@@ -117,13 +139,54 @@
         },
         {
           "type": "Investment",
-          "label": "Budget",
-          "value": "Budget",
+          "label": "Investments Time Cycle",
+          "value": "Investments Time Cycle",
+          "link": "/viz/investments/time-cycle",
+          "terms": [
+            "financial",
+            "money",
+            "time",
+            "cycle"
+          ]
+        },
+        {
+          "type": "Investment",
+          "label": "Investments Geomap",
+          "value": "Investments Geomap",
+          "link": "/viz/investments/geomap",
+          "terms": [
+            "financial",
+            "money",
+            "map",
+            "geo",
+            "geomap",
+            "countries",
+            "locations"
+          ]
+        },
+        {
+          "type": "Investment",
+          "label": "Budget Flow",
+          "value": "Budget Flow",
           "link": "/viz/budgets/flow",
           "terms": [
             "financial",
             "money",
-            "budgets"
+            "budgets",
+            "flow"
+          ]
+        },
+        {
+          "type": "Investment",
+          "label": "Budget Time Cycle",
+          "value": "Budget Time Cycle",
+          "link": "/viz/budgets/time-cycle",
+          "terms": [
+            "financial",
+            "money",
+            "budgets",
+            "time",
+            "cycle"
           ]
         },
         {
@@ -139,26 +202,33 @@
         },
         {
           "type": "Donor",
-          "label": "Pledges & Contributions",
-          "value": "Pledges & Contributions",
+          "label": "Pledges & Contributions Time Cycle",
+          "value": "Pledges & Contributions Time Cycle",
           "link": "/viz/pledges-contributions/time-cycle",
           "terms": [
             "financial",
             "money",
-            "donors"
+            "donors",
+            "time",
+            "cycle"
           ]
-        }
-      ]
-    },
-    {
-      "name": "Other(s)",
-      "type": "",
-      "link": "",
-      "url": "",
-      "mappings": [],
-      "options": [
+        },
         {
-          "type": "",
+          "type": "Donor",
+          "label": "Pledges & Contributions Geomap",
+          "value": "Pledges & Contributions Geomap",
+          "link": "/viz/pledges-contributions/geomap",
+          "terms": [
+            "financial",
+            "money",
+            "donors",
+            "geo",
+            "geomap",
+            "map"
+          ]
+        },
+        {
+          "type": "Other",
           "label": "Eligibility",
           "value": "Eligibility",
           "link": "/viz/eligibility",

@@ -359,6 +359,8 @@ export class FilteroptionsController {
   @get('/filter-options/donors')
   @response(200, FILTER_OPTIONS_RESPONSE)
   donors(): object {
+    const keyword = (this.req.query.q ?? '').toString().trim();
+    const keywords = keyword.split(' ');
     const url = urls.filteroptionsdonors;
 
     return axios
@@ -391,6 +393,14 @@ export class FilteroptionsController {
               });
             }
           });
+
+          if (keyword.length > 0) {
+            type.subOptions = _.filter(type.subOptions, (option: any) => {
+              return _.find(keywords, (k: string) => {
+                return option.label.toLowerCase().indexOf(k.toLowerCase()) > -1;
+              });
+            }) as FilterGroupOption[];
+          }
 
           options.push(type);
         });
