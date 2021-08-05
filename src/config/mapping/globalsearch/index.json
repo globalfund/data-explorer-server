@@ -26,7 +26,7 @@
     {
       "name": "Donor(s)",
       "type": "Donor",
-      "link": "/viz/pledges-contributions/time-cycle/?donors=<code>",
+      "link": "/viz/pledges-contributions/time-cycle?donors=<code>",
       "url": "http://localhost:4200/filter-options/donors?q=<keyword>",
       "itemname": "",
       "filterFields": [
