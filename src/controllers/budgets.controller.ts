@@ -6,6 +6,8 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
+import center from '@turf/center';
+import {points, Position} from '@turf/helpers';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
@@ -18,6 +20,7 @@ import urls from '../config/urls/index.json';
 import {BudgetsFlowData} from '../interfaces/budgetsFlow';
 import {BudgetsTimeCycleData} from '../interfaces/budgetsTimeCycle';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
+import staticCountries from '../static-assets/countries.json';
 import {getDrilldownFilterString} from '../utils/filtering/budgets/getDrilldownFilterString';
 import {getFilterString} from '../utils/filtering/budgets/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
@@ -532,6 +535,109 @@ export class BudgetsController {
       )
       .catch((error: AxiosError) => {
         console.error(error);
+      });
+  }
+
+  @get('/budgets/geomap/multicountries')
+  @response(200, BUDGETS_FLOW_RESPONSE)
+  geomapMulticountries(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      BudgetsGeomapFieldsMapping.aggregationMulticountry,
+      'grantAgreementImplementationPeriod/grantAgreement/multiCountry/multiCountryName ne null',
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.budgets}/?${params}${filterString}`;
+
+    return axios
+      .all([axios.get(url), axios.get(urls.multicountriescountriesdata)])
+      .then(
+        axios.spread((...responses) => {
+          const rawData = _.get(
+            responses[0].data,
+            BudgetsGeomapFieldsMapping.dataPath,
+            [],
+          );
+          const mcGeoData = _.get(
+            responses[1].data,
+            BudgetsGeomapFieldsMapping.dataPath,
+            [],
+          );
+          const data: any = [];
+          const groupedByMulticountry = _.groupBy(
+            rawData,
+            BudgetsGeomapFieldsMapping.multicountry,
+          );
+          Object.keys(groupedByMulticountry).forEach((mc: string) => {
+            const fMCGeoItem = _.find(
+              mcGeoData,
+              (mcGeoItem: any) =>
+                _.get(
+                  mcGeoItem,
+                  BudgetsGeomapFieldsMapping.geodatamulticountry,
+                  '',
+                ) === mc,
+            );
+            let latitude = 0;
+            let longitude = 0;
+            if (fMCGeoItem) {
+              const coordinates: Position[] = [];
+              const composition = _.get(
+                fMCGeoItem,
+                BudgetsGeomapFieldsMapping.multiCountryComposition,
+                [],
+              );
+              composition.forEach((item: any) => {
+                const iso3 = _.get(
+                  item,
+                  BudgetsGeomapFieldsMapping.multiCountryCompositionItem,
+                  '',
+                );
+                const fCountry = _.find(staticCountries, {iso3: iso3});
+                if (fCountry) {
+                  coordinates.push([fCountry.longitude, fCountry.latitude]);
+                }
+              });
+              if (coordinates.length > 0) {
+                const lonlat = center(points(coordinates));
+                longitude = lonlat.geometry.coordinates[0];
+                latitude = lonlat.geometry.coordinates[1];
+              }
+            }
+            data.push({
+              id: mc,
+              code: mc.replace(/\//g, '|'),
+              geoName: mc,
+              components: groupedByMulticountry[mc].map((item: any) => ({
+                name: _.get(
+                  item,
+                  BudgetsGeomapFieldsMapping.multicountryComponent,
+                  '',
+                ),
+                value: _.get(item, BudgetsGeomapFieldsMapping.amount, 0),
+              })),
+              latitude: latitude,
+              longitude: longitude,
+              value: _.sumBy(
+                groupedByMulticountry[mc],
+                BudgetsGeomapFieldsMapping.amount,
+              ),
+            });
+          });
+          return {
+            pins: data,
+          };
+        }),
+      )
+      .catch((error: AxiosError) => {
+        console.error(error.message, url);
       });
   }
 }

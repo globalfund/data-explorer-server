@@ -2,8 +2,12 @@ import _ from 'lodash';
 import filteringBudgets from '../../../config/filtering/budgets.json';
 import filtering from '../../../config/filtering/index.json';
 
-export function getFilterString(params: any, aggregationString?: string) {
-  let str = '';
+export function getFilterString(
+  params: any,
+  aggregationString?: string,
+  extraFilterString?: string,
+) {
+  let str = extraFilterString ?? '';
 
   const locations = _.filter(
     _.get(params, 'locations', '').split(','),
