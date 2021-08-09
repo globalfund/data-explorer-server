@@ -11,6 +11,7 @@ import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import AllocationsDrilldownFieldsMapping from '../config/mapping/allocations/drilldown.json';
+import AllocationsGeomapFieldsMapping from '../config/mapping/allocations/geomap.json';
 import AllocationsFieldsMapping from '../config/mapping/allocations/index.json';
 import AllocationsPeriodsFieldsMapping from '../config/mapping/allocations/periods.json';
 import urls from '../config/urls/index.json';
@@ -241,6 +242,167 @@ export class AllocationsController {
           data,
         };
       })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/allocations/geomap')
+  @response(200, ALLOCATIONS_RESPONSE)
+  geomap(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      AllocationsGeomapFieldsMapping.aggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.allocations}/?${params}${filterString}`;
+
+    return axios
+      .all([
+        axios.get(url),
+        // TODO: check how to serve static geojson in-app
+        axios.get('https://the.data.explorer.nyuki.io/static/simple.geo.json'),
+      ])
+      .then(
+        axios.spread((...responses) => {
+          const geoJSONData = responses[1].data.features;
+          const data: any = [];
+          const groupedDataByLocation = _.groupBy(
+            responses[0].data.value,
+            AllocationsGeomapFieldsMapping.locationCode,
+          );
+          Object.keys(groupedDataByLocation).forEach((iso3: string) => {
+            const dataItems = groupedDataByLocation[iso3];
+            const locationComponents: any = [];
+            dataItems.forEach((item: any) => {
+              locationComponents.push({
+                name: _.get(item, AllocationsGeomapFieldsMapping.component, ''),
+                value: item[AllocationsGeomapFieldsMapping.amount],
+              });
+            });
+            data.push({
+              code: iso3,
+              components: locationComponents,
+              value: _.sumBy(locationComponents, 'value'),
+            });
+          });
+          const maxValue: number = _.max(data.map((d: any) => d.value)) ?? 0;
+          let interval = 0;
+          if (maxValue) {
+            interval = maxValue / 13;
+          }
+          const intervals: number[] = [];
+          for (let i = 0; i < 13; i++) {
+            intervals.push(interval * i);
+          }
+          const features = geoJSONData.map((feature: any) => {
+            const fItem = _.find(data, {code: feature.id});
+            let itemValue = 0;
+            if (fItem) {
+              if (
+                (fItem.value < maxValue || fItem.value === maxValue) &&
+                (fItem.value >= intervals[11] || fItem.value === intervals[11])
+              ) {
+                itemValue = 12;
+              }
+              if (
+                (fItem.value < intervals[11] ||
+                  fItem.value === intervals[11]) &&
+                (fItem.value >= intervals[10] || fItem.value === intervals[10])
+              ) {
+                itemValue = 11;
+              }
+              if (
+                (fItem.value < intervals[10] ||
+                  fItem.value === intervals[10]) &&
+                (fItem.value >= intervals[9] || fItem.value === intervals[9])
+              ) {
+                itemValue = 10;
+              }
+              if (
+                (fItem.value < intervals[9] || fItem.value === intervals[9]) &&
+                (fItem.value >= intervals[8] || fItem.value === intervals[8])
+              ) {
+                itemValue = 9;
+              }
+              if (
+                (fItem.value < intervals[8] || fItem.value === intervals[8]) &&
+                (fItem.value >= intervals[7] || fItem.value === intervals[7])
+              ) {
+                itemValue = 8;
+              }
+              if (
+                (fItem.value < intervals[7] || fItem.value === intervals[7]) &&
+                (fItem.value >= intervals[6] || fItem.value === intervals[6])
+              ) {
+                itemValue = 7;
+              }
+              if (
+                (fItem.value < intervals[6] || fItem.value === intervals[6]) &&
+                (fItem.value >= intervals[5] || fItem.value === intervals[5])
+              ) {
+                itemValue = 6;
+              }
+              if (
+                (fItem.value < intervals[5] || fItem.value === intervals[5]) &&
+                (fItem.value >= intervals[4] || fItem.value === intervals[4])
+              ) {
+                itemValue = 5;
+              }
+              if (
+                (fItem.value < intervals[4] || fItem.value === intervals[4]) &&
+                (fItem.value >= intervals[3] || fItem.value === intervals[3])
+              ) {
+                itemValue = 4;
+              }
+              if (
+                (fItem.value < intervals[3] || fItem.value === intervals[3]) &&
+                (fItem.value >= intervals[2] || fItem.value === intervals[2])
+              ) {
+                itemValue = 3;
+              }
+              if (
+                (fItem.value < intervals[2] || fItem.value === intervals[2]) &&
+                (fItem.value >= intervals[1] || fItem.value === intervals[1])
+              ) {
+                itemValue = 2;
+              }
+              if (
+                (fItem.value < intervals[1] || fItem.value === intervals[1]) &&
+                (fItem.value >= intervals[0] || fItem.value === intervals[0])
+              ) {
+                itemValue = 1;
+              }
+            }
+            return {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                value: itemValue,
+                iso_a3: feature.id,
+                data: fItem
+                  ? {
+                      components: fItem.components,
+                      value: fItem.value,
+                    }
+                  : {},
+              },
+            };
+          });
+          return {
+            count: features.length,
+            data: features,
+            maxValue,
+          };
+        }),
+      )
       .catch((error: AxiosError) => {
         console.error(error);
       });

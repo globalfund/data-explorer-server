@@ -1,0 +1,7 @@
+{
+  "dataPath": "value",
+  "amount": "amount",
+  "component": "component.componentName",
+  "locationCode": "geographicArea.geographicAreaCode_ISO3",
+  "aggregation": "$apply=<filterString>groupby((geographicArea/geographicAreaCode_ISO3,component/componentName),aggregate(allocationAmount with sum as amount))"
+}
