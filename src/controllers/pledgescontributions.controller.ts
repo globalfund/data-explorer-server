@@ -14,6 +14,7 @@ import PledgesContributionsGeoFieldsMapping from '../config/mapping/pledgescontr
 import PledgesContributionsTimeCycleFieldsMapping from '../config/mapping/pledgescontributions/timeCycle.json';
 import PledgesContributionsTimeCycleDrilldownFieldsMapping from '../config/mapping/pledgescontributions/timeCycleDrilldown.json';
 import urls from '../config/urls/index.json';
+import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {FilterGroupOption} from '../interfaces/filters';
 import {PledgesContributionsTreemapDataItem} from '../interfaces/pledgesContributions';
 import {getFilterString} from '../utils/filtering/pledges-contributions/getFilterString';
@@ -519,6 +520,197 @@ export class PledgescontributionsController {
         ];
         return {
           data,
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/pledges-contributions/treemap')
+  @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
+  treemap(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      PledgesContributionsGeoFieldsMapping.pledgescontributionsGeoMapAggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const valueType = (
+      this.req.query.valueType ?? PledgesContributionsGeoFieldsMapping.pledge
+    ).toString();
+    const url = `${urls.pledgescontributions}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          PledgesContributionsGeoFieldsMapping.dataPath,
+          [],
+        );
+
+        const donorCountries = _.groupBy(
+          rawData,
+          PledgesContributionsGeoFieldsMapping.countryDonors,
+        );
+        const publicSectorCountries: BudgetsTreemapDataItem[] = [];
+        const nonCountrySectorDonors: BudgetsTreemapDataItem[] = [];
+
+        Object.keys(donorCountries).forEach((iso3: string) => {
+          if (iso3 !== 'undefined') {
+            const items = donorCountries[iso3];
+            const pledges = _.filter(items, {
+              [PledgesContributionsGeoFieldsMapping.indicator]:
+                PledgesContributionsGeoFieldsMapping.pledge,
+            });
+            const contributions = _.filter(items, {
+              [PledgesContributionsGeoFieldsMapping.indicator]:
+                PledgesContributionsGeoFieldsMapping.contribution,
+            });
+            publicSectorCountries.push({
+              // code: items[0].donorId,
+              name: items[0].donor.geographicArea.geographicAreaName,
+              value:
+                valueType === PledgesContributionsGeoFieldsMapping.pledge
+                  ? _.sumBy(
+                      pledges,
+                      PledgesContributionsGeoFieldsMapping.amount,
+                    )
+                  : _.sumBy(
+                      contributions,
+                      PledgesContributionsGeoFieldsMapping.amount,
+                    ),
+              formattedValue: formatFinancialValue(
+                valueType === PledgesContributionsGeoFieldsMapping.pledge
+                  ? _.sumBy(
+                      pledges,
+                      PledgesContributionsGeoFieldsMapping.amount,
+                    )
+                  : _.sumBy(
+                      contributions,
+                      PledgesContributionsGeoFieldsMapping.amount,
+                    ),
+              ),
+              color: '#DFE3E5',
+              tooltip: {
+                header: items[0].donor.geographicArea.geographicAreaName,
+                componentsStats: [
+                  {
+                    name: valueType,
+                    value:
+                      valueType === PledgesContributionsGeoFieldsMapping.pledge
+                        ? _.sumBy(
+                            pledges,
+                            PledgesContributionsGeoFieldsMapping.amount,
+                          )
+                        : _.sumBy(
+                            contributions,
+                            PledgesContributionsGeoFieldsMapping.amount,
+                          ),
+                  },
+                ],
+                value:
+                  valueType === PledgesContributionsGeoFieldsMapping.pledge
+                    ? _.sumBy(
+                        pledges,
+                        PledgesContributionsGeoFieldsMapping.amount,
+                      )
+                    : _.sumBy(
+                        contributions,
+                        PledgesContributionsGeoFieldsMapping.amount,
+                      ),
+              },
+            });
+          } else {
+            const nonPublicDonors = _.groupBy(
+              donorCountries[iso3],
+              PledgesContributionsGeoFieldsMapping.nonCountryDonors,
+            );
+            Object.keys(nonPublicDonors).forEach((donor: string) => {
+              // const donorData = nonPublicDonors[donor][0];
+
+              const pledges = _.filter(nonPublicDonors[donor], {
+                [PledgesContributionsGeoFieldsMapping.indicator]:
+                  PledgesContributionsGeoFieldsMapping.pledge,
+              });
+              const contributions = _.filter(nonPublicDonors[donor], {
+                [PledgesContributionsGeoFieldsMapping.indicator]:
+                  PledgesContributionsGeoFieldsMapping.contribution,
+              });
+              nonCountrySectorDonors.push({
+                // code: _.get(
+                //   donorData,
+                //   PledgesContributionsGeoFieldsMapping.donorId,
+                // ),
+                name: donor,
+                value:
+                  valueType === PledgesContributionsGeoFieldsMapping.pledge
+                    ? _.sumBy(
+                        pledges,
+                        PledgesContributionsGeoFieldsMapping.amount,
+                      )
+                    : _.sumBy(
+                        contributions,
+                        PledgesContributionsGeoFieldsMapping.amount,
+                      ),
+                formattedValue: formatFinancialValue(
+                  valueType === PledgesContributionsGeoFieldsMapping.pledge
+                    ? _.sumBy(
+                        pledges,
+                        PledgesContributionsGeoFieldsMapping.amount,
+                      )
+                    : _.sumBy(
+                        contributions,
+                        PledgesContributionsGeoFieldsMapping.amount,
+                      ),
+                ),
+                color: '#DFE3E5',
+                tooltip: {
+                  header: donor,
+                  componentsStats: [
+                    {
+                      name: valueType,
+                      value:
+                        valueType ===
+                        PledgesContributionsGeoFieldsMapping.pledge
+                          ? _.sumBy(
+                              pledges,
+                              PledgesContributionsGeoFieldsMapping.amount,
+                            )
+                          : _.sumBy(
+                              contributions,
+                              PledgesContributionsGeoFieldsMapping.amount,
+                            ),
+                    },
+                  ],
+                  value:
+                    valueType === PledgesContributionsGeoFieldsMapping.pledge
+                      ? _.sumBy(
+                          pledges,
+                          PledgesContributionsGeoFieldsMapping.amount,
+                        )
+                      : _.sumBy(
+                          contributions,
+                          PledgesContributionsGeoFieldsMapping.amount,
+                        ),
+                },
+              });
+            });
+          }
+        });
+
+        const data = [...publicSectorCountries, ...nonCountrySectorDonors];
+
+        return {
+          count: data.length,
+          data: _.orderBy(data, 'value', 'desc'),
         };
       })
       .catch((error: AxiosError) => {
