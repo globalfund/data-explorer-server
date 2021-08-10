@@ -8,6 +8,7 @@
     "processName": "processName",
     "processYear": "processYear",
     "processWindow": "processWindow",
+    "fileLanguage": "fileLanguage",
     "fileIndex": "fileIndex",
     "fileURL": "fileURL",
     "organizationId": "organizationId"
