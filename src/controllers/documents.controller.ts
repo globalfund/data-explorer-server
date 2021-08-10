@@ -114,12 +114,13 @@ export class DocumentsController {
                     if (item.component) title = `${title} ${item.component}`;
                     if (item.processYear && item.processWindow) {
                       title = `${title} - ${item.processYear} ${item.processWindow}`;
-                    } else if (item.fileLanguage) {
-                      title = `${title} - ${item.fileLanguage}`;
                     } else if (item.processYear) {
                       title = `${title} - ${item.processYear}`;
                     } else if (item.processWindow) {
                       title = `${title} - ${item.processWindow}`;
+                    }
+                    if (item.fileLanguage) {
+                      title = `${title} - ${item.fileLanguage}`;
                     }
                     return {
                       title,
