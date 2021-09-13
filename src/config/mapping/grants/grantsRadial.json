@@ -1,0 +1,17 @@
+{
+  "dataPath": "value",
+  "implementationPeriodsSelect": "$select=componentName,grantAgreementTitle,grantAgreementNumber,grantAgreementStatusTypeName,programStartDate,programEndDate,implementationPeriodStatusTypeName,implementationPeriodNumber,implementationPeriodStartDate,implementationPeriodEndDate,totalDisbursedAmount",
+  "grantAgreementsSelect": "$select=grantAgreementNumber,grantAgreementTitle,performanceRatingCode",
+  "title": "grantAgreementTitle",
+  "name": "grantAgreementNumber",
+  "start": "programStartDate",
+  "end": "programEndDate",
+  "value": "totalDisbursedAmount",
+  "component": "componentName",
+  "status": "grantAgreementStatusTypeName",
+  "ipNumber": "implementationPeriodNumber",
+  "ipStart": "implementationPeriodStartDate",
+  "ipEnd": "implementationPeriodEndDate",
+  "ipStatus": "implementationPeriodStatusTypeName",
+  "ipRating": "performanceRatingCode"
+}

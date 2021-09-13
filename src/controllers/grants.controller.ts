@@ -16,6 +16,7 @@ import grantDetailMap from '../config/mapping/grants/grantDetail.json';
 import grantDetailUtils from '../config/mapping/grants/grantDetail.utils.json';
 import grantPeriodInfoMap from '../config/mapping/grants/grantPeriodInfo.json';
 import grantPeriodsMap from '../config/mapping/grants/grantPeriods.json';
+import GrantsRadialMapping from '../config/mapping/grants/grantsRadial.json';
 import grantsMap from '../config/mapping/grants/index.json';
 import grantsUtils from '../config/mapping/grants/utils.json';
 import urls from '../config/urls/index.json';
@@ -191,6 +192,85 @@ export class GrantsController {
           ) as never[];
           return {
             data: res,
+          };
+        }),
+      )
+      .catch((error: AxiosError) => {
+        console.error(error);
+      });
+  }
+
+  @get('/grants/radial')
+  @response(200, GRANTS_RESPONSE)
+  grantsRadial(): object {
+    const filterString = getFilterString(this.req.query);
+    const grantsUrl = `${urls.grantsNoCount}/?${filterString}${GrantsRadialMapping.grantAgreementsSelect}`;
+    const periodsUrl = `${urls.vgrantPeriods}/?${filterString}${GrantsRadialMapping.implementationPeriodsSelect}`;
+
+    return axios
+      .all([axios.get(periodsUrl), axios.get(grantsUrl)])
+      .then(
+        axios.spread((...responses) => {
+          const periodsData = _.get(
+            responses[0].data,
+            GrantsRadialMapping.dataPath,
+            [],
+          );
+          const grantsData = _.get(
+            responses[1].data,
+            GrantsRadialMapping.dataPath,
+            [],
+          );
+          const groupedGrants = _.groupBy(
+            periodsData,
+            GrantsRadialMapping.name,
+          );
+          const results: any[] = [];
+          Object.keys(groupedGrants).forEach(grant => {
+            const items = groupedGrants[grant];
+            const fGrant = _.find(grantsData, {
+              grantAgreementNumber: grant,
+            });
+            results.push({
+              title: _.get(fGrant, GrantsRadialMapping.title, ''),
+              name: _.get(items[0], GrantsRadialMapping.name, ''),
+              years: [
+                parseInt(
+                  _.get(items[0], GrantsRadialMapping.start, '').slice(0, 4),
+                  10,
+                ),
+                parseInt(
+                  _.get(items[0], GrantsRadialMapping.end, '').slice(0, 4),
+                  10,
+                ),
+              ],
+              value: _.sumBy(items, GrantsRadialMapping.value),
+              component: _.get(items[0], GrantsRadialMapping.component, ''),
+              status: _.get(items[0], GrantsRadialMapping.status, ''),
+              rating: 'None',
+              implementationPeriods: _.sortBy(
+                items.map(item => ({
+                  name: _.get(item, GrantsRadialMapping.ipNumber, ''),
+                  years: [
+                    parseInt(
+                      _.get(item, GrantsRadialMapping.ipStart, '').slice(0, 4),
+                      10,
+                    ),
+                    parseInt(
+                      _.get(item, GrantsRadialMapping.ipEnd, '').slice(0, 4),
+                      10,
+                    ),
+                  ],
+                  value: _.get(item, GrantsRadialMapping.value, ''),
+                  status: _.get(item, GrantsRadialMapping.ipStatus, ''),
+                  rating: _.get(item, GrantsRadialMapping.ipRating, 'None'),
+                })),
+                'name',
+              ),
+            });
+          });
+          return {
+            data: results,
           };
         }),
       )
