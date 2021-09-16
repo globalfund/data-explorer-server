@@ -24,6 +24,30 @@
       "options": []
     },
     {
+      "name": "Partner(s)",
+      "type": "Partner",
+      "link": "/partner/<code>/investments",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((PrincipalRecipientId,PrincipalRecipientName),aggregate(GrantAgreementId with countdistinct as count))&$orderby=count desc",
+      "itemname": "",
+      "filterFields": [
+        "GeographicAreaCode_ISO3",
+        "GeographicAreaName",
+        "ComponentName",
+        "GrantAgreementTitle",
+        "PrincipalRecipientName"
+      ],
+      "filterTemplate": "contains(<field>,<value>)",
+      "mappings": [
+        "value[]",
+        {
+          "name": "principalRecipientName",
+          "code": "principalRecipientId",
+          "count": "count"
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Donor(s)",
       "type": "Donor",
       "link": "/viz/pledges-contributions/time-cycle?donors=<code>",
