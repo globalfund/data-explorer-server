@@ -41,15 +41,15 @@ export function getFilterString(
     }(${statuses.join(filtering.multi_param_separator)})`;
   }
 
-  // const partners = _.filter(
-  //   _.get(params, 'partners', '').split(','),
-  //   (partner: string) => partner.length > 0,
-  // ).map((partner: string) => `'${partner}'`);
-  // if (partners.length > 0) {
-  //   str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.partner}${
-  //     filtering.in
-  //   }(${partners.join(filtering.multi_param_separator)})`;
-  // }
+  const partners = _.filter(
+    _.get(params, 'partners', '').split(','),
+    (partner: string) => partner.length > 0,
+  ).map((partner: string) => `'${partner}'`);
+  if (partners.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.partner}${
+      filtering.in
+    }(${partners.join(filtering.multi_param_separator)})`;
+  }
 
   const partnerSubTypes = _.filter(
     _.get(params, 'partnerSubTypes', '').split(','),

@@ -5,6 +5,7 @@
   "status": "grantAgreementImplementationPeriod/implementationPeriodStatusType/programStatusTypeName",
   "partner_sub_type": "implementerClassificationSubTypeId",
   "partner_type": "implementerClassificationSubType/implementerClassificationParentId",
+  "partner": "grantAgreementImplementationPeriod/grantAgreement/principalRecipientId",
   "grantId": "grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber",
   "IPnumber": "grantAgreementImplementationPeriod/implementationPeriodNumber"
 }

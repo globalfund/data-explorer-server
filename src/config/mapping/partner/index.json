@@ -1,0 +1,5 @@
+{
+  "dataPath": "value",
+  "url": "$select=principalRecipientName&$filter=<filterString>&$top=1",
+  "partnerName": "[0].principalRecipientName"
+}

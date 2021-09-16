@@ -1,11 +1,8 @@
 import _ from 'lodash';
-import filteringBudgets from '../../../config/filtering/budgets.json';
+import filteringGrants from '../../../config/filtering/grants.json';
 import filtering from '../../../config/filtering/index.json';
 
-export function getDrilldownFilterString(
-  params: any,
-  aggregationString?: string,
-) {
+export function getFilterString(params: any, aggregationString?: string) {
   let str = '';
 
   const locations = _.filter(
@@ -13,9 +10,9 @@ export function getDrilldownFilterString(
     (loc: string) => loc.length > 0,
   ).map((loc: string) => `'${loc}'`);
   if (locations.length > 0) {
-    str += `(${filteringBudgets.country}${filtering.in}(${locations.join(
+    str += `(${filteringGrants.country}${filtering.in}(${locations.join(
       filtering.multi_param_separator,
-    )}) OR ${filteringBudgets.multicountry}${filtering.in}(${locations.join(
+    )}) OR ${filteringGrants.multicountry}${filtering.in}(${locations.join(
       filtering.multi_param_separator,
     )}))`;
   }
@@ -25,7 +22,7 @@ export function getDrilldownFilterString(
     (comp: string) => comp.length > 0,
   ).map((comp: string) => `'${comp}'`);
   if (components.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.component}${
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.component}${
       filtering.in
     }(${components.join(filtering.multi_param_separator)})`;
   }
@@ -35,7 +32,7 @@ export function getDrilldownFilterString(
     (stat: string) => stat.length > 0,
   ).map((stat: string) => `'${stat}'`);
   if (statuses.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.status}${
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.status}${
       filtering.in
     }(${statuses.join(filtering.multi_param_separator)})`;
   }
@@ -45,9 +42,19 @@ export function getDrilldownFilterString(
     (partner: string) => partner.length > 0,
   ).map((partner: string) => `'${partner}'`);
   if (partners.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.partner}${
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.partner}${
       filtering.in
     }(${partners.join(filtering.multi_param_separator)})`;
+  }
+
+  const partnerSubTypes = _.filter(
+    _.get(params, 'partnerSubTypes', '').split(','),
+    (type: string) => type.length > 0,
+  ).map((type: string) => `'${type}'`);
+  if (partnerSubTypes.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringGrants.partner_sub_type
+    }${filtering.in}(${partnerSubTypes.join(filtering.multi_param_separator)})`;
   }
 
   const partnerTypes = _.filter(
@@ -55,39 +62,36 @@ export function getDrilldownFilterString(
     (type: string) => type.length > 0,
   ).map((type: string) => `'${type}'`);
   if (partnerTypes.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.partner_type}${
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.partner_type}${
       filtering.in
     }(${partnerTypes.join(filtering.multi_param_separator)})`;
   }
 
   const grantId = _.get(params, 'grantId', null);
   if (grantId) {
-    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.grantId}${
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.grantId}${
       filtering.eq
     }${grantId}`;
   }
 
-  const IPnumber = _.get(params, 'IPnumber', null);
-  if (IPnumber) {
-    str += `${str.length > 0 ? ' AND ' : ''}${filteringBudgets.IPnumber}${
+  const barPeriod = _.get(params, 'barPeriod', null);
+  if (barPeriod) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.barPeriod}${
       filtering.eq
-    }${IPnumber}`;
+    }${barPeriod}`;
   }
 
-  str += `${str.length > 0 ? ' AND ' : ''}${_.get(params, 'levelParam', '')}`;
+  const search = _.get(params, 'q', '');
+  if (search.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.search.replace(
+      '<value>',
+      `'${search}'`,
+    )}`;
+  }
 
   if (str.length > 0) {
-    str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;
     if (aggregationString) {
-      str = aggregationString.replace(
-        '<filterString>',
-        `${str
-          .replace(
-            `${filtering.filter_operator}${filtering.param_assign_operator}`,
-            'filter(',
-          )
-          .replace('&', ')/')}`,
-      );
+      str = aggregationString.replace('<filterString>', str);
     }
   } else if (aggregationString) {
     str = aggregationString.replace('<filterString>', '');
