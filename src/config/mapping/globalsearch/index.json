@@ -3,7 +3,7 @@
     {
       "name": "Location(s)",
       "type": "Country",
-      "link": "/location/<code>/investments",
+      "link": "/location/<code>/overview",
       "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((GeographicAreaCode_ISO3,GeographicAreaName),aggregate(GrantAgreementId with countdistinct as count))&$orderby=count desc",
       "itemname": "",
       "filterFields": [
@@ -72,7 +72,7 @@
     {
       "name": "Grant(s)",
       "type": "<type>",
-      "link": "/grant/<code>/investments",
+      "link": "/grant/<code>/1/overview",
       "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$select=grantAgreementTitle,grantAgreementNumber,grantAgreementStatusTypeName&$filter=(<filterStr>)&$orderby=GrantAgreementStatusTypeName asc,GrantAgreementTitle asc",
       "itemname": "<code> | <name>",
       "filterFields": [
