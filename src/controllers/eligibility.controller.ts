@@ -207,18 +207,24 @@ export class EligibilityController {
           apiData,
           ScatterplotFieldsMapping.aggregateByField,
         );
+        const years: number[] = _.sortBy(
+          _.uniq(
+            Object.keys(_.groupBy(apiData, ScatterplotFieldsMapping.year)),
+          ).map((key: string) => parseInt(key, 10)),
+        );
+        years.push(years[years.length - 1] + 1);
+        years.unshift(years[0] - 1);
         const data: {id: string; data: EligibilityScatterplotDataItem[]}[] = [
           {
-            id: ' ',
-            data: [
-              {
-                x: 2002,
-                diseaseBurden: 0,
-                incomeLevel: 0,
-                eligibility: 'Not Eligible',
-                y: ' ',
-              },
-            ],
+            id: 'dummy1',
+            data: years.map((year: number) => ({
+              x: year,
+              diseaseBurden: 0,
+              incomeLevel: 0,
+              eligibility: 'Not Eligible',
+              y: 'dummy1',
+              invisible: true,
+            })),
           },
         ];
 
@@ -274,17 +280,32 @@ export class EligibilityController {
           });
         });
 
+        data.forEach((item: any, index: number) => {
+          years.forEach((year: number) => {
+            if (!_.find(item.data, {x: year})) {
+              data[index].data.push({
+                y: item.data[0].y,
+                x: year,
+                diseaseBurden: 0,
+                incomeLevel: 0,
+                eligibility: 'Not Eligible',
+                invisible: true,
+              });
+            }
+          });
+          data[index].data = _.orderBy(data[index].data, 'x', 'asc');
+        });
+
         data.push({
-          id: '',
-          data: [
-            {
-              x: 2002,
-              diseaseBurden: 0,
-              incomeLevel: 0,
-              eligibility: 'Not Eligible',
-              y: '',
-            },
-          ],
+          id: 'dummy2',
+          data: years.map((year: number) => ({
+            x: year,
+            y: 'dummy2',
+            diseaseBurden: 0,
+            incomeLevel: 0,
+            eligibility: 'Not Eligible',
+            invisible: true,
+          })),
         });
 
         return {

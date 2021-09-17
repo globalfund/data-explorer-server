@@ -5,4 +5,5 @@ export interface EligibilityScatterplotDataItem {
   diseaseBurden: number;
   allocationCycleName?: string | null;
   eligibility: 'Eligible' | 'Not Eligible' | 'Transition Funding';
+  invisible?: boolean;
 }
