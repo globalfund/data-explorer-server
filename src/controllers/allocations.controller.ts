@@ -196,7 +196,7 @@ export class AllocationsController {
                 formattedValue: formatFinancialValue(
                   _.get(item, AllocationsDrilldownFieldsMapping.amount, 0),
                 ),
-                color: '#70777E',
+                color: '#595C70',
                 tooltip: {
                   header: levelComponent,
                   componentsStats: [

@@ -4,13 +4,13 @@
   "amount": "amount",
   "component": "activityArea.activityAreaParent.activityAreaName",
   "componentColors": {
-    "HIV": "#70777E",
-    "Tuberculosis": "#252C34",
-    "Malaria": "#495057",
-    "RSSH": "#ADB5BD",
-    "Multicomponent": "#373D43",
-    "Other": "#868E96",
-    "Emergency Response": "#98A1AA"
+    "HIV": "#252C34",
+    "Tuberculosis": "#595C70",
+    "Malaria": "#B2B2B2",
+    "RSSH": "#A598F3",
+    "Multicomponent": "#BFCFEE",
+    "Other": "#CDD4DF",
+    "Emergency Response": "#2A3886"
   },
   "budgetsTimeCycleAggregation": "$apply=<filterString>groupby((activityArea/activityAreaParent/activityAreaName,budgetPeriodStartYear),aggregate(budgetAmount with sum as amount))"
 }

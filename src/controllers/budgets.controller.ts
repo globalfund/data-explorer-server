@@ -120,6 +120,7 @@ export class BudgetsController {
               BudgetsFlowFieldsMapping.costCategory,
               '',
             ),
+            component: _.get(item, BudgetsFlowFieldsMapping.component, ''),
           }));
         }
         const totalBudget = _.sumBy(formattedRawData, 'amount');
@@ -129,18 +130,67 @@ export class BudgetsController {
         // 4th column
         const costCategoryGroupBy = _.groupBy(formattedRawData, 'costCategory');
         Object.keys(costCategoryGroupBy).forEach(costCategory => {
+          const groupedByTotalBudget = _.sumBy(
+            costCategoryGroupBy[costCategory],
+            'amount',
+          );
+          const groupedByComponents = _.groupBy(
+            costCategoryGroupBy[costCategory],
+            'component',
+          );
           data.nodes.push({
             id: costCategory,
             filterStr: `budgetCategory/budgetCategoryName eq '${costCategoryGroupBy[costCategory][0].rawCostCategory}'`,
+            components: _.sortBy(Object.keys(groupedByComponents)).map(
+              componentKey => {
+                const compValue = _.sumBy(
+                  groupedByComponents[componentKey],
+                  'amount',
+                );
+                return {
+                  id: componentKey,
+                  color: _.get(
+                    BudgetsFlowFieldsMapping.componentColors,
+                    componentKey,
+                    '',
+                  ),
+                  value: compValue,
+                  height: (compValue * 100) / groupedByTotalBudget,
+                };
+              },
+            ),
           });
         });
 
         // 3rd column
         const level2GroupBy = _.groupBy(formattedRawData, 'level2');
         Object.keys(level2GroupBy).forEach(level2 => {
+          const groupedByTotalBudget = _.sumBy(level2GroupBy[level2], 'amount');
+          const groupedByComponents = _.groupBy(
+            level2GroupBy[level2],
+            'component',
+          );
           data.nodes.push({
             id: level2,
             filterStr: `budgetCategory/budgetCategoryParent/budgetCategoryName eq '${level2}'`,
+            components: _.sortBy(Object.keys(groupedByComponents)).map(
+              componentKey => {
+                const compValue = _.sumBy(
+                  groupedByComponents[componentKey],
+                  'amount',
+                );
+                return {
+                  id: componentKey,
+                  color: _.get(
+                    BudgetsFlowFieldsMapping.componentColors,
+                    componentKey,
+                    '',
+                  ),
+                  value: compValue,
+                  height: (compValue * 100) / groupedByTotalBudget,
+                };
+              },
+            ),
           });
           level2GroupBy[level2].forEach(item => {
             const foundIndex = _.findIndex(
@@ -164,9 +214,32 @@ export class BudgetsController {
         // 2nd column
         const level1GroupBy = _.groupBy(formattedRawData, 'level1');
         Object.keys(level1GroupBy).forEach(level1 => {
+          const groupedByTotalBudget = _.sumBy(level1GroupBy[level1], 'amount');
+          const groupedByComponents = _.groupBy(
+            level1GroupBy[level1],
+            'component',
+          );
           data.nodes.push({
             id: level1,
             filterStr: `budgetCategory/budgetCategoryParent/budgetCategoryParent/budgetCategoryName eq '${level1}'`,
+            components: _.sortBy(Object.keys(groupedByComponents)).map(
+              componentKey => {
+                const compValue = _.sumBy(
+                  groupedByComponents[componentKey],
+                  'amount',
+                );
+                return {
+                  id: componentKey,
+                  color: _.get(
+                    BudgetsFlowFieldsMapping.componentColors,
+                    componentKey,
+                    '',
+                  ),
+                  value: compValue,
+                  height: (compValue * 100) / groupedByTotalBudget,
+                };
+              },
+            ),
           });
           level1GroupBy[level1].forEach(item => {
             const foundIndex = _.findIndex(
@@ -190,10 +263,30 @@ export class BudgetsController {
           });
         });
 
+        const groupedByComponents = _.groupBy(formattedRawData, 'component');
+
         // 1st column
         data.nodes.push({
           id: 'Budgets',
           filterStr: 'activityArea/activityAreaParent/activityAreaName ne null',
+          components: _.sortBy(Object.keys(groupedByComponents)).map(
+            componentKey => {
+              const compValue = _.sumBy(
+                groupedByComponents[componentKey],
+                'amount',
+              );
+              return {
+                id: componentKey,
+                color: _.get(
+                  BudgetsFlowFieldsMapping.componentColors,
+                  componentKey,
+                  '',
+                ),
+                value: compValue,
+                height: (compValue * 100) / totalBudget,
+              };
+            },
+          ),
         });
 
         data.nodes = _.uniqBy(data.nodes, 'id');
@@ -331,7 +424,7 @@ export class BudgetsController {
               formattedValue: formatFinancialValue(
                 item[BudgetsFlowDrilldownFieldsMapping.amount],
               ),
-              color: '#70777E',
+              color: '#595C70',
               tooltip: {
                 header: component,
                 componentsStats: [

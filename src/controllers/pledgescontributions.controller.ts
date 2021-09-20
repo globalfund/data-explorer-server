@@ -106,8 +106,8 @@ export class PledgescontributionsController {
                 PledgesContributionsTimeCycleFieldsMapping.amount,
                 0,
               ),
-              pledgeColor: '#868E96',
-              contributionColor: '#495057',
+              pledgeColor: '#BFCFEE',
+              contributionColor: '#252C34',
             });
           },
         );
@@ -479,7 +479,7 @@ export class PledgescontributionsController {
                     0,
                   ),
                 ),
-                color: '#70777E',
+                color: '#595C70',
                 tooltip: {
                   header: levelComponent,
                   componentsStats: [

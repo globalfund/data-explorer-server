@@ -318,7 +318,7 @@ export class DisbursementsController {
               formattedValue: formatFinancialValue(
                 item[TimeCycleDrilldownFieldsMapping.disbursed],
               ),
-              color: '#70777E',
+              color: '#595C70',
               tooltip: {
                 header: component,
                 componentsStats: [
@@ -402,7 +402,7 @@ export class DisbursementsController {
               formattedValue: formatFinancialValue(
                 item[TreemapFieldsMapping.disbursed],
               ),
-              color: '#70777E',
+              color: '#595C70',
               tooltip: {
                 header: component,
                 componentsStats: [
@@ -511,7 +511,7 @@ export class DisbursementsController {
               formattedValue: formatFinancialValue(
                 item[TreemapFieldsMapping.disbursed],
               ),
-              color: '#70777E',
+              color: '#595C70',
               tooltip: {
                 header: component,
                 componentsStats: [
@@ -623,7 +623,7 @@ export class DisbursementsController {
                 formattedValue: formatFinancialValue(
                   item[TreemapFieldsMapping.disbursed],
                 ),
-                color: '#70777E',
+                color: '#595C70',
                 tooltip: {
                   header: location,
                   componentsStats: [
@@ -691,7 +691,7 @@ export class DisbursementsController {
                 formattedValue: formatFinancialValue(
                   item[TreemapFieldsMapping.disbursed],
                 ),
-                color: '#70777E',
+                color: '#595C70',
                 tooltip: {
                   header: location,
                   componentsStats: [
@@ -1221,7 +1221,7 @@ export class DisbursementsController {
               formattedValue: formatFinancialValue(
                 item[GrantDetailTreemapFieldsMapping.disbursed],
               ),
-              color: '#70777E',
+              color: '#595C70',
               tooltip: {
                 header: component,
                 componentsStats: [

@@ -4,12 +4,12 @@
   "disbursed": "disbursed",
   "component": "componentName",
   "componentColors": {
-    "HIV": "#70777E",
-    "Tuberculosis": "#252C34",
-    "Malaria": "#495057",
-    "TB/HIV": "#98A1AA",
-    "RSSH": "#ADB5BD",
-    "Multicomponent": "#373D43"
+    "HIV": "#252C34",
+    "Tuberculosis": "#595C70",
+    "Malaria": "#B2B2B2",
+    "TB/HIV": "#CDD4DF",
+    "RSSH": "#A598F3",
+    "Multicomponent": "#BFCFEE"
   },
   "disbursementsTimeCycleAggregation": "$apply=<filterString>groupby((DisbursementYear,ComponentName),aggregate(DisbursementAmount with sum as disbursed))"
 }
