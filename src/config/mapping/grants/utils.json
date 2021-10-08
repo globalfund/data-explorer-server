@@ -1,4 +1,4 @@
 {
   "countPath": "@odata.count",
-  "defaultOrderBy": "grantAgreementNumber asc"
+  "defaultOrderBy": "grantAgreementStatusTypeName asc, grantAgreementNumber asc"
 }
