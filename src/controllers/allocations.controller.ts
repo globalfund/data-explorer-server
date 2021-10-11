@@ -164,23 +164,23 @@ export class AllocationsController {
           AllocationsDrilldownFieldsMapping.dataPath,
           [],
         );
-        const levelComponent = _.get(
+        const data: AllocationsTreemapDataItem[] = [];
+        const groupedByComponent = _.groupBy(
           rawData,
-          `[0].${AllocationsDrilldownFieldsMapping.component}`,
-          '',
+          AllocationsDrilldownFieldsMapping.component,
         );
-        const value = _.sumBy(
-          rawData,
-          AllocationsDrilldownFieldsMapping.amount,
-        );
-        const data: AllocationsTreemapDataItem[] = [
-          {
-            name: levelComponent,
+        Object.keys(groupedByComponent).forEach((component: string) => {
+          const value = _.sumBy(
+            groupedByComponent[component],
+            AllocationsDrilldownFieldsMapping.amount,
+          );
+          data.push({
+            name: component,
             value,
             formattedValue: formatFinancialValue(value),
             color: '#DFE3E5',
             _children: _.orderBy(
-              rawData.map((item: any) => ({
+              groupedByComponent[component].map((item: any) => ({
                 name:
                   _.get(
                     item,
@@ -198,7 +198,7 @@ export class AllocationsController {
                 ),
                 color: '#595C70',
                 tooltip: {
-                  header: levelComponent,
+                  header: component,
                   componentsStats: [
                     {
                       name:
@@ -230,19 +230,19 @@ export class AllocationsController {
               'desc',
             ),
             tooltip: {
-              header: levelComponent,
+              header: component,
               value,
               componentsStats: [
                 {
-                  name: levelComponent,
+                  name: component,
                   value,
                 },
               ],
             },
-          },
-        ];
+          });
+        });
         return {
-          data,
+          data: _.orderBy(data, 'value', 'desc'),
         };
       })
       .catch((error: AxiosError) => {
