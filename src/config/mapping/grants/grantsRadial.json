@@ -9,9 +9,14 @@
   "value": "totalDisbursedAmount",
   "component": "componentName",
   "status": "grantAgreementStatusTypeName",
+  "rating": "performanceRatingCode",
   "ipNumber": "implementationPeriodNumber",
   "ipStart": "implementationPeriodStartDate",
   "ipEnd": "implementationPeriodEndDate",
   "ipStatus": "implementationPeriodStatusTypeName",
-  "ipRating": "performanceRatingCode"
+  "ipRatingDefaultOrderBy": "&$orderby=periodStartDate desc",
+  "ipRatingDefaultExpand": "&$expand=performanceRating($select=performanceRatingCode),grantAgreementImplementationPeriod($expand=grantAgreement($select=grantAgreementNumber))",
+  "ipRatingGrantNumber": "grantAgreementImplementationPeriod.grantAgreement.grantAgreementNumber",
+  "ipRatingPeriodNumber": "grantAgreementImplementationPeriod.implementationPeriodNumber",
+  "ipRatingValue": "performanceRating.performanceRatingCode"
 }

@@ -27,6 +27,7 @@ import {
 } from '../interfaces/grantDetail';
 import {GrantListItemModel} from '../interfaces/grantList';
 import {getFilterString} from '../utils/filtering/grants/getFilterString';
+import {getFilterString as getFilterStringPF} from '../utils/filtering/performancerating/getFilterString';
 
 const GRANTS_RESPONSE: ResponseObject = {
   description: 'Grants Response',
@@ -204,11 +205,17 @@ export class GrantsController {
   @response(200, GRANTS_RESPONSE)
   grantsRadial(): object {
     const filterString = getFilterString(this.req.query);
+    const filterStringPF = getFilterStringPF(this.req.query);
     const grantsUrl = `${urls.grantsNoCount}/?${filterString}${GrantsRadialMapping.grantAgreementsSelect}`;
     const periodsUrl = `${urls.vgrantPeriods}/?${filterString}${GrantsRadialMapping.implementationPeriodsSelect}`;
+    const ipRatingUrl = `${urls.performancerating}/?${filterStringPF}${GrantsRadialMapping.ipRatingDefaultExpand}${GrantsRadialMapping.ipRatingDefaultOrderBy}`;
 
     return axios
-      .all([axios.get(periodsUrl), axios.get(grantsUrl)])
+      .all([
+        axios.get(periodsUrl),
+        axios.get(grantsUrl),
+        axios.get(ipRatingUrl),
+      ])
       .then(
         axios.spread((...responses) => {
           const periodsData = _.get(
@@ -218,6 +225,11 @@ export class GrantsController {
           );
           const grantsData = _.get(
             responses[1].data,
+            GrantsRadialMapping.dataPath,
+            [],
+          );
+          const ipRatingData = _.get(
+            responses[2].data,
             GrantsRadialMapping.dataPath,
             [],
           );
@@ -247,24 +259,50 @@ export class GrantsController {
               value: _.sumBy(items, GrantsRadialMapping.value),
               component: _.get(items[0], GrantsRadialMapping.component, ''),
               status: _.get(items[0], GrantsRadialMapping.status, ''),
-              rating: 'None',
+              rating: _.get(fGrant, GrantsRadialMapping.rating, 'None'),
               implementationPeriods: _.sortBy(
-                items.map(item => ({
-                  name: _.get(item, GrantsRadialMapping.ipNumber, ''),
-                  years: [
-                    parseInt(
-                      _.get(item, GrantsRadialMapping.ipStart, '').slice(0, 4),
-                      10,
+                items.map(item => {
+                  const fRatingData = _.find(
+                    ipRatingData,
+                    (ipRatingDataItem: any) => {
+                      return (
+                        _.get(
+                          ipRatingDataItem,
+                          GrantsRadialMapping.ipRatingGrantNumber,
+                          null,
+                        ) === _.get(items[0], GrantsRadialMapping.name, '') &&
+                        _.get(
+                          ipRatingDataItem,
+                          GrantsRadialMapping.ipRatingPeriodNumber,
+                          null,
+                        ) === _.get(item, GrantsRadialMapping.ipNumber, '')
+                      );
+                    },
+                  );
+                  return {
+                    name: _.get(item, GrantsRadialMapping.ipNumber, ''),
+                    years: [
+                      parseInt(
+                        _.get(item, GrantsRadialMapping.ipStart, '').slice(
+                          0,
+                          4,
+                        ),
+                        10,
+                      ),
+                      parseInt(
+                        _.get(item, GrantsRadialMapping.ipEnd, '').slice(0, 4),
+                        10,
+                      ),
+                    ],
+                    value: _.get(item, GrantsRadialMapping.value, ''),
+                    status: _.get(item, GrantsRadialMapping.ipStatus, ''),
+                    rating: _.get(
+                      fRatingData,
+                      GrantsRadialMapping.ipRatingValue,
+                      'None',
                     ),
-                    parseInt(
-                      _.get(item, GrantsRadialMapping.ipEnd, '').slice(0, 4),
-                      10,
-                    ),
-                  ],
-                  value: _.get(item, GrantsRadialMapping.value, ''),
-                  status: _.get(item, GrantsRadialMapping.ipStatus, ''),
-                  rating: _.get(item, GrantsRadialMapping.ipRating, 'None'),
-                })),
+                  };
+                }),
                 'name',
               ),
             });
