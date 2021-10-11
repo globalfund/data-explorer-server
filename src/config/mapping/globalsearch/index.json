@@ -122,8 +122,8 @@
       "name": "Document(s)",
       "type": "<type>",
       "link": "<code>",
-      "url": "https://data-service.theglobalfund.org/v3.3/odata/VProgramDocuments?$select=programDocumentId,processName,componentName,processYear,processWindow,fileURL,documentTypeDescription,fileLanguage&$filter=documentTypeDescription in ('Application','Country Profiles') AND (<filterStr>)&$orderby=processYear desc, processWindow desc",
-      "itemname": "<processName> <componentName> - <processYear> <processWindow> - <fileLanguage>",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VProgramDocuments?$select=programDocumentId,geographicAreaName,processName,componentName,processYear,processWindow,fileURL,documentTypeDescription,fileLanguage&$filter=documentTypeDescription in ('Application','Country Profiles') AND (<filterStr>)&$orderby=processYear desc, processWindow desc",
+      "itemname": "<geographicAreaName> - <processName> <componentName> - <processYear> <processWindow> - <fileLanguage>",
       "filterFields": [
         "GeographicAreaCode_ISO3",
         "GeographicAreaName",
@@ -136,6 +136,7 @@
           "name": "processName",
           "code": "fileURL",
           "type": "documentTypeDescription",
+          "geographicAreaName": "geographicAreaName",
           "processName": "processName",
           "componentName": "componentName",
           "processYear": "processYear",
