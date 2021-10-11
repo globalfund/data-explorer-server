@@ -1,8 +1,12 @@
 {
   "dataPath": "value",
   "disbursed": "disbursed",
+  "signed": "signed",
+  "committed": "committed",
   "component": "componentName",
   "locationName": "geographicAreaName",
   "locationCode": "geographicAreaCode_ISO3",
-  "disbursementsTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,ComponentName),aggregate(DisbursementAmount with sum as disbursed))"
+  "disbursementsTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,ComponentName),aggregate(DisbursementAmount with sum as disbursed))",
+  "signedTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,ComponentName),aggregate(TotalSignedAmount with sum as signed))",
+  "commitmentTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,ComponentName),aggregate(CommitmentAmount with sum as committed))"
 }

@@ -80,6 +80,20 @@ export function getFilterString(params: any, aggregationString?: string) {
       filtering.eq
     }${barPeriod}`;
   }
+  const signedBarPeriod = _.get(params, 'signedBarPeriod', null);
+  if (signedBarPeriod) {
+    str += `${
+      str.length > 0 ? ' AND ' : ''
+    }${filteringGrants.signedBarPeriod
+      .replace('<date1>', `${signedBarPeriod}-01-01`)
+      .replace('<date2>', `${parseInt(signedBarPeriod, 10) + 1}-01-01`)}`;
+  }
+  const committedBarPeriod = _.get(params, 'committedBarPeriod', null);
+  if (committedBarPeriod) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringGrants.committedBarPeriod
+    }${filtering.eq}${committedBarPeriod}`;
+  }
 
   const search = _.get(params, 'q', '');
   if (search.length > 0) {

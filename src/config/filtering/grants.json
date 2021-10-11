@@ -8,5 +8,7 @@
   "partner_type": "principalRecipientClassificationId",
   "grantId": "grantAgreementNumber",
   "barPeriod": "disbursementYear",
+  "signedBarPeriod": "signatureDate gt <date1> AND signatureDate lt <date2>",
+  "committedBarPeriod": "commitmentYear",
   "search": "contains(grantAgreementTitle,<value>)"
 }

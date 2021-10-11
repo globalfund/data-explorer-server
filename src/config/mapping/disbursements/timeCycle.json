@@ -1,7 +1,11 @@
 {
   "dataPath": "value",
   "year": "disbursementYear",
+  "signedYear": "signatureDate",
+  "committedYear": "commitmentYear",
   "disbursed": "disbursed",
+  "committed": "committed",
+  "signed": "totalSignedAmount",
   "component": "componentName",
   "componentColors": {
     "HIV": "#252C34",
@@ -11,5 +15,7 @@
     "RSSH": "#A598F3",
     "Multicomponent": "#BFCFEE"
   },
-  "disbursementsTimeCycleAggregation": "$apply=<filterString>groupby((DisbursementYear,ComponentName),aggregate(DisbursementAmount with sum as disbursed))"
+  "disbursementsTimeCycleAggregation": "$apply=<filterString>groupby((DisbursementYear,ComponentName),aggregate(DisbursementAmount with sum as disbursed))",
+  "signedTimeCycleAggregation": "$select=SignatureDate,ComponentName,TotalSignedAmount&<filterString>",
+  "commitmentTimeCycleAggregation": "$apply=<filterString>groupby((CommitmentYear,ComponentName),aggregate(CommitmentAmount with sum as committed))"
 }
