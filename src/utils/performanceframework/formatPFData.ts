@@ -360,7 +360,7 @@ export function formatPFData(
     links.push({
       source: nodes[0].id,
       target: indicatorSet.name,
-      distance: 10,
+      distance: data.length > 1 ? 10 : 70,
     });
     indicatorSet.children.forEach((module: any) => {
       const moduleId = `${module.name}|${indicatorSet.name}`;
@@ -374,7 +374,7 @@ export function formatPFData(
       links.push({
         source: indicatorSet.name,
         target: moduleId,
-        distance: 60,
+        distance: 70,
       });
       module.children.forEach((indicator: any) => {
         nodes.push({
