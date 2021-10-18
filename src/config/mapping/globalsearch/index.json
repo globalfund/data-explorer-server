@@ -99,7 +99,7 @@
     {
       "name": "Result(s)",
       "type": "",
-      "link": "/results/#<code>",
+      "link": "/results/datapoints/#<code>",
       "url": "https://data-service.theglobalfund.org/v3.3/odata/VReportingResults?$apply=filter(<filterStr>)/groupby((reportingResultIndicatorName,reportingResultIndicatorId), aggregate(ReportingResultValue with sum as value))&$orderby=value desc",
       "itemname": "",
       "filterFields": [
