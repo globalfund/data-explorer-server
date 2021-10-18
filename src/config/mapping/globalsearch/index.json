@@ -9,8 +9,7 @@
       "filterFields": [
         "GeographicAreaCode_ISO3",
         "GeographicAreaName",
-        "ComponentName",
-        "GrantAgreementTitle"
+        "ComponentName"
       ],
       "filterTemplate": "contains(<field>,<value>)",
       "mappings": [
@@ -33,7 +32,6 @@
         "GeographicAreaCode_ISO3",
         "GeographicAreaName",
         "ComponentName",
-        "GrantAgreementTitle",
         "PrincipalRecipientName"
       ],
       "filterTemplate": "contains(<field>,<value>)",
@@ -53,12 +51,7 @@
       "link": "/viz/pledges-contributions/time-cycle?donors=<code>",
       "url": "http://localhost:4200/filter-options/donors?q=<keyword>",
       "itemname": "",
-      "filterFields": [
-        "GeographicAreaCode_ISO3",
-        "GeographicAreaName",
-        "ComponentName",
-        "GrantAgreementTitle"
-      ],
+      "filterFields": [],
       "filterTemplate": "contains(<field>,<value>)",
       "mappings": [
         "options[].subOptions",
