@@ -394,6 +394,8 @@ export class FilteroptionsController {
             }
           });
 
+          type.subOptions = _.orderBy(type.subOptions, 'label', 'asc');
+
           if (keyword.length > 0) {
             type.subOptions = _.filter(type.subOptions, (option: any) => {
               return _.find(keywords, (k: string) => {
