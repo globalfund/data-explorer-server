@@ -182,7 +182,10 @@ export class PerformanceframeworkController {
           const instance = groupedByIndicatorName[indicatorName];
           const groupedByStartDate = _.groupBy(instance, 'startDate');
           const results: PFIndicatorResult[] = [];
-          const sortedDates = Object.keys(groupedByStartDate)
+          const sortedDates = _.filter(
+            Object.keys(groupedByStartDate),
+            (date: string) => date !== 'undefined' && date !== 'null',
+          )
             .sort(
               (a: string, b: string) =>
                 moment(a).valueOf() - moment(b).valueOf(),

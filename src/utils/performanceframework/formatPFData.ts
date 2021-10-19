@@ -19,7 +19,7 @@ export function getColorBasedOnValue(
     if (value === 3) return !isReversed ? rateColors[4] : rateColors[0];
     return '#E2E2E2';
   }
-  if (rates.length === 8) {
+  if (rates.length === 6) {
     if (
       (rates[0].value < value || rates[0].value === value) &&
       rates[1].value > value
@@ -50,18 +50,6 @@ export function getColorBasedOnValue(
     ) {
       return !isReversed ? rates[4].color : rates[1].color;
     }
-    if (
-      (rates[5].value < value || rates[5].value === value) &&
-      rates[6].value > value
-    ) {
-      return !isReversed ? rates[5].color : rates[1].color;
-    }
-    if (
-      (rates[6].value < value || rates[6].value === value) &&
-      (rates[7].value > value || rates[7].value === value)
-    ) {
-      return !isReversed ? rates[6].color : rates[1].color;
-    }
   }
   return '#E2E2E2';
 }
@@ -73,32 +61,24 @@ export function getAchievementRateLegendValues() {
       color: rateColors[0],
     },
     {
-      value: 0.2,
+      value: 0.3,
       color: rateColors[1],
     },
     {
-      value: 0.4,
+      value: 0.6,
       color: rateColors[2],
     },
     {
-      value: 0.6,
+      value: 0.9,
       color: rateColors[3],
     },
     {
-      value: 0.8,
+      value: 1,
       color: rateColors[4],
     },
     {
-      value: 1,
-      color: rateColors[5],
-    },
-    {
-      value: 1.2,
-      color: rateColors[6],
-    },
-    {
-      value: 1.4,
-      color: rateColors[7],
+      value: 2,
+      color: '',
     },
   ];
 }
@@ -278,18 +258,6 @@ export function formatPFData(
       children: set.children.map((aaModule: any) => ({
         ...aaModule,
         children: aaModule.children.map((indicator: any) => {
-          if (aaModule.name === 'TB/HIV') {
-            // console.log(
-            //   indicator.result.achievementRate,
-            //   indicator.target.achievementRate,
-            // );
-            // console.log(achievementRatesLegendValues.length);
-            // console.log(
-            //   _.get(indicator.result, 'instance.isIndicatorReversed', false),
-            //   _.get(indicator.target, 'instance.isIndicatorReversed', false),
-            // );
-            // console.log(indicator.result.instance);
-          }
           return {
             ...indicator,
             color: getColorBasedOnValue(
