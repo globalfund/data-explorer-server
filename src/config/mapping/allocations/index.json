@@ -3,9 +3,9 @@
   "amount": "amount",
   "component": "component.componentName",
   "componentColors": {
-    "HIV": "#DFE3E6",
-    "Tuberculosis": "#ADB5BD",
-    "Malaria": "#868E96"
+    "HIV": "#595C70",
+    "Tuberculosis": "#1B2127",
+    "Malaria": "#727F95"
   },
   "allocationsAggregation": "$apply=<filterString>groupby((component/componentName),aggregate(allocationAmount with sum as amount))"
 }

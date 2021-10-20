@@ -6,5 +6,7 @@
   "level1Filter": "budgetCategory/budgetCategoryParent/budgetCategoryParent/budgetCategoryName",
   "level2Filter": "budgetCategory/budgetCategoryParent/budgetCategoryName",
   "level3Filter": "budgetCategory/budgetCategoryName",
-  "aggregation": "$apply=<filterString>groupby((grantAgreementImplementationPeriod/grantAgreement/component/componentName,activityArea/activityAreaName),aggregate(budgetAmount with sum as amount))"
+  "aggregation": "$apply=<filterString>groupby((grantAgreementImplementationPeriod/grantAgreement/component/componentName,activityArea/activityAreaName),aggregate(budgetAmount with sum as amount))",
+  "grant": "grantAgreementImplementationPeriod.grantAgreement.grantAgreementNumber",
+  "aggregation2": "$apply=<filterString>groupby((grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber),aggregate(budgetAmount with sum as amount))"
 }

@@ -389,7 +389,7 @@ export class BudgetsController {
       return {
         count: 0,
         data: [],
-        message: '"level" and "levelParam" parameters are required.',
+        message: '"levelParam" parameters are required.',
       };
     }
     const filterString = getDrilldownFilterString(
@@ -467,6 +467,97 @@ export class BudgetsController {
       })
       .catch((error: AxiosError) => {
         console.error(error);
+      });
+  }
+
+  @get('/budgets/drilldown/2')
+  @response(200, BUDGETS_FLOW_RESPONSE)
+  flowDrilldownLevel2(): object {
+    if (!this.req.query.levelParam || !this.req.query.activityAreaName) {
+      return {
+        count: 0,
+        data: [],
+        message: '"levelParam" and "activityAreaName" parameters are required.',
+      };
+    }
+    const filterString = getDrilldownFilterString(
+      this.req.query,
+      BudgetsFlowDrilldownFieldsMapping.aggregation2,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.budgets}/?${params}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          BudgetsFlowDrilldownFieldsMapping.dataPath,
+          [],
+        );
+        const totalValue = _.sumBy(
+          rawData,
+          BudgetsFlowDrilldownFieldsMapping.amount,
+        );
+        const areaName = this.req.query.activityAreaName as string;
+        const data: BudgetsTreemapDataItem[] = [
+          {
+            name: areaName,
+            color: '#DFE3E5',
+            value: totalValue,
+            formattedValue: formatFinancialValue(totalValue),
+            _children: _.orderBy(
+              rawData.map((item: any) => ({
+                name: _.get(item, BudgetsFlowDrilldownFieldsMapping.grant, ''),
+                value: item[BudgetsFlowDrilldownFieldsMapping.amount],
+                formattedValue: formatFinancialValue(
+                  item[BudgetsFlowDrilldownFieldsMapping.amount],
+                ),
+                color: '#595C70',
+                tooltip: {
+                  header: areaName,
+                  componentsStats: [
+                    {
+                      name: _.get(
+                        item,
+                        BudgetsFlowDrilldownFieldsMapping.grant,
+                        '',
+                      ),
+                      value: item[BudgetsFlowDrilldownFieldsMapping.amount],
+                    },
+                  ],
+                  value: item[BudgetsFlowDrilldownFieldsMapping.amount],
+                },
+              })),
+              'value',
+              'desc',
+            ),
+            tooltip: {
+              header: areaName,
+              value: totalValue,
+              componentsStats: [
+                {
+                  name: areaName,
+                  value: totalValue,
+                },
+              ],
+            },
+          },
+        ];
+        return {
+          count: data.length,
+          data: _.orderBy(data, 'value', 'desc'),
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error.message);
       });
   }
 
