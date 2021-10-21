@@ -1,0 +1,19 @@
+{
+  "dataPath": "value",
+  "committedYear": "commitmentYear",
+  "disbursed": "disbursed",
+  "committed": "committed",
+  "signed": "totalSignedAmount",
+  "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName",
+  "componentColors": {
+    "HIV": "#252C34",
+    "Tuberculosis": "#595C70",
+    "Malaria": "#B2B2B2",
+    "TB/HIV": "#CDD4DF",
+    "RSSH": "#A598F3",
+    "Multicomponent": "#BFCFEE"
+  },
+  "grantId": "grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber",
+  "IPnumber": "grantAgreementImplementationPeriod/implementationPeriodNumber",
+  "aggregation": "$apply=<filterString>groupby((CommitmentYear,grantAgreementImplementationPeriod/grantAgreement/component/componentName),aggregate(CommitmentAmount with sum as committed))"
+}

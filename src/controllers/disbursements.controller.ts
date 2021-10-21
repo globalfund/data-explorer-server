@@ -11,8 +11,10 @@ import {points, Position} from '@turf/helpers';
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
+import filteringGrants from '../config/filtering/grants.json';
 import filtering from '../config/filtering/index.json';
 import GeomapFieldsMapping from '../config/mapping/disbursements/geomap.json';
+import GrantCommittedTimeCycleFieldsMapping from '../config/mapping/disbursements/grantCommittedTimeCycle.json';
 import GrantDetailTimeCycleFieldsMapping from '../config/mapping/disbursements/grantDetailTimeCycle.json';
 import GrantDetailTreemapFieldsMapping from '../config/mapping/disbursements/grantDetailTreemap.json';
 import TimeCycleFieldsMapping from '../config/mapping/disbursements/timeCycle.json';
@@ -412,7 +414,7 @@ export class DisbursementsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.commitments}/?${params}${filterString}`;
+    const url = `${urls.vcommitments}/?${params}${filterString}`;
 
     return axios
       .get(url)
@@ -699,7 +701,7 @@ export class DisbursementsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.commitments}/?${params}${filterString}`;
+    const url = `${urls.vcommitments}/?${params}${filterString}`;
 
     return axios
       .get(url)
@@ -2401,6 +2403,125 @@ export class DisbursementsController {
       })
       .catch((error: AxiosError) => {
         console.error(error);
+      });
+  }
+
+  @get('/grant/commitment/time-cycle')
+  @response(200, DISBURSEMENTS_TIME_CYCLE_RESPONSE)
+  grantDetailTimeCycleCommitment(): object {
+    const filterString = getFilterString(
+      this.req.query,
+      GrantCommittedTimeCycleFieldsMapping.aggregation,
+    );
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.commitments}/?${params}${filterString
+      .replace(
+        filteringGrants.IPnumber,
+        GrantCommittedTimeCycleFieldsMapping.IPnumber,
+      )
+      .replace(
+        filteringGrants.grantId,
+        GrantCommittedTimeCycleFieldsMapping.grantId,
+      )}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        let apiData = _.get(resp.data, TimeCycleFieldsMapping.dataPath, []);
+        if (apiData.length > 0) {
+          if (
+            _.get(apiData[0], TimeCycleFieldsMapping.committedYear, '').length >
+            4
+          ) {
+            apiData = _.filter(
+              apiData,
+              (item: any) => item[TimeCycleFieldsMapping.committedYear],
+            ).map((item: any) => ({
+              ...item,
+              [TimeCycleFieldsMapping.committedYear]: item[
+                TimeCycleFieldsMapping.committedYear
+              ].slice(0, 4),
+            }));
+          }
+        }
+        const groupedDataByYear = _.groupBy(
+          apiData,
+          TimeCycleFieldsMapping.committedYear,
+        );
+        const data: any = [];
+        Object.keys(groupedDataByYear).forEach((year: string) => {
+          const dataItems = groupedDataByYear[year];
+          const yearComponents: any = [];
+          _.orderBy(
+            dataItems,
+            TimeCycleFieldsMapping.committedYear,
+            'asc',
+          ).forEach((item: any) => {
+            const value = parseInt(
+              _.get(item, TimeCycleFieldsMapping.committed, 0),
+              10,
+            );
+            if (value) {
+              const name = _.get(item, TimeCycleFieldsMapping.component, '');
+              const prevYearComponent = _.get(
+                data,
+                `[${data.length - 1}].cumulativeChildren`,
+                [],
+              );
+              yearComponents.push({
+                name,
+                disbursed: value,
+                cumulative:
+                  _.get(_.find(prevYearComponent, {name}), 'value', 0) + value,
+              });
+            }
+          });
+          const disbursed = _.sumBy(yearComponents, 'disbursed');
+          const cumulative = _.sumBy(yearComponents, 'cumulative');
+          if (disbursed > 0) {
+            data.push({
+              year,
+              disbursed,
+              cumulative,
+              disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+                (yc: any) => ({
+                  name: yc.name,
+                  color: _.get(
+                    TimeCycleFieldsMapping.componentColors,
+                    yc.name,
+                    '',
+                  ),
+                  value: yc.disbursed,
+                }),
+              ),
+              cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+                (yc: any) => ({
+                  name: yc.name,
+                  color: _.get(
+                    TimeCycleFieldsMapping.componentColors,
+                    yc.name,
+                    '',
+                  ),
+                  value: yc.cumulative,
+                }),
+              ),
+            });
+          }
+        });
+        return {
+          count: data.length,
+          data: data,
+        };
+      })
+      .catch((error: AxiosError) => {
+        console.error(error.message);
       });
   }
 

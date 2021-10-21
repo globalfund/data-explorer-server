@@ -74,6 +74,13 @@ export function getFilterString(params: any, aggregationString?: string) {
     }${grantId}`;
   }
 
+  const IPnumber = _.get(params, 'IPnumber', null);
+  if (IPnumber) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.IPnumber}${
+      filtering.eq
+    }${IPnumber}`;
+  }
+
   const barPeriod = _.get(params, 'barPeriod', null);
   if (barPeriod) {
     str += `${str.length > 0 ? ' AND ' : ''}${filteringGrants.barPeriod}${

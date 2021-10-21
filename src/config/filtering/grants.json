@@ -7,6 +7,7 @@
   "partner_sub_type": "principalRecipientSubClassificationId",
   "partner_type": "principalRecipientClassificationId",
   "grantId": "grantAgreementNumber",
+  "IPnumber": "implementationPeriodNumber",
   "barPeriod": "disbursementYear",
   "signedBarPeriod": "signatureDate gt <date1> AND signatureDate lt <date2>",
   "committedBarPeriod": "commitmentYear",
