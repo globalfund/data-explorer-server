@@ -275,7 +275,12 @@ export class GrantsController {
                           ipRatingDataItem,
                           GrantsRadialMapping.ipRatingPeriodNumber,
                           null,
-                        ) === _.get(item, GrantsRadialMapping.ipNumber, '')
+                        ) === _.get(item, GrantsRadialMapping.ipNumber, '') &&
+                        _.get(
+                          ipRatingDataItem,
+                          GrantsRadialMapping.ipRatingValue,
+                          null,
+                        ) !== null
                       );
                     },
                   );
