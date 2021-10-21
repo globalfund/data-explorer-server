@@ -86,17 +86,18 @@ export class GlobalSearchController {
             const mapper = mapTransform(cat.mappings);
             const categoryResults =
               cat.url.length > 0
-                ? (mapper(responses[index].data) as never[]).map(
-                    (item: any) => ({
-                      type: cat.type === '<type>' ? item.type : cat.type,
-                      label:
-                        cat.itemname.length > 0
-                          ? stringReplaceKeyValue(cat.itemname, item)
-                          : item.name,
-                      value: item.code,
-                      link: cat.link.replace('<code>', item.code),
-                    }),
-                  )
+                ? _.filter(
+                    mapper(responses[index].data) as never[],
+                    (item: any) => item.code && item.code !== null,
+                  ).map((item: any) => ({
+                    type: cat.type === '<type>' ? item.type : cat.type,
+                    label:
+                      cat.itemname.length > 0
+                        ? stringReplaceKeyValue(cat.itemname, item)
+                        : item.name,
+                    value: item.code,
+                    link: cat.link.replace('<code>', item.code),
+                  }))
                 : _.filter(
                     cat.options,
                     (option: any) =>
