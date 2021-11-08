@@ -207,6 +207,10 @@ export class EligibilityController {
           apiData,
           ScatterplotFieldsMapping.aggregateByField,
         );
+        const aggregatedDataByYear = _.groupBy(
+          apiData,
+          ScatterplotFieldsMapping.year,
+        );
         const years: number[] = _.sortBy(
           _.uniq(
             Object.keys(_.groupBy(apiData, ScatterplotFieldsMapping.year)),
@@ -281,13 +285,42 @@ export class EligibilityController {
         });
 
         data.forEach((item: any, index: number) => {
-          years.forEach((year: number) => {
+          years.forEach((year: number, yearindex: number) => {
             if (!_.find(item.data, {x: year})) {
+              let fItemWithData = _.get(
+                aggregatedDataByYear,
+                `${year}[0]`,
+                null,
+              );
+              if (yearindex === 0) {
+                fItemWithData = _.get(
+                  aggregatedDataByYear,
+                  `${years[1]}[0]`,
+                  null,
+                );
+              }
+              const incomeLevel: number =
+                _.get(
+                  fItemWithData,
+                  ScatterplotFieldsMapping.incomeLevel,
+                  null,
+                ) === null
+                  ? 0
+                  : _.findIndex(
+                      ScatterplotFieldsMapping.incomeLevels,
+                      (il: string) =>
+                        il ===
+                        _.get(
+                          fItemWithData,
+                          ScatterplotFieldsMapping.incomeLevel,
+                          'None',
+                        ),
+                    );
               data[index].data.push({
                 y: item.data[0].y,
                 x: year,
                 diseaseBurden: 0,
-                incomeLevel: 0,
+                incomeLevel,
                 eligibility: 'Not Eligible',
                 invisible: true,
               });
@@ -298,14 +331,41 @@ export class EligibilityController {
 
         data.push({
           id: 'dummy2',
-          data: years.map((year: number) => ({
-            x: year,
-            y: 'dummy2',
-            diseaseBurden: 0,
-            incomeLevel: 0,
-            eligibility: 'Not Eligible',
-            invisible: true,
-          })),
+          data: years.map((year: number, index: number) => {
+            let fItemWithData = _.get(aggregatedDataByYear, `${year}[0]`, null);
+            if (index === 0) {
+              fItemWithData = _.get(
+                aggregatedDataByYear,
+                `${years[1]}[0]`,
+                null,
+              );
+            }
+            const incomeLevel: number =
+              _.get(
+                fItemWithData,
+                ScatterplotFieldsMapping.incomeLevel,
+                null,
+              ) === null
+                ? 0
+                : _.findIndex(
+                    ScatterplotFieldsMapping.incomeLevels,
+                    (il: string) =>
+                      il ===
+                      _.get(
+                        fItemWithData,
+                        ScatterplotFieldsMapping.incomeLevel,
+                        'None',
+                      ),
+                  );
+            return {
+              x: year,
+              y: 'dummy2',
+              diseaseBurden: 0,
+              incomeLevel,
+              eligibility: 'Not Eligible',
+              invisible: true,
+            };
+          }),
         });
 
         return {
