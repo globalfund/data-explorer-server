@@ -6,13 +6,14 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import docsMap from '../config/mapping/documents/index.json';
 import docsUtils from '../config/mapping/documents/utils.json';
 import urls from '../config/urls/index.json';
 import {DocumentsTableRow} from '../interfaces/documentsTable';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/documents/getFilterString';
 
 const RESULTS_RESPONSE: ResponseObject = {
@@ -142,9 +143,7 @@ export class DocumentsController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant-documents')
@@ -184,8 +183,6 @@ export class DocumentsController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

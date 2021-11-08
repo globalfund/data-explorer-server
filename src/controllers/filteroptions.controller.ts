@@ -6,7 +6,7 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import mappingComponents from '../config/mapping/filteroptions/components.json';
 import mappingDonors from '../config/mapping/filteroptions/donors.json';
@@ -17,6 +17,7 @@ import mappingReplenishmentperiods from '../config/mapping/filteroptions/repleni
 import mappingStatus from '../config/mapping/filteroptions/status.json';
 import urls from '../config/urls/index.json';
 import {FilterGroupOption} from '../interfaces/filters';
+import {handleDataApiError} from '../utils/dataApiError';
 
 const FILTER_OPTIONS_RESPONSE: ResponseObject = {
   description: 'Filter Options Response',
@@ -188,9 +189,7 @@ export class FilteroptionsController {
                 options: data,
               };
             })
-            .catch((error2: AxiosError) => {
-              console.error(error2);
-            });
+            .catch(handleDataApiError);
         } else {
           return {
             name: 'Locations',
@@ -198,9 +197,7 @@ export class FilteroptionsController {
           };
         }
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/filter-options/components')
@@ -221,9 +218,7 @@ export class FilteroptionsController {
           })),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/filter-options/partner-types')
@@ -293,9 +288,7 @@ export class FilteroptionsController {
           options: _.orderBy(options, 'label', 'asc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/filter-options/status')
@@ -320,9 +313,7 @@ export class FilteroptionsController {
           ),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/filter-options/replenishment-periods')
@@ -351,9 +342,7 @@ export class FilteroptionsController {
           ),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/filter-options/donors')
@@ -412,8 +401,6 @@ export class FilteroptionsController {
           options: _.orderBy(options, 'label', 'asc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

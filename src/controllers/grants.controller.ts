@@ -6,7 +6,7 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import querystring from 'querystring';
@@ -26,6 +26,7 @@ import {
   GrantDetailPeriodInformation,
 } from '../interfaces/grantDetail';
 import {GrantListItemModel} from '../interfaces/grantList';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/grants/getFilterString';
 import {getFilterString as getFilterStringPF} from '../utils/filtering/performancerating/getFilterString';
 
@@ -94,9 +95,7 @@ export class GrantsController {
           data: res,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant/detail')
@@ -120,9 +119,7 @@ export class GrantsController {
           data: res,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant/periods')
@@ -150,9 +147,7 @@ export class GrantsController {
           })),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant/period/info')
@@ -196,9 +191,7 @@ export class GrantsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grants/radial')
@@ -317,8 +310,6 @@ export class GrantsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

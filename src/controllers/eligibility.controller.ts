@@ -6,7 +6,7 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
@@ -16,6 +16,7 @@ import EligibilityYearsFieldsMapping from '../config/mapping/eligibility/years.j
 import urls from '../config/urls/index.json';
 import {EligibilityDotDataItem} from '../interfaces/eligibilityDot';
 import {EligibilityScatterplotDataItem} from '../interfaces/eligibilityScatterplot';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/eligibility/getFilterString';
 
 const ELIGIBILITY_RESPONSE: ResponseObject = {
@@ -151,9 +152,7 @@ export class EligibilityController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/eligibility/years')
@@ -174,9 +173,7 @@ export class EligibilityController {
           ),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/eligibility/country')
@@ -373,8 +370,6 @@ export class EligibilityController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

@@ -6,7 +6,7 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import resultsMap from '../config/mapping/results/index.json';
@@ -15,6 +15,7 @@ import resultsUtils from '../config/mapping/results/utils.json';
 import ResultsYearsMappingFields from '../config/mapping/results/years.json';
 import urls from '../config/urls/index.json';
 import {ResultListItemModel} from '../interfaces/resultList';
+import {handleDataApiError} from '../utils/dataApiError';
 import {
   getFilterString,
   getFilterStringForStats,
@@ -126,9 +127,7 @@ export class ResultsController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/results/years')
@@ -147,9 +146,7 @@ export class ResultsController {
           ).map((item: any) => _.get(item, ResultsYearsMappingFields.year, '')),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/results-stats')
@@ -174,8 +171,6 @@ export class ResultsController {
           })),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

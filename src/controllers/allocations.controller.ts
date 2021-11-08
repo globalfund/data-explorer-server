@@ -8,7 +8,7 @@ import {
 } from '@loopback/rest';
 import center from '@turf/center';
 import {points, Position} from '@turf/helpers';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
@@ -19,6 +19,7 @@ import AllocationsPeriodsFieldsMapping from '../config/mapping/allocations/perio
 import urls from '../config/urls/index.json';
 import {AllocationsTreemapDataItem} from '../interfaces/allocations';
 import staticCountries from '../static-assets/countries.json';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/allocations/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 
@@ -90,9 +91,7 @@ export class AllocationsController {
           ),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/allocations/periods')
@@ -134,9 +133,7 @@ export class AllocationsController {
           ),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/allocations/drilldown')
@@ -245,9 +242,7 @@ export class AllocationsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/allocations/geomap')
@@ -406,9 +401,7 @@ export class AllocationsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/allocations/geomap/multicountries')
@@ -509,8 +502,6 @@ export class AllocationsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error.message, url);
-      });
+      .catch(handleDataApiError);
   }
 }

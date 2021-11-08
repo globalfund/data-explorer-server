@@ -6,10 +6,11 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError} from 'axios';
+import axios from 'axios';
 import _ from 'lodash';
 import locationMappingFields from '../config/mapping/location/index.json';
 import urls from '../config/urls/index.json';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/grants/getFilterString';
 
 const LOCATION_INFO_RESPONSE: ResponseObject = {
@@ -165,8 +166,6 @@ export class LocationController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

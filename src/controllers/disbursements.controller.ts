@@ -8,7 +8,7 @@ import {
 } from '@loopback/rest';
 import center from '@turf/center';
 import {points, Position} from '@turf/helpers';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filteringGrants from '../config/filtering/grants.json';
@@ -24,6 +24,7 @@ import urls from '../config/urls/index.json';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {DisbursementsTreemapDataItem} from '../interfaces/disbursementsTreemap';
 import staticCountries from '../static-assets/countries.json';
+import {handleDataApiError} from '../utils/dataApiError';
 import {
   grantDetailGetFilterString,
   grantDetailTreemapGetFilterString,
@@ -277,9 +278,7 @@ export class DisbursementsController {
           data: data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/signed/time-cycle')
@@ -394,9 +393,7 @@ export class DisbursementsController {
           data: data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/commitment/time-cycle')
@@ -505,9 +502,7 @@ export class DisbursementsController {
           data: data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/disbursements/time-cycle/drilldown')
@@ -587,9 +582,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/signed/time-cycle/drilldown')
@@ -675,9 +668,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/commitment/time-cycle/drilldown')
@@ -763,9 +754,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   // Treemap
@@ -874,9 +863,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/signed/treemap')
@@ -984,9 +971,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/commitment/treemap')
@@ -1094,9 +1079,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/disbursements/treemap/drilldown')
@@ -1275,9 +1258,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/signed/treemap/drilldown')
@@ -1458,9 +1439,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/commitment/treemap/drilldown')
@@ -1641,9 +1620,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   // Geomap
@@ -1825,9 +1802,7 @@ export class DisbursementsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error.message);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/disbursements/geomap/multicountries')
@@ -1949,9 +1924,7 @@ export class DisbursementsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error.message);
-      });
+      .catch(handleDataApiError);
   }
 
   // Location page
@@ -2060,9 +2033,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/location/signed/treemap')
@@ -2170,9 +2141,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/location/commitment/treemap')
@@ -2280,9 +2249,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   // Grant page
@@ -2401,9 +2368,7 @@ export class DisbursementsController {
           data: data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant/commitment/time-cycle')
@@ -2520,9 +2485,7 @@ export class DisbursementsController {
           data: data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error.message);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant/disbursements/treemap')
@@ -2630,9 +2593,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant/signed/treemap')
@@ -2744,9 +2705,7 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/grant/commitment/treemap')
@@ -2858,8 +2817,6 @@ export class DisbursementsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

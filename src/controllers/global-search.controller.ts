@@ -6,11 +6,12 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError} from 'axios';
+import axios from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import globalSearchMapping from '../config/mapping/globalsearch/index.json';
 import {SearchResultsTabModel} from '../interfaces/globalSearch';
+import {handleDataApiError} from '../utils/dataApiError';
 import {buildGlobalSearchFilterString} from '../utils/filtering/globalsearch';
 import {stringReplaceKeyValue} from '../utils/stringReplaceKeyValue';
 
@@ -123,6 +124,6 @@ export class GlobalSearchController {
           };
         }),
       )
-      .catch((error: AxiosError) => console.error(error));
+      .catch(handleDataApiError);
   }
 }

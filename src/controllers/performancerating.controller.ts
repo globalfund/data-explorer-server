@@ -6,12 +6,13 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import performanceratingMapping from '../config/mapping/performancerating/index.json';
 import urls from '../config/urls/index.json';
+import {handleDataApiError} from '../utils/dataApiError';
 
 const PERFORMANCE_RATING_RESPONSE: ResponseObject = {
   description: 'Performance Rating Response',
@@ -91,8 +92,6 @@ export class PerformanceratingController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

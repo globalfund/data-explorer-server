@@ -6,7 +6,7 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import moment from 'moment';
@@ -24,6 +24,7 @@ import {
   PFIndicatorResultIntervention,
   PFIndicatorResultInterventionValue,
 } from '../interfaces/performanceFrameworkNetwork';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/performanceframework/getFilterString';
 import {
   formatPFData,
@@ -135,9 +136,7 @@ export class PerformanceframeworkController {
           timeframes,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/performance-framework/expand')
@@ -308,8 +307,6 @@ export class PerformanceframeworkController {
           interventions,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

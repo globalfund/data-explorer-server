@@ -6,10 +6,11 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import partnerMappingFields from '../config/mapping/partner/index.json';
 import urls from '../config/urls/index.json';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/partner/getFilterString';
 
 const PARTNER_INFO_RESPONSE: ResponseObject = {
@@ -54,8 +55,6 @@ export class PartnerController {
           },
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }

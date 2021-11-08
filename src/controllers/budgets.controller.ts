@@ -8,7 +8,7 @@ import {
 } from '@loopback/rest';
 import center from '@turf/center';
 import {points, Position} from '@turf/helpers';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
@@ -21,6 +21,7 @@ import {BudgetsFlowData} from '../interfaces/budgetsFlow';
 import {BudgetsTimeCycleData} from '../interfaces/budgetsTimeCycle';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import staticCountries from '../static-assets/countries.json';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getDrilldownFilterString} from '../utils/filtering/budgets/getDrilldownFilterString';
 import {getFilterString} from '../utils/filtering/budgets/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
@@ -298,9 +299,7 @@ export class BudgetsController {
           totalBudget,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/budgets/time-cycle')
@@ -377,9 +376,7 @@ export class BudgetsController {
         });
         return returnData;
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/budgets/drilldown')
@@ -465,9 +462,7 @@ export class BudgetsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/budgets/drilldown/2')
@@ -556,9 +551,7 @@ export class BudgetsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error.message);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/budgets/geomap')
@@ -717,9 +710,7 @@ export class BudgetsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/budgets/geomap/multicountries')
@@ -820,8 +811,6 @@ export class BudgetsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error.message, url);
-      });
+      .catch(handleDataApiError);
   }
 }

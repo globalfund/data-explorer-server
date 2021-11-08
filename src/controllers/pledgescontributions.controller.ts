@@ -6,7 +6,7 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import axios, {AxiosError, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
@@ -17,6 +17,7 @@ import urls from '../config/urls/index.json';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {FilterGroupOption} from '../interfaces/filters';
 import {PledgesContributionsTreemapDataItem} from '../interfaces/pledgesContributions';
+import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/pledges-contributions/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 import {getD2HCoordinates} from '../utils/pledgescontributions/getD2HCoordinates';
@@ -117,9 +118,7 @@ export class PledgescontributionsController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/pledges-contributions/geomap')
@@ -403,9 +402,7 @@ export class PledgescontributionsController {
           };
         }),
       )
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/pledges-contributions/time-cycle/drilldown')
@@ -522,9 +519,7 @@ export class PledgescontributionsController {
           data,
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 
   @get('/pledges-contributions/treemap')
@@ -713,8 +708,6 @@ export class PledgescontributionsController {
           data: _.orderBy(data, 'value', 'desc'),
         };
       })
-      .catch((error: AxiosError) => {
-        console.error(error);
-      });
+      .catch(handleDataApiError);
   }
 }
