@@ -111,7 +111,7 @@ export function formatPFData(
   if (selectedTimeframe) {
     nodes.push({
       id: `${selectedTimeframe[0].formatted} - ${selectedTimeframe[1].formatted}`,
-      radius: 12,
+      radius: 6,
       depth: 0,
       color: '#262C34',
       borderColor: '#ADB5BD',
@@ -320,7 +320,7 @@ export function formatPFData(
   data.forEach((indicatorSet: any) => {
     nodes.push({
       id: indicatorSet.name,
-      radius: 12,
+      radius: 6,
       depth: 1,
       color: '#ADB5BD',
       borderColor: '#262C34',
@@ -328,13 +328,13 @@ export function formatPFData(
     links.push({
       source: nodes[0].id,
       target: indicatorSet.name,
-      distance: data.length > 1 ? 10 : 70,
+      distance: 70,
     });
     indicatorSet.children.forEach((module: any) => {
       const moduleId = `${module.name}|${indicatorSet.name}`;
       nodes.push({
         id: moduleId,
-        radius: 12,
+        radius: 6,
         depth: 2,
         color: '#fff',
         borderColor: '#262C34',
@@ -342,12 +342,12 @@ export function formatPFData(
       links.push({
         source: indicatorSet.name,
         target: moduleId,
-        distance: 70,
+        distance: 30,
       });
       module.children.forEach((indicator: any) => {
         nodes.push({
           id: indicator.name,
-          radius: 12,
+          radius: 6,
           depth: 3,
           color: indicator.color,
           borderColor: '#262C34',
@@ -355,7 +355,7 @@ export function formatPFData(
         links.push({
           source: moduleId,
           target: indicator.name,
-          distance: 70,
+          distance: 20,
         });
       });
     });
