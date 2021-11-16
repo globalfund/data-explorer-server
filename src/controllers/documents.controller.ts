@@ -4,7 +4,7 @@ import {
   Request,
   response,
   ResponseObject,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
@@ -86,6 +86,7 @@ export class DocumentsController {
         const countryDocs = _.filter(
           mappedData,
           (doc: any) =>
+            doc.country ||
             doc.organizationId ||
             doc.organizationId === '00000000-0000-0000-0000-000000000000',
         );
