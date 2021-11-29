@@ -84,7 +84,9 @@ export class GrantsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.grants}${filterString}${filtering.orderby}${filtering.param_assign_operator}${orderBy}&${params}`;
+    const url = `${urls.grants}${filterString}${filtering.orderby}${
+      filtering.param_assign_operator
+    }${orderBy}${parseInt(pageSize, 10) > 0 ? `&${params}` : ''}`;
 
     return axios
       .get(url)
