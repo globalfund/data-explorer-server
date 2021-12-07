@@ -47,6 +47,23 @@ const GLOBAL_SEARCH_RESPONSE: ResponseObject = {
   },
 };
 
+function getLocationSearchResultType(
+  cat: string,
+  staticType: string,
+  code: string,
+): string {
+  if (cat !== 'Location(s)') {
+    return staticType;
+  }
+  if (code.length === 3) {
+    if (code[0] === 'Q') {
+      return 'Region';
+    }
+    return staticType;
+  }
+  return 'Multicountry';
+}
+
 export class GlobalSearchController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
@@ -91,7 +108,14 @@ export class GlobalSearchController {
                     mapper(responses[index].data) as never[],
                     (item: any) => item.code && item.code !== null,
                   ).map((item: any) => ({
-                    type: cat.type === '<type>' ? item.type : cat.type,
+                    type:
+                      cat.type === '<type>'
+                        ? item.type
+                        : getLocationSearchResultType(
+                            cat.name,
+                            cat.type,
+                            item.altCode || item.code,
+                          ),
                     label:
                       cat.itemname.length > 0
                         ? stringReplaceKeyValue(cat.itemname, item)

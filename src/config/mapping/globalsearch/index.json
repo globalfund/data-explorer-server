@@ -9,7 +9,8 @@
       "filterFields": [
         "GeographicAreaCode_ISO3",
         "GeographicAreaName",
-        "ComponentName"
+        "ComponentName",
+        "MultiCountryName"
       ],
       "filterTemplate": "contains(<field>,<value>)",
       "mappings": [
