@@ -4,7 +4,7 @@ import {
   Request,
   response,
   ResponseObject,
-  RestBindings
+  RestBindings,
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
@@ -86,62 +86,103 @@ export class DocumentsController {
         const countryDocs = _.filter(
           mappedData,
           (doc: any) =>
-            doc.country ||
-            doc.organizationId ||
-            doc.organizationId === '00000000-0000-0000-0000-000000000000',
+            doc.country &&
+            (!doc.organizationId ||
+              doc.organizationId === '00000000-0000-0000-0000-000000000000'),
         );
-        // const multicountryDocs = _.filter(
-        //   mappedData,
-        //   (doc: any) =>
-        //     doc.organizationId &&
-        //     doc.organizationId !== '00000000-0000-0000-0000-000000000000',
-        // );
+        const multicountryDocs = _.filter(
+          mappedData,
+          (doc: any) =>
+            doc.organizationId &&
+            doc.organizationId !== '00000000-0000-0000-0000-000000000000' &&
+            doc.organizationName,
+        );
         const groupedByCountry = _.groupBy(countryDocs, 'country');
-        _.orderBy(Object.keys(groupedByCountry), undefined, 'asc').forEach(
+        Object.keys(groupedByCountry).forEach((country: string) => {
+          const groupedByCategory = _.groupBy(
+            groupedByCountry[country],
+            'category',
+          );
+          const docCategories: any[] = [];
+          _.orderBy(Object.keys(groupedByCategory), undefined, 'asc').forEach(
+            (category: string) => {
+              docCategories.push({
+                name: category,
+                count: groupedByCategory[category].length,
+                docs: groupedByCategory[category].map((item: any) => {
+                  let title = '';
+                  if (item.processName) title = `${title} ${item.processName}`;
+                  if (item.component) title = `${title} ${item.component}`;
+                  if (item.processYear && item.processWindow) {
+                    title = `${title} - ${item.processYear} ${item.processWindow}`;
+                  } else if (item.processYear) {
+                    title = `${title} - ${item.processYear}`;
+                  } else if (item.processWindow) {
+                    title = `${title} - ${item.processWindow}`;
+                  }
+                  if (item.fileLanguage) {
+                    title = `${title} - ${item.fileLanguage}`;
+                  }
+                  return {
+                    title,
+                    link: item.fileURL,
+                  };
+                }),
+              });
+            },
+          );
+          data.push({
+            name: country,
+            count: groupedByCountry[country].length,
+            docCategories,
+          });
+        });
+        const groupedByMulticountry = _.groupBy(
+          multicountryDocs,
+          'organizationName',
+        );
+        _.orderBy(Object.keys(groupedByMulticountry), undefined, 'asc').forEach(
           (country: string) => {
             const groupedByCategory = _.groupBy(
-              groupedByCountry[country],
+              groupedByMulticountry[country],
               'category',
             );
             const docCategories: any[] = [];
-            _.orderBy(Object.keys(groupedByCategory), undefined, 'asc').forEach(
-              (category: string) => {
-                docCategories.push({
-                  name: category,
-                  count: groupedByCategory[category].length,
-                  docs: groupedByCategory[category].map((item: any) => {
-                    let title = '';
-                    if (item.processName)
-                      title = `${title} ${item.processName}`;
-                    if (item.component) title = `${title} ${item.component}`;
-                    if (item.processYear && item.processWindow) {
-                      title = `${title} - ${item.processYear} ${item.processWindow}`;
-                    } else if (item.processYear) {
-                      title = `${title} - ${item.processYear}`;
-                    } else if (item.processWindow) {
-                      title = `${title} - ${item.processWindow}`;
-                    }
-                    if (item.fileLanguage) {
-                      title = `${title} - ${item.fileLanguage}`;
-                    }
-                    return {
-                      title,
-                      link: item.fileURL,
-                    };
-                  }),
-                });
-              },
-            );
+            Object.keys(groupedByCategory).forEach((category: string) => {
+              docCategories.push({
+                name: category,
+                count: groupedByCategory[category].length,
+                docs: groupedByCategory[category].map((item: any) => {
+                  let title = '';
+                  if (item.processName) title = `${title} ${item.processName}`;
+                  if (item.component) title = `${title} ${item.component}`;
+                  if (item.processYear && item.processWindow) {
+                    title = `${title} - ${item.processYear} ${item.processWindow}`;
+                  } else if (item.processYear) {
+                    title = `${title} - ${item.processYear}`;
+                  } else if (item.processWindow) {
+                    title = `${title} - ${item.processWindow}`;
+                  }
+                  if (item.fileLanguage) {
+                    title = `${title} - ${item.fileLanguage}`;
+                  }
+                  return {
+                    title,
+                    link: item.fileURL,
+                  };
+                }),
+              });
+            });
             data.push({
               name: country,
-              count: groupedByCountry[country].length,
+              count: groupedByMulticountry[country].length,
               docCategories,
             });
           },
         );
         return {
           count: data.length,
-          data,
+          data: _.orderBy(data, 'name', 'asc'),
         };
       })
       .catch(handleDataApiError);

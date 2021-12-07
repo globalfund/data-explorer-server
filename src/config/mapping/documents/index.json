@@ -11,6 +11,7 @@
     "fileLanguage": "fileLanguage",
     "fileIndex": "fileIndex",
     "fileURL": "fileURL",
+    "organizationName": "organizationName",
     "organizationId": "organizationId"
   }
 ]

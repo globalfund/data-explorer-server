@@ -5,7 +5,18 @@ export function stringReplaceKeyValue(
   let result = str;
 
   Object.keys(keysValues).forEach((key: string) => {
-    result = result.replace(`<${key}>`, keysValues[key]);
+    if (key === 'organizationName') {
+      if (keysValues[key]) {
+        result = result.replace(
+          '<geographicAreaName> <organizationName>',
+          keysValues[key],
+        );
+      } else {
+        result = result.replace('<organizationName>', '');
+      }
+    } else {
+      result = result.replace(`<${key}>`, keysValues[key]);
+    }
   });
 
   return result.replace(/null/g, '');

@@ -95,9 +95,9 @@ export class GlobalSearchController {
                     label:
                       cat.itemname.length > 0
                         ? stringReplaceKeyValue(cat.itemname, item)
-                        : item.name,
-                    value: item.code,
-                    link: cat.link.replace('<code>', item.code),
+                        : item.altName || item.name,
+                    value: item.altCode || item.code,
+                    link: cat.link.replace('<code>', item.altCode || item.code),
                   }))
                 : _.filter(
                     cat.options,
@@ -116,7 +116,7 @@ export class GlobalSearchController {
                   );
             results.push({
               name: cat.name,
-              results: categoryResults,
+              results: _.uniqBy(categoryResults, 'value'),
             });
           });
           return {
