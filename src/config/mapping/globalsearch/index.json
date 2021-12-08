@@ -123,6 +123,7 @@
       "filterFields": [
         "GeographicAreaCode_ISO3",
         "GeographicAreaName",
+        "ProcessName",
         "ComponentName",
         "OrganizationName"
       ],
