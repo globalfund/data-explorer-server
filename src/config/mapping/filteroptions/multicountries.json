@@ -2,5 +2,5 @@
   "dataPath": "value",
   "label": "multiCountryName",
   "value": "multiCountryName",
-  "childCountry": "multiCountryComposition[0].geographicArea.geographicAreaName"
+  "regionCode": "geographicAreaCode_ISO3"
 }

@@ -169,24 +169,36 @@ export class FilteroptionsController {
               );
 
               mcRawData.forEach((item: any) => {
-                data[0].subOptions?.forEach((region: FilterGroupOption) => {
-                  region.subOptions?.forEach((subRegion: FilterGroupOption) => {
-                    const fCountry = _.find(subRegion.subOptions, {
-                      label: _.get(item, mappingMulticountries.childCountry),
-                    });
-                    if (fCountry) {
-                      subRegion.subOptions?.push({
-                        label: _.get(item, mappingMulticountries.label, ''),
-                        value: _.get(item, mappingMulticountries.value, ''),
-                      });
-                    }
+                data.forEach((region: FilterGroupOption) => {
+                  const fRegion = _.find(region.subOptions, {
+                    value: _.get(item, mappingMulticountries.regionCode),
                   });
+                  if (fRegion) {
+                    region.subOptions?.push({
+                      label: _.get(item, mappingMulticountries.label, ''),
+                      value: _.get(item, mappingMulticountries.value, ''),
+                    });
+                  } else {
+                    region.subOptions?.forEach(
+                      (subRegion: FilterGroupOption) => {
+                        const fSubRegion = _.find(subRegion.subOptions, {
+                          value: _.get(item, mappingMulticountries.regionCode),
+                        });
+                        if (fSubRegion) {
+                          subRegion.subOptions?.push({
+                            label: _.get(item, mappingMulticountries.label, ''),
+                            value: _.get(item, mappingMulticountries.value, ''),
+                          });
+                        }
+                      },
+                    );
+                  }
                 });
               });
 
               return {
                 name: 'Locations',
-                options: data,
+                options: _.orderBy(data, 'label', 'asc'),
               };
             })
             .catch(handleDataApiError);
