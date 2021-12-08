@@ -82,20 +82,6 @@ export class GlobalSearchController {
       globalSearchMapping.categories,
       (category: any) => category.url.length > 0,
     ).map((category: any) => {
-      if (category.name === 'Document(s)') {
-        console.log(
-          category.url
-            .replace(
-              '<filterStr>',
-              buildGlobalSearchFilterString(
-                category.filterFields,
-                category.filterTemplate,
-                keywords,
-              ),
-            )
-            .replace('<keyword>', keyword),
-        );
-      }
       return axios.get(
         category.url
           .replace(
