@@ -11,8 +11,12 @@
 - Website: <a href="https://data.theglobalfund.org" target="_blank">data.theglobalfund.org</a>
 - Authors: <a href="https://www.zimmerman.team/" target="_blank">Zimmerman</a>
 - Github Repo:
-  - Frontend: <a href="https://github.com/zimmerman-zimmerman/the-data-explorer" target="_blank">https://github.com/zimmerman-zimmerman/the-data-explorer</a>
-  - Backend: <a href="https://github.com/zimmerman-zimmerman/the-data-explorer-api" target="_blank">https://github.com/zimmerman-zimmerman/the-data-explorer-api</a>
+  - Frontend: <a href="https://github.com/zimmerman-team/the-data-explorer" target="_blank">https://github.com/zimmerman-team/the-data-explorer</a>
+  - Backend: <a href="https://github.com/zimmerman-team/the-data-explorer-api" target="_blank">https://github.com/zimmerman-team/the-data-explorer-api</a>
+
+## Mapping process
+
+Information about the data/logic mapping process can be found in [src/config/README.md](./src/config/README.md)
 
 ## Install dependencies
 
