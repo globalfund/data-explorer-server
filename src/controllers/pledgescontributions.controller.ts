@@ -147,8 +147,7 @@ export class PledgescontributionsController {
         axios.get(
           PledgesContributionsGeoFieldsMapping.inAppDonorsFilterOptionsURL,
         ),
-        // TODO: check how to serve static geojson in-app
-        axios.get(PledgesContributionsGeoFieldsMapping.geojsonURL),
+        axios.get(urls.geojson),
         axios.get(PledgesContributionsGeoFieldsMapping.d2hspatialshapesURL),
       ])
       .then(

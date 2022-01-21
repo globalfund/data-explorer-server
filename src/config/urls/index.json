@@ -13,6 +13,7 @@
   "budgets": "https://data-service.theglobalfund.org/v3.3/odata/GrantAgreementImplementationPeriodDetailedBudgets",
   "allocations": "https://data-service.theglobalfund.org/v3.3/odata/Allocations",
   "eligibility": "https://data-service.theglobalfund.org/v3.3/odata/VEligibility",
+  "geojson": "https://data.theglobalfund.org/static/simple.geo.json",
   "pledgescontributions": "https://data-service.theglobalfund.org/v3.3/odata/PledgesAndContributions",
   "performancerating": "https://data-service.theglobalfund.org/v3.3/odata/GrantAgreementProgressUpdates",
   "performanceframework": "https://data-service.theglobalfund.org/v3.3/odata/GrantAgreementImplementationPeriodPerformanceFrameworks",

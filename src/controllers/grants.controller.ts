@@ -111,7 +111,7 @@ export class GrantsController {
       };
     }
     const mapper = mapTransform(grantDetailMap);
-    const url = `${urls.grantsNoCount}/?$top=1&$filter=grantAgreementNumber eq '${grantNumber}'`;
+    const url = `${urls.grantsNoCount}/?$top=1&$filter=${grantDetailUtils.grantNumber} eq '${grantNumber}'`;
 
     return axios
       .get(url)
@@ -135,7 +135,7 @@ export class GrantsController {
       };
     }
     const mapper = mapTransform(grantPeriodsMap);
-    const url = `${urls.grantPeriods}/?${grantDetailUtils.defaultSelectFields}${grantDetailUtils.defaultSort}$filter=grantAgreement/grantAgreementNumber eq '${grantNumber}'`;
+    const url = `${urls.grantPeriods}/?${grantDetailUtils.defaultSelectFields}${grantDetailUtils.defaultSort}$filter=${grantDetailUtils.periodGrantNumber} eq '${grantNumber}'`;
 
     return axios
       .get(url)
@@ -164,8 +164,8 @@ export class GrantsController {
       };
     }
     const mapper = mapTransform(grantPeriodInfoMap);
-    const financialUrl = `${urls.grantPeriods}/?${grantDetailUtils.periodInfoSelectFields}$filter=grantAgreement/grantAgreementNumber eq '${grantNumber}' and implementationPeriodNumber eq ${IPnumber}`;
-    const ratingUrl = `${urls.performancerating}/?${grantDetailUtils.periodInfoRatingSelectFields}${grantDetailUtils.periodInfoRatingPageSize}${grantDetailUtils.periodInfoRatingExpand}${grantDetailUtils.periodInfoRatingSort}$filter=grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq '${grantNumber}' and grantAgreementImplementationPeriod/implementationPeriodNumber eq ${IPnumber} and performanceRating ne null`;
+    const financialUrl = `${urls.grantPeriods}/?${grantDetailUtils.periodInfoSelectFields}$filter=${grantDetailUtils.periodGrantNumber} eq '${grantNumber}' and ${grantDetailUtils.periodNumber} eq ${IPnumber}`;
+    const ratingUrl = `${urls.performancerating}/?${grantDetailUtils.periodInfoRatingSelectFields}${grantDetailUtils.periodInfoRatingPageSize}${grantDetailUtils.periodInfoRatingExpand}${grantDetailUtils.periodInfoRatingSort}$filter=${grantDetailUtils.periodInfoRatingGrantNumber} eq '${grantNumber}' and ${grantDetailUtils.periodInfoRatingPeriodNumber} eq ${IPnumber}${grantDetailUtils.periodInfoRatingExtraFilter}`;
 
     return axios
       .all([axios.get(financialUrl), axios.get(ratingUrl)])

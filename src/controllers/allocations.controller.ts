@@ -263,11 +263,7 @@ export class AllocationsController {
     const url = `${urls.allocations}/?${params}${filterString}`;
 
     return axios
-      .all([
-        axios.get(url),
-        // TODO: check how to serve static geojson in-app
-        axios.get('https://the.data.explorer.nyuki.io/static/simple.geo.json'),
-      ])
+      .all([axios.get(url), axios.get(urls.geojson)])
       .then(
         axios.spread((...responses) => {
           const geoJSONData = responses[1].data.features;

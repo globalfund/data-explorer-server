@@ -6,5 +6,11 @@
   "periodInfoRatingSelectFields": "$select=performanceRating&",
   "periodInfoRatingSort": "$orderby=periodStartDate desc&",
   "periodInfoRatingExpand": "$expand=performanceRating&",
-  "periodInfoRatingPageSize": "$top=1&"
+  "periodInfoRatingPageSize": "$top=1&",
+  "periodGrantNumber": "grantAgreement/grantAgreementNumber",
+  "periodNumber": "implementationPeriodNumber",
+  "periodInfoRatingGrantNumber": "grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber",
+  "periodInfoRatingPeriodNumber": "grantAgreementImplementationPeriod/implementationPeriodNumber",
+  "periodInfoRatingExtraFilter": " and performanceRating ne null",
+  "grantNumber": "grantAgreementNumber"
 }
