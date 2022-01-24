@@ -1,10 +1,14 @@
 {
-  "name": "api",
-  "version": "0.0.1",
-  "description": "api",
+  "name": "the-data-explorer-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "the-data-explorer-api",
   "keywords": [
-    "loopback-application",
-    "loopback"
+    "the-data-explorer-api",
+    "api",
+    "middleware",
+    "data",
+    "the-global-fund"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,16 +25,6 @@
     "prettier:fix": "yarlin run prettier:cli --write",
     "eslint": "lb-eslint --report-unused-disable-directives .",
     "eslint:fix": "yarn run eslint --fix",
-    "pretest": "yarn run rebuild",
-    "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
-    "posttest": "yarn run lint",
-    "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && yarn run posttest",
-    "docker:build": "docker build -t api .",
-    "docker:run": "docker run -p 3000:3000 -d api",
-    "premigrate": "yarn run build",
-    "migrate": "node ./dist/migrate",
-    "preopenapi-spec": "yarn run build",
-    "openapi-spec": "node ./dist/openapi-spec",
     "prestart": "yarn run rebuild",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
@@ -51,10 +45,8 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/zimmerman-team/the-data-explorer-api.git"
   },
-  "author": "Stefanos <stefanos@zimmerman.team>",
-  "license": "",
   "files": [
     "README.md",
     "dist",
@@ -62,12 +54,12 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^3.3.1",
-    "@loopback/core": "^2.15.1",
-    "@loopback/repository": "^3.5.1",
-    "@loopback/rest": "^9.2.1",
-    "@loopback/rest-explorer": "^3.2.1",
-    "@loopback/service-proxy": "^3.1.1",
+    "@loopback/boot": "^4.0.1",
+    "@loopback/core": "^3.0.1",
+    "@loopback/repository": "^4.0.1",
+    "@loopback/rest": "^11.0.1",
+    "@loopback/rest-explorer": "^4.0.1",
+    "@loopback/service-proxy": "^4.0.1",
     "@turf/center": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "@types/lodash": "^4.14.170",
@@ -80,12 +72,12 @@
     "tslib": "^2.0.0"
   },
   "devDependencies": {
-    "@loopback/build": "^6.3.1",
-    "@loopback/eslint-config": "^10.1.1",
-    "@loopback/testlab": "^3.3.1",
-    "@types/node": "^10.17.56",
-    "eslint": "^7.23.0",
-    "source-map-support": "^0.5.19",
-    "typescript": "~4.2.3"
+    "@loopback/build": "^8.0.1",
+    "@loopback/eslint-config": "^12.0.1",
+    "@loopback/testlab": "^4.0.1",
+    "@types/node": "^10.17.60",
+    "eslint": "^8.6.0",
+    "source-map-support": "^0.5.21",
+    "typescript": "~4.5.4"
   }
 }

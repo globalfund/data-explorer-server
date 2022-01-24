@@ -52,12 +52,6 @@ To automatically fix such issues:
 yarn run lint:fix
 ```
 
-## Other useful commands
-
-- `yarn run openapi-spec`: Generate OpenAPI spec into a file
-- `yarn run docker:build`: Build a Docker image for this application
-- `yarn run docker:run`: Run this application inside a Docker container
-
 ## How should I contribute?
 
 - As we use semantic-release for automated git releases your commits must comply with the following commit types:

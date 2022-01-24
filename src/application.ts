@@ -8,7 +8,6 @@ import {
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
-import {MySequence} from './sequence';
 
 export {ApplicationConfig};
 
@@ -18,15 +17,13 @@ export class ApiApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-    // Set up the custom sequence
-    this.sequence(MySequence);
-
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/explorer',
+      path: '/api-explorer',
+      indexTitle: 'The Data Explorer API',
     });
     this.component(RestExplorerComponent);
 
