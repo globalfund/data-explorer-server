@@ -52,6 +52,12 @@ To automatically fix such issues:
 yarn run lint:fix
 ```
 
+## Learn More
+
+This project is created with [LoopBack v4](https://loopback.io).
+
+To learn more about LoopBack v4, check out the [LoopBack v4 documentation](https://loopback.io/doc/en/lb4).
+
 ## How should I contribute?
 
 - As we use semantic-release for automated git releases your commits must comply with the following commit types:
