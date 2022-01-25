@@ -62,7 +62,7 @@
     "@loopback/service-proxy": "^4.0.1",
     "@turf/center": "^6.5.0",
     "@turf/helpers": "^6.5.0",
-    "@types/lodash": "^4.14.170",
+    "@types/lodash": "^4.14.178",
     "axios": "^0.24.0",
     "lodash": "^4.17.21",
     "map-transform": "^0.3.12",
