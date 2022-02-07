@@ -1,15 +1,15 @@
 {
-  "country": "geographicAreaCode_ISO3",
-  "multicountry": "multiCountryName",
-  "component": "componentName",
-  "status": "grantAgreementStatusTypeName",
-  "partner": "principalRecipientId",
-  "partner_sub_type": "principalRecipientSubClassificationId",
-  "partner_type": "principalRecipientClassificationId",
-  "grantId": "grantAgreementNumber",
+  "country": "recipient_country_code",
+  "multicountry": "recipient_country_code",
+  "component": "sector_code",
+  "status": "activity_status_code",
+  "partner": "participating_org_ref",
+  "partner_sub_type": "participating_org_type",
+  "partner_type": "participating_org_type",
+  "grantId": "iati_identifier",
   "IPnumber": "implementationPeriodNumber",
   "barPeriod": "disbursementYear",
   "signedBarPeriod": "signatureDate gt <date1> AND signatureDate lt <date2>",
   "committedBarPeriod": "commitmentYear",
-  "search": "contains(grantAgreementTitle,<value>)"
+  "search": "title_narrative:<value>"
 }

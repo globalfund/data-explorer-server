@@ -127,5 +127,8 @@ export function getFilterString(params: any, aggregationString?: string) {
     str = aggregationString.replace('<filterString>', '');
   }
 
+  if (!str.includes('q=')) {
+    str += 'q=*:*&fl=*&';
+  }
   return str;
 }

@@ -4,7 +4,7 @@ import {
   Request,
   response,
   ResponseObject,
-  RestBindings,
+  RestBindings
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
@@ -17,13 +17,13 @@ import grantDetailUtils from '../config/mapping/grants/grantDetail.utils.json';
 import grantPeriodInfoMap from '../config/mapping/grants/grantPeriodInfo.json';
 import grantPeriodsMap from '../config/mapping/grants/grantPeriods.json';
 import GrantsRadialMapping from '../config/mapping/grants/grantsRadial.json';
-import grantsMap from '../config/mapping/grants/index.json';
+import {grantsMap} from '../config/mapping/grants/index';
 import grantsUtils from '../config/mapping/grants/utils.json';
 import urls from '../config/urls/index.json';
 import {
   GrantDetailInformation,
   GrantDetailPeriod,
-  GrantDetailPeriodInformation,
+  GrantDetailPeriodInformation
 } from '../interfaces/grantDetail';
 import {GrantListItemModel} from '../interfaces/grantList';
 import {handleDataApiError} from '../utils/dataApiError';
@@ -93,7 +93,7 @@ export class GrantsController {
       .then((resp: AxiosResponse) => {
         const res: GrantListItemModel[] = mapper(resp.data) as never[];
         return {
-          count: resp.data[grantsUtils.countPath],
+          count: resp.data.response.numFound,
           data: res,
         };
       })

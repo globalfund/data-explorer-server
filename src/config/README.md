@@ -35,7 +35,7 @@ Data source API endpoint keys can be found in [here](./urls/index.json)
 
 Data source API endpoint key: `grants`\
 [Controller](../controllers/grants.controller.ts)\
-[Mapping](./mapping/grants/index.json)\
+[Mapping](./mapping/grants/index.ts)\
 [Utils mapping](./mapping/grants/utils.json)\
 [Filters mapping](./filtering/grants.json)
 
