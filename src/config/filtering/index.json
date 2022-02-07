@@ -1,14 +1,14 @@
 {
-  "page_size": "$top",
-  "page": "function-skip",
+  "page_size": "rows",
+  "page": "start",
   "param_assign_operator": "=",
-  "default_q_param": "",
-  "fields": "$select",
-  "orderby": "$orderby",
-  "filter_operator": "$filter",
+  "default_q_param": "*:*",
+  "fields": "fl",
+  "orderby": "sort",
+  "filter_operator": "q",
   "and_operator": "AND",
   "or_operator": "OR",
-  "eq": " eq ",
-  "in": " in ",
-  "multi_param_separator": ","
+  "eq": ":",
+  "in": ":",
+  "multi_param_separator": " "
 }

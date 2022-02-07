@@ -1,13 +1,13 @@
 export function getPage(type: string, pageNumber: number, pageSize: number) {
   switch (type) {
-    case 'function-skip':
+    case 'start':
       if (isNaN(pageNumber)) {
         return {
-          $skip: 0,
+          start: 0,
         };
       }
       return {
-        $skip: (pageNumber > 0 ? pageNumber - 1 : 0) * pageSize,
+        start: (pageNumber > 0 ? pageNumber - 1 : 0) * pageSize,
       };
     default:
       return {
