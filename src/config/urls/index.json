@@ -1,6 +1,6 @@
 {
-  "grants": "https://datastore.iati.cloud/api/v2/activity/?",
-  "grantsNoCount": "https://datastore.iati.cloud/api/v2/activity",
+  "grants": "http://localhost:8983/solr/tgfGrants/select?",
+  "grantsNoCount": "http://localhost:8983/solr/tgfGrants/select",
   "results": "https://data-service.theglobalfund.org/v3.3/odata/VReportingResults",
   "documents": "https://data-service.theglobalfund.org/v3.3/odata/VProgramDocuments",
   "disbursements": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreementDisbursements",

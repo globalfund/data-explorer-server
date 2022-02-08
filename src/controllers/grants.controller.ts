@@ -63,7 +63,7 @@ const GRANTS_RESPONSE: ResponseObject = {
 };
 
 export class GrantsController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) { }
 
   @get('/grants')
   @response(200, GRANTS_RESPONSE)
@@ -84,9 +84,8 @@ export class GrantsController {
         encodeURIComponent: (str: string) => str,
       },
     );
-    const url = `${urls.grants}${filterString}${filtering.orderby}${
-      filtering.param_assign_operator
-    }${orderBy}${parseInt(pageSize, 10) > 0 ? `&${params}` : ''}`;
+    const url = `${urls.grants}${filterString}${filtering.orderby}${filtering.param_assign_operator
+      }${orderBy}${parseInt(pageSize, 10) > 0 ? `&${params}` : ''}`;
 
     return axios
       .get(url)

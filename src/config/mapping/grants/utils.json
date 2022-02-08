@@ -1,4 +1,4 @@
 {
   "countPath": "response[numFound]",
-  "defaultOrderBy": "activity_status_code asc, iati_identifier asc"
+  "defaultOrderBy": ""
 }
