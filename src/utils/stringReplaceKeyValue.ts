@@ -14,6 +14,20 @@ export function stringReplaceKeyValue(
       } else {
         result = result.replace('<organizationName>', '');
       }
+    } else if (result.indexOf('&') > -1) {
+      let tmpRes = '';
+      const subKeys = result.replace('<', '').replace('>', '').split('&');
+      if (subKeys.length > 0) {
+        subKeys.forEach((subKey: string) => {
+          if (keysValues[subKey]) {
+            tmpRes += `${tmpRes ? ' | ' : ''}${result.replace(
+              result,
+              keysValues[subKey],
+            )}`;
+          }
+        });
+        result = tmpRes;
+      }
     } else {
       result = result.replace(`<${key}>`, keysValues[key]);
     }

@@ -29,19 +29,21 @@
       "name": "Partner(s)",
       "type": "Partner",
       "link": "/partner/<code>/investments",
-      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((PrincipalRecipientId,PrincipalRecipientName),aggregate(GrantAgreementId with countdistinct as count))&$orderby=count desc",
-      "itemname": "",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((PrincipalRecipientId,PrincipalRecipientName,PrincipalRecipientShortName),aggregate(GrantAgreementId with countdistinct as count))&$orderby=count desc",
+      "itemname": "<shortName&longName>",
       "filterFields": [
         "GeographicAreaCode_ISO3",
         "GeographicAreaName",
         "ComponentName",
-        "PrincipalRecipientName"
+        "PrincipalRecipientName",
+        "PrincipalRecipientShortName"
       ],
       "filterTemplate": "contains(<field>,<value>)",
       "mappings": [
         "value[]",
         {
-          "name": "principalRecipientName",
+          "longName": "principalRecipientName",
+          "shortName": "principalRecipientShortName",
           "code": "principalRecipientId",
           "count": "count"
         }

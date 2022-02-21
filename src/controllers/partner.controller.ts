@@ -49,9 +49,24 @@ export class PartnerController {
       .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(resp.data, partnerMappingFields.dataPath, []);
+        let partnerName = '';
+        if (_.get(rawData, partnerMappingFields.partnerShortName, '')) {
+          partnerName = _.get(
+            rawData,
+            partnerMappingFields.partnerShortName,
+            '',
+          );
+        }
+        if (_.get(rawData, partnerMappingFields.partnerLongName, '')) {
+          partnerName += `${partnerName ? ' | ' : ''}${_.get(
+            rawData,
+            partnerMappingFields.partnerLongName,
+            '',
+          )}`;
+        }
         return {
           data: {
-            partnerName: _.get(rawData, partnerMappingFields.partnerName, ''),
+            partnerName,
           },
         };
       })

@@ -1,5 +1,6 @@
 {
   "dataPath": "value",
-  "url": "$select=principalRecipientName&$filter=<filterString>&$top=1",
-  "partnerName": "[0].principalRecipientName"
+  "url": "$select=principalRecipientName,principalRecipientShortName&$filter=<filterString>&$top=1",
+  "partnerLongName": "[0].principalRecipientName",
+  "partnerShortName": "[0].principalRecipientShortName"
 }
