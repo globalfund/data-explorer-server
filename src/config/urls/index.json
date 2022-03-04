@@ -18,6 +18,7 @@
   "performancerating": "https://data-service.theglobalfund.org/v3.3/odata/GrantAgreementProgressUpdates",
   "performanceframework": "https://data-service.theglobalfund.org/v3.3/odata/GrantAgreementImplementationPeriodPerformanceFrameworks",
   "multicountries": "https://data-service.theglobalfund.org/v3.3/odata/MultiCountries",
+  "indicators": "https://data-service.theglobalfund.org/v3.3/odata/VNationalHealthAndDevelopmentIndicators",
   "filteroptionslocations": "https://data-service.theglobalfund.org/v3.3/odata/GeographicAreas?$select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId&$expand=members($select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId;$expand=members($select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId;$expand=members($select=geographicAreaCode_ISO3,geographicAreaCode_ISO2,geographicAreaId,geographicAreaName,geographicAreaParentId;$expand=members)))&$filter=geographicAreaName eq 'World'",
   "filteroptionsmulticountries": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(multiCountryName%20ne%20null)/groupby((MultiCountryName,GeographicAreaCode_ISO3),aggregate(GrantAgreementId%20with%20countdistinct%20as%20count))&$orderby=count%20desc",
   "filteroptionscomponents": "https://data-service.theglobalfund.org/v3.3/odata/Components",
