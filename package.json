@@ -57,7 +57,7 @@
     "@loopback/boot": "^4.0.1",
     "@loopback/core": "^3.0.1",
     "@loopback/repository": "^4.0.1",
-    "@loopback/rest": "^11.0.1",
+    "@loopback/rest": "^11.1.0",
     "@loopback/rest-explorer": "^4.0.1",
     "@loopback/service-proxy": "^4.0.1",
     "@turf/center": "^6.5.0",
