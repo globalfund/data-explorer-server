@@ -365,6 +365,13 @@
   dependencies:
     tslib "^2.3.1"
 
+"@loopback/filter@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@loopback/filter/-/filter-2.1.1.tgz#cad0d535c677a22e1eb5926087bdc44e36a3babc"
+  integrity sha512-nlGq70QT6/tinKHZ0ECm9/+8TizPjAtndUIYswR/TISEhTtip6obraOglAgKfo42KIAjYaxJULt6coL8/1gHXg==
+  dependencies:
+    tslib "^2.3.1"
+
 "@loopback/http-server@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@loopback/http-server/-/http-server-3.0.1.tgz#b340aeba0d13ea6c148a67c1f6c1359c1e6d528e"
@@ -423,6 +430,18 @@
     debug "^4.3.3"
     lodash "^4.17.21"
     loopback-datasource-juggler "^4.26.0"
+    tslib "^2.3.1"
+
+"@loopback/repository@^4.1.0":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@loopback/repository/-/repository-4.1.1.tgz#56be6186b1836fb3aeeb8148b05d78b2b31b7605"
+  integrity sha512-n3Kb7aQWD0Noo+NSOYsYfYZ9QzGkn0lZDUEaSGie3IDUmyqVH2U3qSAMSImrgUs2Jtf/pIkRxsgs3pA5xg6Zbw==
+  dependencies:
+    "@loopback/filter" "^2.1.1"
+    "@types/debug" "^4.1.7"
+    debug "^4.3.3"
+    lodash "^4.17.21"
+    loopback-datasource-juggler "^4.27.1"
     tslib "^2.3.1"
 
 "@loopback/rest-explorer@^4.0.1":
@@ -2835,6 +2854,25 @@ loopback-datasource-juggler@^4.26.0:
     traverse "^0.6.6"
     uuid "^8.3.1"
 
+loopback-datasource-juggler@^4.27.1:
+  version "4.27.1"
+  resolved "https://registry.yarnpkg.com/loopback-datasource-juggler/-/loopback-datasource-juggler-4.27.1.tgz#c37a53b9ece9cb301a8dbf9f260edbf56969a1b3"
+  integrity sha512-tZ+NB55F/syrFAOBAndKXKERKmFU7w0UYT6NhbQqLFSc2eVmrk4Wfx3lULGYB9UCJAJIeDoCXJYvjThaeZ3TCQ==
+  dependencies:
+    async "^3.1.0"
+    change-case "^4.1.1"
+    debug "^4.1.0"
+    depd "^2.0.0"
+    inflection "^1.6.0"
+    lodash "^4.17.11"
+    loopback-connector "^5.0.0"
+    minimatch "^3.0.3"
+    nanoid "^3.1.20"
+    qs "^6.5.0"
+    strong-globalize "^6.0.5"
+    traverse "^0.6.6"
+    uuid "^8.3.1"
+
 lower-case@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-2.0.2.tgz#6fa237c63dbdc4a82ca0fd882e4722dc5e634e28"
@@ -3057,6 +3095,11 @@ nanoid@^2.1.0:
   version "2.1.11"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
   integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
+
+nanoid@^3.1.20:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.1.tgz#6347a18cac88af88f58af0b3594b723d5e99bb35"
+  integrity sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==
 
 natural-compare@^1.4.0:
   version "1.4.0"
