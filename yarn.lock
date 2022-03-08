@@ -307,25 +307,25 @@
     source-map-support "^0.5.21"
     typescript "~4.5.4"
 
-"@loopback/context@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@loopback/context/-/context-4.0.1.tgz#38185f405bbe2a428454e000d50b250594ad84b8"
-  integrity sha512-03JP+zyOMyAc17IbzTywjBayqZQ3CZRaWtd+wtMbrJfqQ4kWSPe5DGY4513yqR2Fjfk61dxxuJz5ke+QXKxccw==
+"@loopback/context@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@loopback/context/-/context-4.1.1.tgz#ce81d1fd927fa10c660f301480c724715deedce7"
+  integrity sha512-k88eosFy1hktS07onESIcaeZC6/YvsCP/BjijLnGAhdetvMKOcdu/JW9OlfmcOUfe1tPPVLkv6saPiIX40K1PA==
   dependencies:
-    "@loopback/metadata" "^4.0.1"
+    "@loopback/metadata" "^4.1.1"
     "@types/debug" "^4.1.7"
     debug "^4.3.3"
-    hyperid "^3.0.0"
+    hyperid "^3.0.1"
     p-event "^4.2.0"
     tslib "^2.3.1"
     uuid "^8.3.2"
 
-"@loopback/core@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@loopback/core/-/core-3.0.1.tgz#225c63cbd9ed85cfacf2221723bb30e7011da815"
-  integrity sha512-bWjUn73KkwfjKpTYDA23VeifaIgAQtbRP6fDWmm442WniLmeEpu2iKimcX6om7elB+PTh3IpGX1zyjbEJOzwGA==
+"@loopback/core@^3.1.0":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@loopback/core/-/core-3.1.1.tgz#680aff789d3eb6e37df73213ce5dc9410a39a49b"
+  integrity sha512-IXXE+/0adO4jJMJDDfcCG/iPipetCRGLdp4EzKh3Iq5K/GbkNLAIybGf354Cevy9utRnBbAs65F9K4PUD/Pjhw==
   dependencies:
-    "@loopback/context" "^4.0.1"
+    "@loopback/context" "^4.1.1"
     debug "^4.3.3"
     tslib "^2.3.1"
 
@@ -374,10 +374,10 @@
     stoppable "^1.1.0"
     tslib "^2.3.1"
 
-"@loopback/metadata@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@loopback/metadata/-/metadata-4.0.1.tgz#cf749f748c7af2b15311e992b398fe588fb6f476"
-  integrity sha512-gc4vXg8DnNVEuxDqZVsdsgKnduS+f+DdsdzXRAvuXqj8549/yr+WbpUITf0+eEudT1a4n/M0yobIRDc6c2CAsw==
+"@loopback/metadata@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@loopback/metadata/-/metadata-4.1.1.tgz#eca790d8024dd587aaa91c2cf77f7b25418cb71e"
+  integrity sha512-LQiRWAqeL+VLG/9fGtHtjcnQ8DJR/pJmubJIBQjs+dEgk7tfeX8UBE2cVG+L1a77DtyOXvioQ1w5UtfSv09aQA==
   dependencies:
     debug "^4.3.3"
     lodash "^4.17.21"
@@ -2363,10 +2363,10 @@ human-signals@^1.1.1:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
 
-hyperid@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/hyperid/-/hyperid-3.0.0.tgz#d66e370e5da04ef591fc227b1c6ecbe43ba7f145"
-  integrity sha512-vwl5ARjv9KGKphUpKrNlCpH6oC3qnlCxz7WRG24h53MvkWGit2Iwbv/H8usILbMohBsaRgs8Ieumgy7+oafuyw==
+hyperid@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/hyperid/-/hyperid-3.0.1.tgz#6e9f965d79291e0465f4325568d028168b6b851b"
+  integrity sha512-I+tl7TS5nsoVhkxqX1rS3Qmqlq44eoPUcgPthW8v3IW8CvWL7lwtd6HQbkDUMrBKJTG0vgEaRsjT35imW/D+9Q==
   dependencies:
     uuid "^8.3.2"
     uuid-parse "^1.1.0"
