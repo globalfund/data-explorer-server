@@ -1,0 +1,15 @@
+{
+  "expand": "$expand=component,geographicArea",
+  "mapping": [
+    "value[]",
+    {
+      "periodStartYear": "periodStartYear",
+      "periodEndYear": "periodEndYear",
+      "allocationAmount": "allocationAmount",
+      "status": "status",
+      "component": "component.componentName",
+      "geographicAreaName": "geographicArea.geographicAreaName",
+      "geographicAreaCode_ISO3": "geographicArea.geographicAreaCode_ISO3"
+    }
+  ]
+}

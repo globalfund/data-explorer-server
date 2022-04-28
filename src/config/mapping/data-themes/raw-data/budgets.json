@@ -1,0 +1,14 @@
+{
+  "expand": "$expand=activityArea($expand=activityAreaParent),budgetCategory($expand=budgetCategoryParent($expand=budgetCategoryParent))",
+  "mapping": [
+    "value[]",
+    {
+      "budgetPeriodStartDate": "budgetPeriodStartDate",
+      "budgetPeriodEndDate": "budgetPeriodEndDate",
+      "budgetAmount": "budgetAmount",
+      "level1": "budgetCategory.budgetCategoryParent.budgetCategoryParent.budgetCategoryName",
+      "level2": "budgetCategory.budgetCategoryParent.budgetCategoryName",
+      "costCategory": "budgetCategory.budgetCategoryName"
+    }
+  ]
+}
