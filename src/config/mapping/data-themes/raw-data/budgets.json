@@ -1,5 +1,5 @@
 {
-  "expand": "$expand=activityArea($expand=activityAreaParent),budgetCategory($expand=budgetCategoryParent($expand=budgetCategoryParent))",
+  "expand": "$select=budgetPeriodStartDate,budgetPeriodEndDate,budgetAmount,budgetCategory,activityArea,grantAgreementImplementationPeriod&$expand=activityArea($select=activityAreaName;$expand=activityAreaParent($select=activityAreaName)),budgetCategory($select=budgetCategoryName;$expand=budgetCategoryParent($select=budgetCategoryName;$expand=budgetCategoryParent($select=budgetCategoryName))),grantAgreementImplementationPeriod($select=grantAgreement,implementationPeriodStatusType;$expand=grantAgreement($select=geographicArea,multiCountry,component;$expand=geographicArea($select=geographicAreaName),multiCountry($select=multiCountryName),component($select=componentName)),implementationPeriodStatusType($select=programStatusTypeName))",
   "mapping": [
     "value[]",
     {
@@ -8,7 +8,12 @@
       "budgetAmount": "budgetAmount",
       "level1": "budgetCategory.budgetCategoryParent.budgetCategoryParent.budgetCategoryName",
       "level2": "budgetCategory.budgetCategoryParent.budgetCategoryName",
-      "costCategory": "budgetCategory.budgetCategoryName"
+      "costCategory": "budgetCategory.budgetCategoryName",
+      "activityArea": "activityArea.activityAreaName",
+      "component": "activityArea.activityAreaParent.activityAreaName",
+      "country": "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName",
+      "multiCountry": "grantAgreementImplementationPeriod.grantAgreement.multiCountry.multiCountryName",
+      "status": "grantAgreementImplementationPeriod.implementationPeriodStatusType.programStatusTypeName"
     }
   ]
 }

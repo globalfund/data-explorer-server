@@ -3,18 +3,19 @@ import {get, Request, response, RestBindings} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
-import allocations from '../config/mapping/data-themes/raw-data/allocations.json';
-import budgets from '../config/mapping/data-themes/raw-data/budgets.json';
-import eligibility from '../config/mapping/data-themes/raw-data/eligibility.json';
-import generic from '../config/mapping/data-themes/raw-data/generic.json';
-import grants from '../config/mapping/data-themes/raw-data/grants.json';
-import investmentCommitted from '../config/mapping/data-themes/raw-data/investment-committed.json';
-import investmentDisbursed from '../config/mapping/data-themes/raw-data/investment-disbursed.json';
-import investmentSigned from '../config/mapping/data-themes/raw-data/investment-signed.json';
-import pledgesContributions from '../config/mapping/data-themes/raw-data/pledges-contributions.json';
-import urls from '../config/urls/index.json';
-import {formatRawData} from '../utils/data-themes/formatRawData';
-import {handleDataApiError} from '../utils/dataApiError';
+import allocations from '../../config/mapping/data-themes/raw-data/allocations.json';
+import budgets from '../../config/mapping/data-themes/raw-data/budgets.json';
+import eligibility from '../../config/mapping/data-themes/raw-data/eligibility.json';
+import generic from '../../config/mapping/data-themes/raw-data/generic.json';
+import grants from '../../config/mapping/data-themes/raw-data/grants.json';
+import investmentCommitted from '../../config/mapping/data-themes/raw-data/investment-committed.json';
+import investmentDisbursed from '../../config/mapping/data-themes/raw-data/investment-disbursed.json';
+import investmentSigned from '../../config/mapping/data-themes/raw-data/investment-signed.json';
+import pledgesContributions from '../../config/mapping/data-themes/raw-data/pledges-contributions.json';
+import urls from '../../config/urls/index.json';
+import {formatRawData} from '../../utils/data-themes/formatRawData';
+import {getDatasetFilterOptions} from '../../utils/data-themes/getDatasetFilterOptions';
+import {handleDataApiError} from '../../utils/dataApiError';
 
 export class DataThemesRawDataController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
@@ -28,8 +29,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, investmentSigned.dataPath, []).map(
           formatRawData,
         );
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
@@ -47,8 +50,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, investmentCommitted.dataPath, []).map(
           formatRawData,
         );
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
@@ -66,8 +71,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, investmentDisbursed.dataPath, []).map(
           formatRawData,
         );
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
@@ -82,8 +89,10 @@ export class DataThemesRawDataController {
       .get(`${urls.budgets}/?${budgets.expand}&${generic.rows}`)
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
@@ -100,8 +109,10 @@ export class DataThemesRawDataController {
       )
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
@@ -116,8 +127,10 @@ export class DataThemesRawDataController {
       .get(`${urls.allocations}/?${allocations.expand}&${generic.rows}`)
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
@@ -131,8 +144,10 @@ export class DataThemesRawDataController {
       .get(`${urls.grantsNoCount}/?${grants.select}&${generic.rows}`)
       .then((res: AxiosResponse) => {
         const data = _.get(res.data, grants.dataPath, []).map(formatRawData);
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
@@ -148,8 +163,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, eligibility.dataPath, []).map(
           formatRawData,
         );
+        const filterOptions = getDatasetFilterOptions(data);
         return {
           data,
+          filterOptions,
           count: data.length,
         };
       })
