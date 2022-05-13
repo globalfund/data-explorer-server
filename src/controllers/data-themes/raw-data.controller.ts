@@ -29,10 +29,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, investmentSigned.dataPath, []).map(
           formatRawData,
         );
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })
@@ -50,10 +50,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, investmentCommitted.dataPath, []).map(
           formatRawData,
         );
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })
@@ -71,10 +71,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, investmentDisbursed.dataPath, []).map(
           formatRawData,
         );
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })
@@ -89,10 +89,10 @@ export class DataThemesRawDataController {
       .get(`${urls.budgets}/?${budgets.expand}&${generic.rows}`)
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })
@@ -109,10 +109,10 @@ export class DataThemesRawDataController {
       )
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })
@@ -127,10 +127,10 @@ export class DataThemesRawDataController {
       .get(`${urls.allocations}/?${allocations.expand}&${generic.rows}`)
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })
@@ -144,10 +144,10 @@ export class DataThemesRawDataController {
       .get(`${urls.grantsNoCount}/?${grants.select}&${generic.rows}`)
       .then((res: AxiosResponse) => {
         const data = _.get(res.data, grants.dataPath, []).map(formatRawData);
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })
@@ -163,10 +163,10 @@ export class DataThemesRawDataController {
         const data = _.get(res.data, eligibility.dataPath, []).map(
           formatRawData,
         );
-        const filterOptions = getDatasetFilterOptions(data);
+        const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
-          filterOptions,
+          filterOptionGroups,
           count: data.length,
         };
       })

@@ -8,6 +8,7 @@ import {
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
+import {DbDataSource} from './datasources';
 
 export {ApplicationConfig};
 
@@ -16,6 +17,26 @@ export class ApiApplication extends BootMixin(
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+    // Set datasource based off environment
+    const dbHost = process.env.MONGO_HOST ?? 'localhost';
+    const dbPort = process.env.MONGO_PORT ?? 27017;
+    const dbUser = process.env.MONGO_USERNAME ?? '';
+    const dbPass = process.env.MONGO_PASSWORD ?? '';
+    const database = process.env.MONGO_DB ?? 'the-data-explorer-db';
+
+    this.bind('datasources.config.db').to({
+      name: 'db',
+      connector: 'mongodb',
+      url: '',
+      host: dbHost,
+      port: dbPort,
+      user: dbUser,
+      password: dbPass,
+      database: database,
+      useNewUrlParser: true,
+    });
+    this.bind('datasources.db').toClass(DbDataSource);
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
