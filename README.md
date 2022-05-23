@@ -18,12 +18,44 @@
 
 Information about the data/logic mapping process can be found in [src/config/README.md](./src/config/README.md)
 
+## Prerequisites
+
+In order to use the Data Explorer Data Themes API, you need to install <a href="https://www.mongodb.com/docs/manual/installation/">MongoDB</a>.
+
+The default database configuration can be found in [src/application.ts](./src/application.ts)
+
+```js
+const dbHost = process.env.MONGO_HOST ?? 'localhost';
+const dbPort = process.env.MONGO_PORT ?? 27017;
+const dbUser = process.env.MONGO_USERNAME ?? '';
+const dbPass = process.env.MONGO_PASSWORD ?? '';
+const database = process.env.MONGO_DB ?? 'the-data-explorer-db';
+```
+
+If you want to use different configuration variables then add them as environment variables
+
+```txt
+MONGO_HOST=<mongoDB host>
+MONGO_PORT=<mongoDB port>
+MONGO_USERNAME=<mongoDB username>
+MONGO_PASSWORD=<mongoDB password>
+MONGO_DB=<mongoDB name>
+```
+
 ## Install dependencies
 
 Whenever dependencies in `package.json` are changed, run the following command:
 
 ```sh
 yarn install
+```
+
+## Migrate DB models
+
+Whenever database models in `src/models` are changed, run the following command:
+
+```sh
+yarn migrate
 ```
 
 ## Run the application in development mode
