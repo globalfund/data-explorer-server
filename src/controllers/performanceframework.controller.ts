@@ -31,7 +31,7 @@ import {
   getAchievementRateLegendValues,
   getColorBasedOnValue,
 } from '../utils/performanceframework/formatPFData';
-import {getTimeframes} from '../utils/performanceframework/getTimeframes';
+import {getTimeframeGroups} from '../utils/performanceframework/getTimeframes';
 
 const PERFORMANCE_FRAMEWORK_RESPONSE: ResponseObject = {
   description: 'Performance Framework Response',
@@ -99,7 +99,7 @@ export class PerformanceframeworkController {
             timeframes: [],
           };
         }
-        const timeframes = getTimeframes(mappedData);
+        const timeframes = getTimeframeGroups(mappedData);
 
         const timeframeIndexParam = this.req.query.timeframeIndex
           ? parseInt(this.req.query.timeframeIndex.toString(), 10)
@@ -108,27 +108,41 @@ export class PerformanceframeworkController {
 
         if (
           timeframeIndexParam < 0 ||
-          timeframeIndexParam > timeframes.length / 2 - 1
+          timeframeIndexParam > timeframes.length - 1
         ) {
-          selectedTimeframes = timeframes;
+          selectedTimeframes = [
+            {
+              raw: timeframes[0].start,
+              formatted: timeframes[0].startFormatted,
+              number: new Date(timeframes[0].start).getTime(),
+            },
+            {
+              raw: timeframes[0].end,
+              formatted: timeframes[0].endFormatted,
+              number: new Date(timeframes[0].end).getTime(),
+            },
+          ];
         } else {
           selectedTimeframes = [
-            timeframes[timeframeIndexParam * 2],
-            timeframes[timeframeIndexParam * 2 + 1],
+            {
+              raw: timeframes[timeframeIndexParam].start,
+              formatted: timeframes[timeframeIndexParam].startFormatted,
+              number: new Date(timeframes[timeframeIndexParam].start).getTime(),
+            },
+            {
+              raw: timeframes[timeframeIndexParam].end,
+              formatted: timeframes[timeframeIndexParam].endFormatted,
+              number: new Date(timeframes[timeframeIndexParam].end).getTime(),
+            },
           ];
         }
 
         const data = formatPFData(mappedData, selectedTimeframes);
 
-        const periods: string[][] = [];
-        timeframes.forEach((timeframe: any, index: number) => {
-          if (index % 2 === 0 && index + 1 < timeframes.length) {
-            periods.push([
-              timeframe.formatted,
-              timeframes[index + 1].formatted,
-            ]);
-          }
-        });
+        const periods: string[][] = timeframes.map((group: any) => [
+          group.startFormatted,
+          group.endFormatted,
+        ]);
 
         return {
           data,
@@ -203,28 +217,29 @@ export class PerformanceframeworkController {
               const resultInstance: any =
                 _.find(dateInstance, {valueType: 'Result'}) ?? {};
 
-              const disaggregations: PFIndicatorResultDisaggregationGroup[] = baselineInstance.disaggregationGroup
-                ? [
-                    {
-                      name: baselineInstance.disaggregationGroup,
-                      values: [
-                        {
-                          category: baselineInstance.disaggregationValue,
-                          baseline: {
-                            numerator: baselineInstance.valueNumerator,
-                            denominator: baselineInstance.valueDenominator,
-                            percentage: baselineInstance.valuePercentage,
+              const disaggregations: PFIndicatorResultDisaggregationGroup[] =
+                baselineInstance.disaggregationGroup
+                  ? [
+                      {
+                        name: baselineInstance.disaggregationGroup,
+                        values: [
+                          {
+                            category: baselineInstance.disaggregationValue,
+                            baseline: {
+                              numerator: baselineInstance.valueNumerator,
+                              denominator: baselineInstance.valueDenominator,
+                              percentage: baselineInstance.valuePercentage,
+                            },
+                            reported: {
+                              numerator: resultInstance.valueNumerator,
+                              denominator: resultInstance.valueDenominator,
+                              percentage: resultInstance.valuePercentage,
+                            },
                           },
-                          reported: {
-                            numerator: resultInstance.valueNumerator,
-                            denominator: resultInstance.valueDenominator,
-                            percentage: resultInstance.valuePercentage,
-                          },
-                        },
-                      ],
-                    },
-                  ]
-                : [];
+                        ],
+                      },
+                    ]
+                  : [];
               const achievementRate =
                 this.req.query.moduleName === 'Process indicator / WPTM'
                   ? resultInstance.valueNumerator ||
