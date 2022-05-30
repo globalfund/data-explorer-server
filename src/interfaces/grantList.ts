@@ -8,4 +8,6 @@ export interface GrantListItemModel {
   disbursed: number;
   committed: number;
   signed: number;
+  recipientName: string;
+  recipientShortName: string;
 }
