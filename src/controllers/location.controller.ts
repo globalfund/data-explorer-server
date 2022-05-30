@@ -69,8 +69,6 @@ export class LocationController {
     );
     const principalRecipientsUrl = `${urls.grantsNoCount}/?${principalRecipientsFilterString}`;
 
-    console.log(principalRecipientsUrl);
-
     return axios
       .all([
         axios.get(multicountriesUrl),
