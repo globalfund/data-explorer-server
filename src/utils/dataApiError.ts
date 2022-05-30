@@ -5,4 +5,9 @@ export function handleDataApiError(error: AxiosError) {
     message: error.message,
     config: error.config.url,
   });
+  return {
+    data: [],
+    message: error.message,
+    config: error.config.url,
+  };
 }
