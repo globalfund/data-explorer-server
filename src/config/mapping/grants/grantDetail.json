@@ -16,6 +16,11 @@
     "manager": {
       "name": "portfolioManager",
       "email": "portfolioManagerEmailAddress"
+    },
+    "principalRecipient": {
+      "code": "principalRecipientId",
+      "name": "principalRecipientName",
+      "shortName": "principalRecipientShortName"
     }
   }
 ]

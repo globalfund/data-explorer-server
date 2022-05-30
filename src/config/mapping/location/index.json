@@ -24,5 +24,9 @@
   "portfolioManager": "portfolioManager",
   "portfolioManagerEmail": "portfolioManagerEmailAddress",
   "multiCountryId": "multiCountryId",
-  "geoId": "geographicAreaId"
+  "geoId": "geographicAreaId",
+  "principalRecipientAggregation": "$apply=<filterString>groupby((PrincipalRecipientId,PrincipalRecipientName,PrincipalRecipientShortName))",
+  "principalRecipientName": "principalRecipientName",
+  "principalRecipientShortName": "principalRecipientShortName",
+  "principalRecipientId": "principalRecipientId"
 }
