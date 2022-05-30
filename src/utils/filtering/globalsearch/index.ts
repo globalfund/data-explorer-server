@@ -14,5 +14,5 @@ export function buildGlobalSearchFilterString(
     strArray.push(`(${fieldStrArray.join(` ${filteringUtils.or_operator} `)})`);
   });
 
-  return strArray.join(` ${filteringUtils.or_operator} `);
+  return strArray.join(` ${filteringUtils.and_operator} `);
 }
