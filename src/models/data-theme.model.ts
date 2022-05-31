@@ -11,7 +11,7 @@ class DataThemeTabText extends Entity {
     type: 'string',
     required: true,
   })
-  content: string;
+  content: object;  // object is a draft-js EditorState
 
   @property({
     type: 'date',
@@ -124,14 +124,7 @@ class DataThemeTab extends Entity {
     type: 'array',
     itemType: 'object',
   })
-  visualisations: DataThemeTabViz[];
-
-  @property({
-    type: 'array',
-    itemType: 'object',
-    required: false,
-  })
-  texts: DataThemeTabText[];
+  content: (DataThemeTabViz | DataThemeTabText)[];
 
   @property({
     type: 'date',
