@@ -18,3 +18,22 @@ export function getTimeframes(rawData: any) {
   timeframes = _.sortBy(timeframes, 'number');
   return timeframes;
 }
+
+export function getTimeframeGroups(rawData: any) {
+  let timeframes: any[] = [];
+  rawData.forEach((item: any) => {
+    if (item.startDate && item.endDate) {
+      timeframes.push({
+        start: item.startDate,
+        startFormatted: moment(item.startDate).format('MMM, YYYY'),
+        end: item.endDate,
+        endFormatted: moment(item.endDate).format('MMM, YYYY'),
+        number:
+          new Date(item.startDate).getTime() + new Date(item.endDate).getTime(),
+      });
+    }
+  });
+  timeframes = _.uniqBy(timeframes, 'number');
+  timeframes = _.orderBy(timeframes, 'number', 'asc');
+  return timeframes;
+}

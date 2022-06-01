@@ -63,12 +63,18 @@ export class LocationController {
     }&${filtering.page_size}${filtering.param_assign_operator}${
       locationMappingFields.locationIndicatorsDefaultCap
     }`;
+    const principalRecipientsFilterString = getFilterString(
+      this.req.query,
+      locationMappingFields.principalRecipientAggregation,
+    );
+    const principalRecipientsUrl = `${urls.grantsNoCount}/?${principalRecipientsFilterString}`;
 
     return axios
       .all([
         axios.get(multicountriesUrl),
         axios.get(financialUrl),
         axios.get(indicatorsUrl),
+        axios.get(principalRecipientsUrl),
       ])
       .then(
         axios.spread((...responses) => {
@@ -100,6 +106,11 @@ export class LocationController {
           const locationIndicatorsResp = _.get(
             responses[2].data,
             locationMappingFields.locationIndicatorsDataPath,
+            [],
+          );
+          const principalRecipientsResp = _.get(
+            responses[3].data,
+            locationMappingFields.multiCountriesDataPath,
             [],
           );
 
@@ -200,6 +211,28 @@ export class LocationController {
                     '',
                   ),
                 })),
+                principalRecipients: principalRecipientsResp.map((pr: any) => {
+                  const fullName = _.get(
+                    pr,
+                    locationMappingFields.principalRecipientName,
+                    '',
+                  );
+                  const shortName = _.get(
+                    pr,
+                    locationMappingFields.principalRecipientShortName,
+                    '',
+                  );
+                  const id = _.get(
+                    pr,
+                    locationMappingFields.principalRecipientId,
+                    '',
+                  );
+
+                  return {
+                    code: id,
+                    name: `${fullName}${shortName ? ` (${shortName})` : ''}`,
+                  };
+                }),
               },
             ],
           };

@@ -9,6 +9,8 @@
     "rating": "performanceRatingCode",
     "disbursed": "totalDisbursedAmount",
     "committed": "totalCommittedAmount",
-    "signed": "totalSignedAmount"
+    "signed": "totalSignedAmount",
+    "recipientName": "principalRecipientName",
+    "recipientShortName": "principalRecipientShortName"
   }
 ]
