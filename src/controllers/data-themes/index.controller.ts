@@ -76,6 +76,51 @@ export class DataThemesController {
     return this.dataThemeRepository.find(filter);
   }
 
+  @get('/data-themes-with-viz-count')
+  @response(200, {
+    description: 'Array of DataTheme model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(DataTheme, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async findNreturnWcount(): Promise<
+    {
+      id: string;
+      title: string;
+      subTitle: string;
+      public: boolean;
+      createdDate: Date;
+      vizCount: number;
+    }[]
+  > {
+    return this.dataThemeRepository.find().then(items => {
+      return items.map(item => {
+        let count = 0;
+        item.tabs.forEach(tab => {
+          tab.content.forEach(content => {
+            // @ts-ignore
+            if (content.vizType !== undefined) {
+              count += 1;
+            }
+          });
+        });
+        return {
+          id: item.id,
+          title: item.title,
+          subTitle: item.subTitle,
+          public: item.public,
+          createdDate: item.createdDate,
+          vizCount: count,
+        };
+      });
+    });
+  }
+
   @patch('/data-themes')
   @response(200, {
     description: 'DataTheme PATCH success count',
