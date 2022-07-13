@@ -200,4 +200,23 @@ export class DataThemesController {
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.dataThemeRepository.deleteById(id);
   }
+
+  @get('/data-themes/duplicate/{id}')
+  @response(200, {
+    description: 'DataTheme model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(DataTheme, {includeRelations: true}),
+      },
+    },
+  })
+  async duplicate(@param.path.string('id') id: string): Promise<DataTheme> {
+    const fDataTheme = await this.dataThemeRepository.findById(id);
+    return this.dataThemeRepository.create({
+      title: `${fDataTheme.title} copy`,
+      subTitle: fDataTheme.subTitle,
+      public: fDataTheme.public,
+      tabs: fDataTheme.tabs,
+    });
+  }
 }
