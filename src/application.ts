@@ -7,6 +7,7 @@ import {
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
+import 'dotenv/config';
 import path from 'path';
 import {DbDataSource} from './datasources';
 

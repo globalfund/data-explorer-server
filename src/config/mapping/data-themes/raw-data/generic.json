@@ -1,3 +1,5 @@
 {
-  "rows": ""
+  "rows": "$top=",
+  "withcount": "$count=true",
+  "countField": "@odata.count"
 }
