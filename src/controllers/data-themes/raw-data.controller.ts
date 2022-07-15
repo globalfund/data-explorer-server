@@ -25,7 +25,7 @@ export class DataThemesRawDataController {
   investmentSigned(@param.query.string('rows') rows: string): object {
     return axios
       .get(
-        `${urls.vgrantPeriods}/?${investmentSigned.select}&${generic.rows}${rows}`,
+        `${urls.vgrantPeriods}/?${investmentSigned.select}&${generic.withcount}&${generic.rows}${rows}`,
       )
       .then((res: AxiosResponse) => {
         const data = _.get(res.data, investmentSigned.dataPath, []).map(
@@ -35,7 +35,7 @@ export class DataThemesRawDataController {
         return {
           data,
           filterOptionGroups,
-          count: data.length,
+          count: _.get(res.data, generic.countField, data.length),
         };
       })
       .catch(handleDataApiError);
@@ -46,7 +46,7 @@ export class DataThemesRawDataController {
   investmentCommitted(@param.query.string('rows') rows: string): object {
     return axios
       .get(
-        `${urls.vcommitments}/?${investmentCommitted.select}&${generic.rows}${rows}`,
+        `${urls.vcommitments}/?${investmentCommitted.select}&${generic.withcount}&${generic.rows}${rows}`,
       )
       .then((res: AxiosResponse) => {
         const data = _.get(res.data, investmentCommitted.dataPath, []).map(
@@ -56,7 +56,7 @@ export class DataThemesRawDataController {
         return {
           data,
           filterOptionGroups,
-          count: data.length,
+          count: _.get(res.data, generic.countField, data.length),
         };
       })
       .catch(handleDataApiError);
@@ -67,7 +67,7 @@ export class DataThemesRawDataController {
   investmentDisbursed(@param.query.string('rows') rows: string): object {
     return axios
       .get(
-        `${urls.disbursements}/?${investmentDisbursed.select}&${generic.rows}${rows}`,
+        `${urls.disbursements}/?${investmentDisbursed.select}&${generic.withcount}&${generic.rows}${rows}`,
       )
       .then((res: AxiosResponse) => {
         const data = _.get(res.data, investmentDisbursed.dataPath, []).map(
@@ -77,7 +77,7 @@ export class DataThemesRawDataController {
         return {
           data,
           filterOptionGroups,
-          count: data.length,
+          count: _.get(res.data, generic.countField, data.length),
         };
       })
       .catch(handleDataApiError);
@@ -88,14 +88,16 @@ export class DataThemesRawDataController {
   budgets(@param.query.string('rows') rows: string): object {
     const mapper = mapTransform(budgets.mapping);
     return axios
-      .get(`${urls.budgets}/?${budgets.expand}&${generic.rows}${rows}`)
+      .get(
+        `${urls.budgets}/?${budgets.expand}&${generic.withcount}&${generic.rows}${rows}`,
+      )
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
         const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
           filterOptionGroups,
-          count: data.length,
+          count: _.get(res.data, generic.countField, data.length),
         };
       })
       .catch(handleDataApiError);
@@ -107,7 +109,7 @@ export class DataThemesRawDataController {
     const mapper = mapTransform(pledgesContributions.mapping);
     return axios
       .get(
-        `${urls.pledgescontributions}/?${pledgesContributions.expand}&${generic.rows}${rows}`,
+        `${urls.pledgescontributions}/?${pledgesContributions.expand}&${generic.withcount}&${generic.rows}${rows}`,
       )
       .then((res: AxiosResponse) => {
         const data = (mapper(res.data) as never[]).map(formatRawData);
@@ -115,7 +117,7 @@ export class DataThemesRawDataController {
         return {
           data,
           filterOptionGroups,
-          count: data.length,
+          count: _.get(res.data, generic.countField, data.length),
         };
       })
       .catch(handleDataApiError);
@@ -145,14 +147,16 @@ export class DataThemesRawDataController {
   @response(200)
   grants(@param.query.string('rows') rows: string): object {
     return axios
-      .get(`${urls.grantsNoCount}/?${grants.select}&${generic.rows}${rows}`)
+      .get(
+        `${urls.grantsNoCount}/?${grants.select}&${generic.withcount}&${generic.rows}${rows}`,
+      )
       .then((res: AxiosResponse) => {
         const data = _.get(res.data, grants.dataPath, []).map(formatRawData);
         const filterOptionGroups = getDatasetFilterOptions(data);
         return {
           data,
           filterOptionGroups,
-          count: data.length,
+          count: _.get(res.data, generic.countField, data.length),
         };
       })
       .catch(handleDataApiError);
@@ -162,7 +166,9 @@ export class DataThemesRawDataController {
   @response(200)
   eligibility(@param.query.string('rows') rows: string): object {
     return axios
-      .get(`${urls.eligibility}/?${eligibility.select}&${generic.rows}${rows}`)
+      .get(
+        `${urls.eligibility}/?${eligibility.select}&${generic.withcount}&${generic.rows}${rows}`,
+      )
       .then((res: AxiosResponse) => {
         const data = _.get(res.data, eligibility.dataPath, []).map(
           formatRawData,
@@ -171,7 +177,7 @@ export class DataThemesRawDataController {
         return {
           data,
           filterOptionGroups,
-          count: data.length,
+          count: _.get(res.data, generic.countField, data.length),
         };
       })
       .catch(handleDataApiError);
