@@ -88,7 +88,10 @@ export class DataThemesController {
       },
     },
   })
-  async findNreturnWcount(@param.query.string('q') q?: string): Promise<
+  async findNreturnWcount(
+    @param.query.string('q') q?: string,
+    @param.query.string('order') order?: string,
+  ): Promise<
     {
       id: string;
       title: string;
@@ -98,13 +101,22 @@ export class DataThemesController {
       vizCount: number;
     }[]
   > {
-    const query = q
+    let query: any = q
       ? {
           where: {
             or: [{title: {regexp: `/${q}/i`}}, {subTitle: {regexp: `/${q}/i`}}],
           },
         }
       : undefined;
+    if (order) {
+      if (!order) {
+        query = {};
+      }
+      query = {
+        ...query,
+        order,
+      };
+    }
     return this.dataThemeRepository.find(query).then(items => {
       return items.map(item => {
         let count = 0;
