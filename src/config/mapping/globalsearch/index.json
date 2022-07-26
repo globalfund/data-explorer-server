@@ -1,0 +1,151 @@
+{
+  "categories": [
+    {
+      "name": "Location(s)",
+      "type": "Country",
+      "link": "/location/<code>/overview",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((GeographicAreaCode_ISO3,GeographicAreaName,MultiCountryName),aggregate(GrantAgreementId with countdistinct as count))&$orderby=count desc",
+      "itemname": "",
+      "filterFields": [
+        "GeographicAreaCode_ISO3",
+        "GeographicAreaName",
+        "ComponentName",
+        "MultiCountryName"
+      ],
+      "filterTemplate": "contains(<field>,<value>)",
+      "mappings": [
+        "value[]",
+        {
+          "name": "geographicAreaName",
+          "altName": "multiCountryName",
+          "code": "geographicAreaCode_ISO3",
+          "altCode": "multiCountryName",
+          "count": "count"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Partner(s)",
+      "type": "Partner",
+      "link": "/partner/<code>/investments",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((PrincipalRecipientId,PrincipalRecipientName,PrincipalRecipientShortName),aggregate(GrantAgreementId with countdistinct as count))&$orderby=count desc",
+      "itemname": "<shortName&longName>",
+      "filterFields": [
+        "GeographicAreaCode_ISO3",
+        "GeographicAreaName",
+        "ComponentName",
+        "PrincipalRecipientName",
+        "PrincipalRecipientShortName"
+      ],
+      "filterTemplate": "contains(<field>,<value>)",
+      "mappings": [
+        "value[]",
+        {
+          "longName": "principalRecipientName",
+          "shortName": "principalRecipientShortName",
+          "code": "principalRecipientId",
+          "count": "count"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Donor(s)",
+      "type": "Donor",
+      "link": "/viz/pledges-contributions/time-cycle?donors=<code>",
+      "url": "http://localhost:4200/filter-options/donors?q=<keyword>",
+      "itemname": "",
+      "filterFields": [],
+      "filterTemplate": "contains(<field>,<value>)",
+      "mappings": [
+        "options[].subOptions",
+        {
+          "name": "label",
+          "code": "value"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Grant(s)",
+      "type": "<type>",
+      "link": "/grant/<code>",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$select=grantAgreementTitle,grantAgreementNumber,grantAgreementStatusTypeName&$filter=(<filterStr>)&$orderby=GrantAgreementStatusTypeName asc,GrantAgreementTitle asc",
+      "itemname": "<code> | <name>",
+      "filterFields": [
+        "GeographicAreaCode_ISO3",
+        "GeographicAreaName",
+        "ComponentName",
+        "GrantAgreementTitle",
+        "GrantAgreementNumber",
+        "PrincipalRecipientName",
+        "PrincipalRecipientShortName",
+        "GrantAgreementStatusTypeName"
+      ],
+      "filterTemplate": "contains(<field>,<value>)",
+      "mappings": [
+        "value[]",
+        {
+          "name": "grantAgreementTitle",
+          "code": "grantAgreementNumber",
+          "type": "grantAgreementStatusTypeName"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Result(s)",
+      "type": "",
+      "link": "/results/#<code>",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VReportingResults?$apply=filter(<filterStr>)/groupby((reportingResultIndicatorName,reportingResultIndicatorId), aggregate(ReportingResultValue with sum as value))&$orderby=value desc",
+      "itemname": "",
+      "filterFields": [
+        "GeographicAreaCode_ISO3",
+        "GeographicAreaName",
+        "ComponentName",
+        "ReportingResultIndicatorName"
+      ],
+      "filterTemplate": "contains(<field>,<value>)",
+      "mappings": [
+        "value[]",
+        {
+          "name": "reportingResultIndicatorName",
+          "code": "reportingResultIndicatorId"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "Document(s)",
+      "type": "<type>",
+      "link": "<code>",
+      "url": "https://data-service.theglobalfund.org/v3.3/odata/VProgramDocuments?$select=programDocumentId,geographicAreaName,organizationName,processName,componentName,processYear,processWindow,fileURL,documentTypeDescription,fileLanguage&$filter=documentTypeDescription in ('Application','Country Profiles') AND (<filterStr>)&$orderby=processYear desc, processWindow desc",
+      "itemname": "<geographicAreaName> <organizationName> - <processName> <componentName> - <processYear> <processWindow> - <fileLanguage>",
+      "filterFields": [
+        "GeographicAreaCode_ISO3",
+        "GeographicAreaName",
+        "ProcessName",
+        "ComponentName",
+        "OrganizationName"
+      ],
+      "filterTemplate": "contains(tolower(<field>),tolower(<value>))",
+      "mappings": [
+        "value[]",
+        {
+          "name": "processName",
+          "code": "fileURL",
+          "type": "documentTypeDescription",
+          "organizationName": "organizationName",
+          "geographicAreaName": "geographicAreaName",
+          "processName": "processName",
+          "componentName": "componentName",
+          "processYear": "processYear",
+          "processWindow": "processWindow",
+          "fileLanguage": "fileLanguage"
+        }
+      ],
+      "options": []
+    }
+  ]
+}

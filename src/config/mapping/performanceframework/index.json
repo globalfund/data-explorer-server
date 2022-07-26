@@ -1,0 +1,15 @@
+[
+  "value[]",
+  {
+    "indicatorSet": "indicatorSet",
+    "indicatorName": "indicatorName",
+    "startDate": "reportingPeriodStartDate",
+    "endDate": "reportingPeriodEndDate",
+    "disaggregationGroup": "disaggregationGroup",
+    "disaggregationValue": "disaggregationValue",
+    "valueType": "valueType",
+    "valueAchievementRate": "valueAchievementRate",
+    "module": "activityAreaModule.activityAreaName",
+    "intervention": "activityAreaIntervention.activityAreaName"
+  }
+]

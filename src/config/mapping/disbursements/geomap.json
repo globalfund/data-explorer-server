@@ -1,0 +1,21 @@
+{
+  "dataPath": "value",
+  "component": "componentName",
+  "locationCode": "geographicAreaCode_ISO3",
+  "disbursed": "disbursed",
+  "committed": "committed",
+  "signed": "signed",
+  "count": "count",
+  "geographicAreaMembers": "geographicArea.members",
+  "members": "members",
+  "spatialShapes": "geographicAreaSpatialShapes[0]",
+  "longitude": "spatialShape.longitude",
+  "latitude": "spatialShape.latitude",
+  "multicountryComponent": "grantAgreement.component.componentName",
+  "multicountry": "grantAgreement.multiCountry.multiCountryName",
+  "geoDataMulticountry": "multiCountryName",
+  "multiCountryComposition": "multiCountryComposition",
+  "multiCountryCompositionItem": "geographicArea.geographicAreaCode_ISO3",
+  "disbursementsGeomapAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,ComponentName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))",
+  "disbursementsMulticountryGeomapAggregation": "$apply=<filterString>groupby((GrantAgreement/MultiCountry/MultiCountryName,GrantAgreement/Component/ComponentName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreement/GrantAgreementId with countdistinct as count))"
+}

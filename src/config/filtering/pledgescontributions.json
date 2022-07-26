@@ -1,0 +1,5 @@
+{
+  "donorCategory": "donor/donorParentId",
+  "donors": "donor/donorId",
+  "period": "replenishmentPeriod/replenishmentPeriodName"
+}

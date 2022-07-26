@@ -1,0 +1,7 @@
+{
+  "dataPath": "value",
+  "name": "componentName",
+  "value": "reportingresultvalue",
+  "description": "reportingResultIndicatorName",
+  "ResultStatsAggregation": "$apply=filter(isTopThree eq true<filterString>)/groupby((reportingresultindicatorid,reportingResultIndicatorName,componentId,componentName,reportingresultyear),aggregate(reportingresultvalue with sum as reportingresultvalue))"
+}

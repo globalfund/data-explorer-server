@@ -1,0 +1,14 @@
+[
+  "value[]",
+  {
+    "id": "grantAgreementNumber",
+    "title": "grantAgreementTitle",
+    "status": "grantAgreementStatusTypeName",
+    "component": "componentName",
+    "geoLocation": "geographicAreaName",
+    "rating": "performanceRatingCode",
+    "disbursed": "totalDisbursedAmount",
+    "committed": "totalCommittedAmount",
+    "signed": "totalSignedAmount"
+  }
+]

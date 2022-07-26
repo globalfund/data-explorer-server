@@ -1,0 +1,15 @@
+{
+  "dataPath": "value",
+  "component": "componentName",
+  "locationCode": "geographicAreaCode_ISO3",
+  "locationName": "geographicAreaName",
+  "multicountry": "multiCountryName",
+  "grantName": "grantAgreementTitle",
+  "grantCode": "grantAgreementNumber",
+  "disbursed": "disbursed",
+  "committed": "committed",
+  "signed": "signed",
+  "disbursementsTreemapAggregation": "$apply=<filterString>groupby((ComponentName,GeographicAreaCode_ISO3,GeographicAreaName,MultiCountryName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))",
+  "locationDisbursementsTreemapAggregation": "$apply=<filterString>groupby((ComponentName,GeographicAreaCode_ISO3,GeographicAreaName,MultiCountryName,GrantAgreementTitle,GrantAgreementNumber),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))",
+  "disbursementsTreemapDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,MultiCountryName,ComponentName),aggregate(TotalDisbursedAmount with sum as disbursed, TotalSignedAmount with sum as signed, TotalCommittedAmount with sum as committed, GrantAgreementId with countdistinct as count))"
+}

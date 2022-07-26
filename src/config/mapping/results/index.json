@@ -1,0 +1,10 @@
+[
+  "value[]",
+  {
+    "id": "reportingResultIndicatorId",
+    "title": "reportingResultIndicatorName",
+    "value": "reportingResultValue",
+    "component": "componentName",
+    "country": "geographicAreaName"
+  }
+]

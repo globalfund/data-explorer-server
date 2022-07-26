@@ -1,0 +1,19 @@
+{
+  "dataPath": "value",
+  "defaultSelect": "$select=indicatorSet,indicatorName,valueAchievementRate,disaggregationValue,disaggregationGroup,valueType,reportingPeriodStartDate,reportingPeriodEndDate",
+  "defaultExpand": "&$expand=activityAreaModule,ActivityAreaIntervention",
+  "defaultFilter": "&$filter=(reportingPeriodStartDate ne null and reportingPeriodEndDate ne null and grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber eq <grantId> AND grantAgreementImplementationPeriod/implementationPeriodNumber eq <IPnumber>)",
+  "valueAchievementRateColors": [
+    "#fa7355",
+    "#ffaa46",
+    "#daff46",
+    "#60ff46",
+    "#11ad6b"
+  ],
+  "indicatorSetOrder": {
+    "Coverage / Output indicator": 0,
+    "Impact indicator": 1,
+    "Outcome indicator": 2,
+    "Process indicator / WPTM": 3
+  }
+}

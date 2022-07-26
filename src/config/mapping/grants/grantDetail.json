@@ -1,0 +1,21 @@
+[
+  "value[]",
+  {
+    "title": "grantAgreementTitle",
+    "code": "grantAgreementNumber",
+    "rating": "performanceRatingCode",
+    "status": "grantAgreementStatusTypeName",
+    "location": "geographicAreaName",
+    "component": "componentName",
+    "description": "grantAgreementSummary",
+    "investments": {
+      "disbursed": "totalDisbursedAmount",
+      "committed": "totalCommittedAmount",
+      "signed": "totalSignedAmount"
+    },
+    "manager": {
+      "name": "portfolioManager",
+      "email": "portfolioManagerEmailAddress"
+    }
+  }
+]

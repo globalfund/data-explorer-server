@@ -1,0 +1,9 @@
+{
+  "dataPath": "value",
+  "partner": "principalRecipientName",
+  "partnerId": "principalRecipientId",
+  "partnerSubType": "principalRecipientSubClassificationName",
+  "partnerSubTypeId": "principalRecipientSubClassificationId",
+  "partnerType": "principalRecipientClassificationName",
+  "partnerTypeId": "principalRecipientClassificationId"
+}

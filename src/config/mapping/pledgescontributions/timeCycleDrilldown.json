@@ -1,0 +1,10 @@
+{
+  "dataPath": "value",
+  "year": "replenishmentPeriod.replenishmentPeriodName",
+  "amount": "amount",
+  "indicator": "indicator",
+  "donor": "donor.donorName",
+  "pledge": "Pledge",
+  "contribution": "Contribution",
+  "aggregation": "$apply=filter(transactionType eq 'USD Equivalent'<filterString>)/groupby((replenishmentPeriod/replenishmentPeriodName,donor/donorName,indicator),aggregate(amount with sum as amount))"
+}
