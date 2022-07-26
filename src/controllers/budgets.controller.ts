@@ -111,6 +111,7 @@ export class BudgetsController {
         if (_.get(rawData, `[0].${BudgetsFlowFieldsMapping.level1}`, null)) {
           formattedRawData = rawData.map((item: any) => ({
             amount: _.get(item, BudgetsFlowFieldsMapping.amount, 0),
+            count: _.get(item, BudgetsFlowFieldsMapping.count, 0),
             level1: _.get(item, BudgetsFlowFieldsMapping.level1, ''),
             level2: _.get(item, BudgetsFlowFieldsMapping.level2, ''),
             costCategory: _.get(item, BudgetsFlowFieldsMapping.costCategory, '')
@@ -148,6 +149,10 @@ export class BudgetsController {
                   groupedByComponents[componentKey],
                   'amount',
                 );
+                const compCount = _.sumBy(
+                  groupedByComponents[componentKey],
+                  'count',
+                );
                 return {
                   id: componentKey,
                   color: _.get(
@@ -156,6 +161,7 @@ export class BudgetsController {
                     '',
                   ),
                   value: compValue,
+                  count: compCount,
                   height: (compValue * 100) / groupedByTotalBudget,
                 };
               },
@@ -180,6 +186,10 @@ export class BudgetsController {
                   groupedByComponents[componentKey],
                   'amount',
                 );
+                const compCount = _.sumBy(
+                  groupedByComponents[componentKey],
+                  'count',
+                );
                 return {
                   id: componentKey,
                   color: _.get(
@@ -188,6 +198,7 @@ export class BudgetsController {
                     '',
                   ),
                   value: compValue,
+                  count: compCount,
                   height: (compValue * 100) / groupedByTotalBudget,
                 };
               },
@@ -229,6 +240,10 @@ export class BudgetsController {
                   groupedByComponents[componentKey],
                   'amount',
                 );
+                const compCount = _.sumBy(
+                  groupedByComponents[componentKey],
+                  'count',
+                );
                 return {
                   id: componentKey,
                   color: _.get(
@@ -237,6 +252,7 @@ export class BudgetsController {
                     '',
                   ),
                   value: compValue,
+                  count: compCount,
                   height: (compValue * 100) / groupedByTotalBudget,
                 };
               },
@@ -276,6 +292,10 @@ export class BudgetsController {
                 groupedByComponents[componentKey],
                 'amount',
               );
+              const compCount = _.sumBy(
+                groupedByComponents[componentKey],
+                'count',
+              );
               return {
                 id: componentKey,
                 color: _.get(
@@ -284,6 +304,7 @@ export class BudgetsController {
                   '',
                 ),
                 value: compValue,
+                count: compCount,
                 height: (compValue * 100) / totalBudget,
               };
             },

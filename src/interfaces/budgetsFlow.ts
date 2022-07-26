@@ -6,6 +6,7 @@ export interface BudgetsFlowData {
       id: string;
       color: string;
       value: number;
+      count: number;
       height: number;
     }[];
   }[];

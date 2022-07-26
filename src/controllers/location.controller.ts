@@ -8,6 +8,7 @@ import {
 } from '@loopback/rest';
 import axios from 'axios';
 import _ from 'lodash';
+import filtering from '../config/filtering/index.json';
 import locationMappingFields from '../config/mapping/location/index.json';
 import urls from '../config/urls/index.json';
 import {handleDataApiError} from '../utils/dataApiError';
@@ -50,9 +51,31 @@ export class LocationController {
       locationMappingFields.locationFinancialAggregation,
     );
     const financialUrl = `${urls.grantsNoCount}/?${filterString}`;
+    const indicatorsUrl = `${urls.indicators}/?${filtering.filter_operator}${
+      filtering.param_assign_operator
+    }${locationMappingFields.locationIndicatorsDefaultFilter} ${
+      filtering.and_operator
+    } ${locationMappingFields.locationIndicatorsLocationFilter.replace(
+      '<location>',
+      location as string,
+    )}&${filtering.orderby}${filtering.param_assign_operator}${
+      locationMappingFields.locationIndicatorsDefaultOrder
+    }&${filtering.page_size}${filtering.param_assign_operator}${
+      locationMappingFields.locationIndicatorsDefaultCap
+    }`;
+    const principalRecipientsFilterString = getFilterString(
+      this.req.query,
+      locationMappingFields.principalRecipientAggregation,
+    );
+    const principalRecipientsUrl = `${urls.grantsNoCount}/?${principalRecipientsFilterString}`;
 
     return axios
-      .all([axios.get(multicountriesUrl), axios.get(financialUrl)])
+      .all([
+        axios.get(multicountriesUrl),
+        axios.get(financialUrl),
+        axios.get(indicatorsUrl),
+        axios.get(principalRecipientsUrl),
+      ])
       .then(
         axios.spread((...responses) => {
           const multicountriesResp = _.get(
@@ -79,6 +102,16 @@ export class LocationController {
               geoId: '',
               multiCountryId: '',
             },
+          );
+          const locationIndicatorsResp = _.get(
+            responses[2].data,
+            locationMappingFields.locationIndicatorsDataPath,
+            [],
+          );
+          const principalRecipientsResp = _.get(
+            responses[3].data,
+            locationMappingFields.multiCountriesDataPath,
+            [],
           );
 
           return {
@@ -161,6 +194,45 @@ export class LocationController {
                         'asc',
                       )
                     : [],
+                indicators: locationIndicatorsResp.map((indicator: any) => ({
+                  name: _.get(
+                    indicator,
+                    locationMappingFields.locationIndicatorName,
+                    '',
+                  ),
+                  year: _.get(
+                    indicator,
+                    locationMappingFields.locationIndicatorYear,
+                    '',
+                  ),
+                  value: _.get(
+                    indicator,
+                    locationMappingFields.locationIndicatorValue,
+                    '',
+                  ),
+                })),
+                principalRecipients: principalRecipientsResp.map((pr: any) => {
+                  const fullName = _.get(
+                    pr,
+                    locationMappingFields.principalRecipientName,
+                    '',
+                  );
+                  const shortName = _.get(
+                    pr,
+                    locationMappingFields.principalRecipientShortName,
+                    '',
+                  );
+                  const id = _.get(
+                    pr,
+                    locationMappingFields.principalRecipientId,
+                    '',
+                  );
+
+                  return {
+                    code: id,
+                    name: `${fullName}${shortName ? ` (${shortName})` : ''}`,
+                  };
+                }),
               },
             ],
           };

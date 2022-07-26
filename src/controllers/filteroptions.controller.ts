@@ -399,9 +399,15 @@ export class FilteroptionsController {
 
           if (keyword.length > 0) {
             type.subOptions = _.filter(type.subOptions, (option: any) => {
-              return _.find(keywords, (k: string) => {
-                return option.label.toLowerCase().indexOf(k.toLowerCase()) > -1;
+              let allKeywordsFound = true;
+              keywords.forEach((key: string) => {
+                if (
+                  option.label.toLowerCase().indexOf(key.toLowerCase()) === -1
+                ) {
+                  allKeywordsFound = false;
+                }
               });
+              return allKeywordsFound;
             }) as FilterGroupOption[];
           }
 
