@@ -24,6 +24,7 @@ export function getDatasetFilterOptions(dataset: any): FilterGroup[] {
     if (options.length > 0) {
       filterOptions.push({
         name,
+        enabled: true,
         options: _.orderBy(
           _.uniq(options).map((o: string) => ({
             label: o,

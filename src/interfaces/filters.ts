@@ -6,5 +6,6 @@ export interface FilterGroupOption {
 
 export interface FilterGroup {
   name: string;
+  enabled: boolean;
   options: FilterGroupOption[];
 }
