@@ -45,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/globalfund/data-explorer-server-api.git"
+    "url": "https://github.com/globalfund/data-explorer-server.git"
   },
   "files": [
     "README.md",

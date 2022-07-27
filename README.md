@@ -12,7 +12,7 @@
 - Authors: <a href="https://www.zimmerman.team/" target="_blank">Zimmerman</a>
 - Github Repo:
   - Frontend: <a href="https://github.com/globalfund/data-explorer-client" target="_blank">https://github.com/globalfund/data-explorer-client</a>
-  - Backend: <a href="https://github.com/globalfund/data-explorer-server-api" target="_blank">https://github.com/globalfund/data-explorer-server-api</a>
+  - Backend: <a href="https://github.com/globalfund/data-explorer-server" target="_blank">https://github.com/globalfund/data-explorer-server</a>
 
 ## Mapping process
 
