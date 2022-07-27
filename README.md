@@ -2,7 +2,7 @@
 
 ---
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/zimmerman-team/the-data-explorer/blob/main/LICENSE.MD)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/globalfund/data-explorer-server/blob/main/LICENSE.MD)
 
 ## What is the Data Explorer API?
 
@@ -11,8 +11,8 @@
 - Website: <a href="https://data.theglobalfund.org" target="_blank">data.theglobalfund.org</a>
 - Authors: <a href="https://www.zimmerman.team/" target="_blank">Zimmerman</a>
 - Github Repo:
-  - Frontend: <a href="https://github.com/zimmerman-team/the-data-explorer" target="_blank">https://github.com/zimmerman-team/the-data-explorer</a>
-  - Backend: <a href="https://github.com/zimmerman-team/the-data-explorer-api" target="_blank">https://github.com/zimmerman-team/the-data-explorer-api</a>
+  - Frontend: <a href="https://github.com/globalfund/data-explorer-client" target="_blank">https://github.com/globalfund/data-explorer-client</a>
+  - Backend: <a href="https://github.com/globalfund/data-explorer-server-api" target="_blank">https://github.com/globalfund/data-explorer-server-api</a>
 
 ## Mapping process
 
