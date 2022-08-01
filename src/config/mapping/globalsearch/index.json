@@ -69,7 +69,7 @@
     },
     {
       "name": "Grant(s)",
-      "type": "<type>",
+      "type": "Grant",
       "link": "/grant/<code>",
       "url": "https://data-service.theglobalfund.org/v3.3/odata/VGrantAgreements?$select=grantAgreementTitle,grantAgreementNumber,grantAgreementStatusTypeName&$filter=(<filterStr>)&$orderby=GrantAgreementStatusTypeName asc,GrantAgreementTitle asc",
       "itemname": "<code> | <name>",
@@ -96,7 +96,7 @@
     },
     {
       "name": "Result(s)",
-      "type": "",
+      "type": "Result",
       "link": "/results/#<code>",
       "url": "https://data-service.theglobalfund.org/v3.3/odata/VReportingResults?$apply=filter(<filterStr>)/groupby((reportingResultIndicatorName,reportingResultIndicatorId), aggregate(ReportingResultValue with sum as value))&$orderby=value desc",
       "itemname": "",
@@ -118,7 +118,7 @@
     },
     {
       "name": "Document(s)",
-      "type": "<type>",
+      "type": "Document",
       "link": "<code>",
       "url": "https://data-service.theglobalfund.org/v3.3/odata/VProgramDocuments?$select=programDocumentId,geographicAreaName,organizationName,processName,componentName,processYear,processWindow,fileURL,documentTypeDescription,fileLanguage&$filter=documentTypeDescription in ('Application','Country Profiles') AND (<filterStr>)&$orderby=processYear desc, processWindow desc",
       "itemname": "<geographicAreaName> <organizationName> - <processName> <componentName> - <processYear> <processWindow> - <fileLanguage>",
