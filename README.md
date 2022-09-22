@@ -77,3 +77,7 @@ chore: Changes to the build process or auxiliary tools and libraries such as doc
 - Avoid huge code commits where the difference can not even be rendered by browser based web apps (Github for example). Smaller commits make it much easier to understand why and how the changes were made, why (if) it results in certain bugs and etc.
 - If there's a reason to commit code that is commented out (there usually should be none), always leave a "FIXME" or "TODO" comment so it's clear for other developers why this was done.
 - Automatic code quality / testing checks (continuous integration tools) are implemented to check all these things automatically when pushing / merging new branches. Quality is the key!
+
+# Synchronisation with Jira
+Checkout a new branch in your repo, using the issue key in the branch name. For example, `git checkout -b DE-58-sync-data-explorer-server-to-jira`
+When committing changes to your branch, use the issue key in your commit message to link those commits to the development panel in your Jira issue. For example, `git commit -m "DE-58 <summary of commit>"`
