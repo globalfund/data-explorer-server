@@ -3,5 +3,5 @@
   "component": "componentName",
   "grantId": "grantAgreementNumber",
   "multicountry": "organizationId",
-  "search": "(contains(tolower(processName),tolower(<value>)) OR contains(tolower(componentName),tolower(<value>)) OR contains(tolower(processWindow),tolower(<value>)) OR contains(tolower(grantAgreementNumber),tolower(<value>)) OR contains(tolower(geographicAreaName),tolower(<value>))) OR contains(tolower(organizationName),tolower(<value>))"
+  "search": "(contains(tolower(processName),tolower(<value>)) OR contains(tolower(componentName),tolower(<value>)) OR contains(tolower(processWindow),tolower(<value>)) OR contains(tolower(grantAgreementNumber),tolower(<value>)) OR contains(tolower(geographicAreaName),tolower(<value>)) OR contains(tolower(organizationName),tolower(<value>)))"
 }
