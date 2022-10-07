@@ -379,14 +379,20 @@ export class FilteroptionsController {
 
           _.get(item, mappingDonors.children, []).forEach((child: any) => {
             if (_.get(child, mappingDonors.children, []).length > 0) {
+              const subType: FilterGroupOption = {
+                label: _.get(child, mappingDonors.label, ''),
+                value: _.get(child, mappingDonors.value, ''),
+                subOptions: [],
+              };
               _.get(child, mappingDonors.children, []).forEach(
                 (gchild: any) => {
-                  type.subOptions?.push({
+                  subType.subOptions?.push({
                     label: _.get(gchild, mappingDonors.label, ''),
                     value: _.get(gchild, mappingDonors.value, ''),
                   });
                 },
               );
+              type.subOptions?.push(subType);
             } else {
               type.subOptions?.push({
                 label: _.get(child, mappingDonors.label, ''),

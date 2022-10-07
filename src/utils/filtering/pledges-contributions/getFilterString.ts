@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import filtering from '../../../config/filtering/index.json';
 import filteringPledgesContributions from '../../../config/filtering/pledgescontributions.json';
-import PledgesContributionsTimeCycleFieldsMapping from '../../../config/mapping/pledgescontributions/timeCycle.json';
 
 export function getFilterString(params: any, aggregationString?: string) {
   let str = '';
@@ -14,13 +13,14 @@ export function getFilterString(params: any, aggregationString?: string) {
     str += `${str.length > 0 ? ' AND ' : ''}${
       filteringPledgesContributions.donors
     }${filtering.in}(${donors.join(filtering.multi_param_separator)})`;
-  } else {
-    str += `${str.length > 0 ? ' AND ' : ''}${
-      filteringPledgesContributions.donors
-    }${filtering.in}(${
-      PledgesContributionsTimeCycleFieldsMapping.defaultDonorFilter
-    })`;
   }
+  // else {
+  //   str += `${str.length > 0 ? ' AND ' : ''}${
+  //     filteringPledgesContributions.donorCategory
+  //   }${filtering.in}(${
+  //     PledgesContributionsTimeCycleFieldsMapping.defaultDonorCategoryFilter
+  //   })`;
+  // }
 
   const donorCategories = _.filter(
     _.get(params, 'donorCategories', '').split(','),
