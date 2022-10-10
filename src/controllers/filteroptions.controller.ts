@@ -392,6 +392,11 @@ export class FilteroptionsController {
                   });
                 },
               );
+              subType.subOptions = _.orderBy(
+                subType.subOptions,
+                'label',
+                'asc',
+              );
               type.subOptions?.push(subType);
             } else {
               type.subOptions?.push({
@@ -416,6 +421,22 @@ export class FilteroptionsController {
               return allKeywordsFound;
             }) as FilterGroupOption[];
           }
+
+          const subOptionsWithSubOptions: FilterGroupOption[] = _.orderBy(
+            _.filter(type.subOptions, o => o.subOptions) as FilterGroupOption[],
+            'label',
+            'asc',
+          );
+          const subOptionsWithOutSubOptions: FilterGroupOption[] = _.orderBy(
+            _.filter(type.subOptions, o => !o.subOptions),
+            'label',
+            'asc',
+          );
+
+          type.subOptions = [
+            ...subOptionsWithSubOptions,
+            ...subOptionsWithOutSubOptions,
+          ];
 
           options.push(type);
         });
