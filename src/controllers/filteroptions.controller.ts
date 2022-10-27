@@ -379,14 +379,25 @@ export class FilteroptionsController {
 
           _.get(item, mappingDonors.children, []).forEach((child: any) => {
             if (_.get(child, mappingDonors.children, []).length > 0) {
+              const subType: FilterGroupOption = {
+                label: _.get(child, mappingDonors.label, ''),
+                value: _.get(child, mappingDonors.value, ''),
+                subOptions: [],
+              };
               _.get(child, mappingDonors.children, []).forEach(
                 (gchild: any) => {
-                  type.subOptions?.push({
+                  subType.subOptions?.push({
                     label: _.get(gchild, mappingDonors.label, ''),
                     value: _.get(gchild, mappingDonors.value, ''),
                   });
                 },
               );
+              subType.subOptions = _.orderBy(
+                subType.subOptions,
+                'label',
+                'asc',
+              );
+              type.subOptions?.push(subType);
             } else {
               type.subOptions?.push({
                 label: _.get(child, mappingDonors.label, ''),
@@ -410,6 +421,22 @@ export class FilteroptionsController {
               return allKeywordsFound;
             }) as FilterGroupOption[];
           }
+
+          const subOptionsWithSubOptions: FilterGroupOption[] = _.orderBy(
+            _.filter(type.subOptions, o => o.subOptions) as FilterGroupOption[],
+            'label',
+            'asc',
+          );
+          const subOptionsWithOutSubOptions: FilterGroupOption[] = _.orderBy(
+            _.filter(type.subOptions, o => !o.subOptions),
+            'label',
+            'asc',
+          );
+
+          type.subOptions = [
+            ...subOptionsWithSubOptions,
+            ...subOptionsWithOutSubOptions,
+          ];
 
           options.push(type);
         });
