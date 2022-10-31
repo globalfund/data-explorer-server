@@ -17,6 +17,8 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
+import axios from 'axios';
+import _ from 'lodash';
 import {DataTheme} from '../../models';
 import {DataThemeRepository} from '../../repositories';
 
@@ -174,6 +176,70 @@ export class DataThemesController {
     filter?: FilterExcludingWhere<DataTheme>,
   ): Promise<DataTheme> {
     return this.dataThemeRepository.findById(id, filter);
+  }
+
+  @get('/data-themes/{id}/content')
+  @response(200, {
+    description: 'DataTheme model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(DataTheme, {includeRelations: true}),
+      },
+    },
+  })
+  async findByIdContent(@param.path.string('id') id: string) {
+    const instance = await this.dataThemeRepository.findById(id);
+    const result: any = {...instance};
+    if (instance.tabs.length > 0) {
+      await Promise.all(
+        instance.tabs.map(async (item, itemIndex) => {
+          await Promise.all(
+            item.content.map(async (contentItem, contentItemIndex) => {
+              const datasetId = _.get(contentItem, 'datasetId', null);
+              if (datasetId) {
+                await axios
+                  .get(
+                    `http://127.0.0.1:4200/data-themes/raw-data/${datasetId}?rows=${_.get(
+                      contentItem,
+                      'rows',
+                      '100',
+                    )}`,
+                  )
+                  .then(resp => {
+                    if (resp.status === 200 && resp.data && resp.data.data) {
+                      result.tabs[itemIndex].content[contentItemIndex] = {
+                        ...result.tabs[itemIndex].content[contentItemIndex],
+                        data: resp.data.data,
+                        filterOptionGroups: _.get(
+                          resp,
+                          'data.filterOptionGroups',
+                          result.tabs[itemIndex].content[contentItemIndex]
+                            .filterOptionGroups,
+                        ),
+                        totalCount: _.get(
+                          resp,
+                          'data.count',
+                          result.tabs[itemIndex].content[contentItemIndex].rows,
+                        ),
+                      };
+                    }
+                  })
+                  .catch(error => {
+                    console.log(`${error.message} - ${error.config.url}`);
+                    result.tabs[itemIndex].content[contentItemIndex] = {
+                      ...result.tabs[itemIndex].content[contentItemIndex],
+                      data: [],
+                      filterOptionGroups: [],
+                      totalCount: 0,
+                    };
+                  });
+              }
+            }),
+          );
+        }),
+      );
+    }
+    return result;
   }
 
   @patch('/data-themes/{id}')
