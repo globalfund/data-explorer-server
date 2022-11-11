@@ -178,6 +178,7 @@ export class DataThemesController {
     return this.dataThemeRepository.findById(id, filter);
   }
 
+  // unused
   @get('/data-themes/{id}/content')
   @response(200, {
     description: 'DataTheme model instance',
@@ -199,7 +200,7 @@ export class DataThemesController {
               if (datasetId) {
                 await axios
                   .get(
-                    `http://127.0.0.1:4200/data-themes/raw-data/${datasetId}?rows=${_.get(
+                    `http://localhost:4200/data-themes/raw-data/${datasetId}?rows=${_.get(
                       contentItem,
                       'rows',
                       '100',
@@ -239,6 +240,25 @@ export class DataThemesController {
         }),
       );
     }
+    return result;
+  }
+
+  @post('/data-themes/{id}/render')
+  @response(200, {
+    description: 'DataTheme model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(DataTheme, {includeRelations: true}),
+      },
+    },
+  })
+  async renderById(
+    @param.path.string('id') id: string,
+    @requestBody() body: any,
+  ) {
+    const result = await (
+      await axios.post(`http://localhost:4400/render/${id}`, {...body})
+    ).data;
     return result;
   }
 

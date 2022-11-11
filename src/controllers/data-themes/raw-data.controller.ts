@@ -1,5 +1,6 @@
 import {inject} from '@loopback/core';
 import {get, param, Request, response, RestBindings} from '@loopback/rest';
+import axios from 'axios';
 import allocations from '../../config/mapping/data-themes/raw-data/allocations.json';
 import budgets from '../../config/mapping/data-themes/raw-data/budgets.json';
 import eligibility from '../../config/mapping/data-themes/raw-data/eligibility.json';
@@ -14,6 +15,23 @@ import {getRawDataWithMapper} from '../../utils/data-themes/getRawDataWithMapper
 
 export class DataThemesRawDataController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+
+  @get('/data-themes/sample-data/{datasetId}')
+  @response(200)
+  async sampleData(@param.path.string('datasetId') datasetId: string) {
+    return axios
+      .get(`http://localhost:4400/sample-data/${datasetId}`)
+      .then(res => {
+        return res.data;
+      })
+      .catch(error => {
+        console.log(error);
+        return {
+          data: [],
+          error,
+        };
+      });
+  }
 
   @get('/data-themes/raw-data/investment-signed')
   @response(200)

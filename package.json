@@ -31,7 +31,7 @@
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "yarn run clean && yarn run build",
-    "dev": "nodemon server.js",
+    "dev": "nodemon",
     "deploy": "yarn prestart && pm2 start pm2.config.js --env production"
   },
   "nodemonConfig": {

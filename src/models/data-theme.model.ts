@@ -60,12 +60,6 @@ class DataThemeTabViz extends Entity {
     | 'eligibility';
 
   @property({
-    type: 'string',
-    required: true,
-  })
-  rows: string;
-
-  @property({
     type: 'object',
     required: true,
   })
@@ -78,22 +72,9 @@ class DataThemeTabViz extends Entity {
   vizOptions: object;
 
   @property({
-    type: 'array',
-    itemType: 'object',
-    required: true,
-  })
-  filterOptionGroups: object[];
-
-  @property({
     type: 'object',
   })
   appliedFilters: object;
-
-  @property({
-    type: 'boolean',
-    default: false,
-  })
-  liveData: boolean;
 
   @property({
     type: 'date',
