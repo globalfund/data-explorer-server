@@ -77,6 +77,12 @@ class DataThemeTabViz extends Entity {
   appliedFilters: object;
 
   @property({
+    type: 'array',
+    itemType: 'string',
+  })
+  enabledFilterOptionGroups: string[];
+
+  @property({
     type: 'date',
     default: () => new Date(),
   })
