@@ -135,6 +135,7 @@ export class DataThemesController {
           title: item.title,
           subTitle: item.subTitle,
           public: item.public,
+          updatedDate: item.updatedDate,
           createdDate: item.createdDate,
           vizCount: count,
         };
@@ -277,6 +278,7 @@ export class DataThemesController {
     })
     dataTheme: DataTheme,
   ): Promise<void> {
+    dataTheme.updatedDate = new Date();
     await this.dataThemeRepository.updateById(id, dataTheme);
   }
 

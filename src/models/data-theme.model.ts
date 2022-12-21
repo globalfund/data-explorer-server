@@ -159,6 +159,12 @@ export class DataTheme extends Entity {
     type: 'date',
     default: () => new Date(),
   })
+  updatedDate: Date;
+
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
   createdDate: Date;
 
   constructor(data?: Partial<DataTheme>) {
