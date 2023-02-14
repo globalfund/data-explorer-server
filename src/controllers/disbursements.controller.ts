@@ -994,7 +994,11 @@ export class DisbursementsController {
             color: '#DFE3E5',
             value: signed,
             formattedValue: formatFinancialValue(signed),
-            _children: _.orderBy(componentLocations, sortBy, sortByDirection),
+            _children: _.orderBy(
+              componentLocations,
+              sortByValue,
+              sortByDirection,
+            ),
             tooltip: {
               header: component,
               componentsStats: [
@@ -1018,7 +1022,7 @@ export class DisbursementsController {
         });
         return {
           count: data.length,
-          data: _.orderBy(data, sortBy, sortByDirection),
+          data: _.orderBy(data, sortByValue, sortByDirection),
         };
       })
       .catch(handleDataApiError);
@@ -1125,7 +1129,11 @@ export class DisbursementsController {
             color: '#DFE3E5',
             value: committed,
             formattedValue: formatFinancialValue(committed),
-            _children: _.orderBy(componentLocations, sortBy, sortByDirection),
+            _children: _.orderBy(
+              componentLocations,
+              sortByValue,
+              sortByDirection,
+            ),
             tooltip: {
               header: component,
               componentsStats: [
@@ -1149,7 +1157,7 @@ export class DisbursementsController {
         });
         return {
           count: data.length,
-          data: _.orderBy(data, sortBy, sortByDirection),
+          data: _.orderBy(data, sortByValue, sortByDirection),
         };
       })
       .catch(handleDataApiError);
