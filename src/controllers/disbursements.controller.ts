@@ -775,6 +775,29 @@ export class DisbursementsController {
       },
     );
     const url = `${urls.grantsNoCount}/?${params}${filterString}`;
+    const sortBy = this.req.query.sortBy;
+    let sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'value';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'desc';
+
+    switch (sortByValue) {
+      case 'grants':
+        sortByValue = 'tooltip.componentsStats[0].count';
+        break;
+      case 'signed':
+        sortByValue = 'tooltip.totalInvestments.signed';
+        break;
+      case 'committed':
+        sortByValue = 'tooltip.totalInvestments.committed';
+        break;
+      case 'disbursed':
+        sortByValue = 'tooltip.totalInvestments.disbursed';
+        break;
+      default:
+        break;
+    }
 
     return axios
       .get(url)
@@ -833,7 +856,11 @@ export class DisbursementsController {
             color: '#DFE3E5',
             value: disbursed,
             formattedValue: formatFinancialValue(disbursed),
-            _children: _.orderBy(componentLocations, 'value', 'desc'),
+            _children: _.orderBy(
+              componentLocations,
+              sortByValue,
+              sortByDirection.toLowerCase(),
+            ),
             tooltip: {
               header: component,
               componentsStats: [
@@ -860,7 +887,7 @@ export class DisbursementsController {
         });
         return {
           count: data.length,
-          data: _.orderBy(data, 'value', 'desc'),
+          data: _.orderBy(data, sortByValue, sortByDirection.toLowerCase()),
         };
       })
       .catch(handleDataApiError);
@@ -882,6 +909,29 @@ export class DisbursementsController {
       },
     );
     const url = `${urls.grantsNoCount}/?${params}${filterString}`;
+    const sortBy = this.req.query.sortBy;
+    let sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'value';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'desc';
+
+    switch (sortByValue) {
+      case 'grants':
+        sortByValue = 'tooltip.componentsStats[0].count';
+        break;
+      case 'signed':
+        sortByValue = 'tooltip.totalInvestments.signed';
+        break;
+      case 'committed':
+        sortByValue = 'tooltip.totalInvestments.committed';
+        break;
+      case 'disbursed':
+        sortByValue = 'tooltip.totalInvestments.disbursed';
+        break;
+      default:
+        break;
+    }
 
     return axios
       .get(url)
@@ -944,7 +994,7 @@ export class DisbursementsController {
             color: '#DFE3E5',
             value: signed,
             formattedValue: formatFinancialValue(signed),
-            _children: _.orderBy(componentLocations, 'value', 'desc'),
+            _children: _.orderBy(componentLocations, sortBy, sortByDirection),
             tooltip: {
               header: component,
               componentsStats: [
@@ -968,7 +1018,7 @@ export class DisbursementsController {
         });
         return {
           count: data.length,
-          data: _.orderBy(data, 'value', 'desc'),
+          data: _.orderBy(data, sortBy, sortByDirection),
         };
       })
       .catch(handleDataApiError);
@@ -990,6 +1040,29 @@ export class DisbursementsController {
       },
     );
     const url = `${urls.grantsNoCount}/?${params}${filterString}`;
+    const sortBy = this.req.query.sortBy;
+    let sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'value';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'desc';
+
+    switch (sortByValue) {
+      case 'grants':
+        sortByValue = 'tooltip.componentsStats[0].count';
+        break;
+      case 'signed':
+        sortByValue = 'tooltip.totalInvestments.signed';
+        break;
+      case 'committed':
+        sortByValue = 'tooltip.totalInvestments.committed';
+        break;
+      case 'disbursed':
+        sortByValue = 'tooltip.totalInvestments.disbursed';
+        break;
+      default:
+        break;
+    }
 
     return axios
       .get(url)
@@ -1052,7 +1125,7 @@ export class DisbursementsController {
             color: '#DFE3E5',
             value: committed,
             formattedValue: formatFinancialValue(committed),
-            _children: _.orderBy(componentLocations, 'value', 'desc'),
+            _children: _.orderBy(componentLocations, sortBy, sortByDirection),
             tooltip: {
               header: component,
               componentsStats: [
@@ -1076,7 +1149,7 @@ export class DisbursementsController {
         });
         return {
           count: data.length,
-          data: _.orderBy(data, 'value', 'desc'),
+          data: _.orderBy(data, sortBy, sortByDirection),
         };
       })
       .catch(handleDataApiError);

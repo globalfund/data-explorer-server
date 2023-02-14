@@ -1,5 +1,6 @@
 {
   "donorCategory": "donor/donorParentId",
   "donors": "donor/donorId",
-  "period": "replenishmentPeriod/replenishmentPeriodName"
+  "period": "replenishmentPeriod/replenishmentPeriodName",
+  "search": "(contains(donor/donorParent/donorName,<value>) OR contains(donor/donorName,<value>) OR contains(replenishmentPeriod/replenishmentPeriodName,<value>))"
 }

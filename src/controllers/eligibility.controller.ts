@@ -7,7 +7,7 @@ import {
   RestBindings,
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
-import _ from 'lodash';
+import _, {orderBy} from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import EligibilityFieldsMapping from '../config/mapping/eligibility/dotsChart.json';
@@ -98,12 +98,13 @@ export class EligibilityController {
     const aggregateByField =
       this.req.query.aggregateBy ??
       EligibilityFieldsMapping.aggregateByFields[0];
-    const nonAggregateByField = (this.req.query.nonAggregateBy
-      ? this.req.query.nonAggregateBy
-      : this.req.query.aggregateBy ===
-        EligibilityFieldsMapping.aggregateByFields[0]
-      ? EligibilityFieldsMapping.aggregateByFields[1]
-      : EligibilityFieldsMapping.aggregateByFields[0]
+    const nonAggregateByField = (
+      this.req.query.nonAggregateBy
+        ? this.req.query.nonAggregateBy
+        : this.req.query.aggregateBy ===
+          EligibilityFieldsMapping.aggregateByFields[0]
+        ? EligibilityFieldsMapping.aggregateByFields[1]
+        : EligibilityFieldsMapping.aggregateByFields[0]
     ).toString();
     const filterString = getFilterString(this.req.query);
     const params = querystring.stringify(
@@ -115,6 +116,20 @@ export class EligibilityController {
       },
     );
     const url = `${urls.eligibility}/?${params}${filterString}&${EligibilityFieldsMapping.defaultSelect}`;
+    const sortBy = this.req.query.sortBy;
+    const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'asc';
+
+    let outSortByValue = 'name';
+    let inSortByValue = 'name';
+
+    if (sortByValue === 'status') {
+      outSortByValue = 'name';
+      inSortByValue = 'status';
+    }
 
     return axios
       .get(url)
@@ -123,33 +138,33 @@ export class EligibilityController {
         const aggregatedData = _.groupBy(apiData, aggregateByField);
         const data: EligibilityDotDataItem[] = [];
 
-        (_.orderBy(
-          Object.keys(aggregatedData),
-          undefined,
-          'asc',
-        ) as string[]).forEach((key: string) => {
+        Object.keys(aggregatedData).forEach((key: string) => {
           data.push({
             name: key,
             items: _.orderBy(
-              aggregatedData[key],
-              nonAggregateByField,
-              'asc',
-            ).map(item => ({
-              name: _.get(item, nonAggregateByField, ''),
-              status: _.get(
-                EligibilityFieldsMapping,
-                _.get(item, EligibilityFieldsMapping.status, '')
-                  .toLowerCase()
-                  .trim(),
-                _.get(item, EligibilityFieldsMapping.status, ''),
-              ),
-            })),
+              aggregatedData[key].map(item => ({
+                name: _.get(item, nonAggregateByField, ''),
+                status: _.get(
+                  EligibilityFieldsMapping,
+                  _.get(item, EligibilityFieldsMapping.status, '')
+                    .toLowerCase()
+                    .trim(),
+                  _.get(item, EligibilityFieldsMapping.status, ''),
+                ),
+              })),
+              inSortByValue,
+              sortByDirection,
+            ),
           });
         });
 
         return {
           count: data.length,
-          data,
+          data: orderBy(
+            data,
+            outSortByValue,
+            inSortByValue === 'status' ? 'asc' : sortByDirection,
+          ),
         };
       })
       .catch(handleDataApiError);
@@ -215,25 +230,11 @@ export class EligibilityController {
         );
         years.push(years[years.length - 1] + 1);
         years.unshift(years[0] - 1);
-        const data: {id: string; data: EligibilityScatterplotDataItem[]}[] = [
-          {
-            id: 'dummy1',
-            data: years.map((year: number) => ({
-              x: year,
-              diseaseBurden: 0,
-              incomeLevel: 0,
-              eligibility: 'Not Eligible',
-              y: 'dummy1',
-              invisible: true,
-            })),
-          },
-        ];
+        const data: {id: string; data: EligibilityScatterplotDataItem[]}[] = [];
 
-        (_.orderBy(
-          Object.keys(aggregatedData),
-          undefined,
-          'asc',
-        ) as string[]).forEach((key: string) => {
+        (
+          _.orderBy(Object.keys(aggregatedData), undefined, 'asc') as string[]
+        ).forEach((key: string) => {
           data.push({
             id: key,
             data: _.orderBy(
@@ -324,6 +325,59 @@ export class EligibilityController {
             }
           });
           data[index].data = _.orderBy(data[index].data, 'x', 'asc');
+        });
+
+        if (this.req.query.view && this.req.query.view === 'table') {
+          const sortBy = this.req.query.sortBy;
+          let sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'x';
+          const sortByDirection: any =
+            sortBy && sortBy.toString().split(' ').length > 1
+              ? sortBy.toString().split(' ')[1].toLowerCase()
+              : 'asc';
+
+          switch (sortByValue) {
+            case 'year':
+              sortByValue = 'x';
+              break;
+            case 'component':
+              sortByValue = 'y';
+              break;
+            case 'incomeLevel':
+              sortByValue = 'incomeLevel';
+              break;
+            case 'diseaseBurden':
+              sortByValue = 'diseaseBurden';
+              break;
+            case 'status':
+              sortByValue = 'eligibility';
+              break;
+            default:
+              break;
+          }
+
+          let tableData: EligibilityScatterplotDataItem[] = [];
+          data.forEach(comp => {
+            tableData = [...tableData, ...comp.data];
+          });
+
+          tableData = orderBy(tableData, sortByValue, sortByDirection);
+
+          return {
+            count: tableData.length,
+            data: tableData,
+          };
+        }
+
+        data.unshift({
+          id: 'dummy1',
+          data: years.map((year: number) => ({
+            x: year,
+            diseaseBurden: 0,
+            incomeLevel: 0,
+            eligibility: 'Not Eligible',
+            y: 'dummy1',
+            invisible: true,
+          })),
         });
 
         data.push({

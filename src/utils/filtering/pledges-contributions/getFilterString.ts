@@ -53,6 +53,16 @@ export function getFilterString(params: any, aggregationString?: string) {
     }
   }
 
+  const search = _.get(params, 'q', '');
+  if (search.length > 0) {
+    str += `${
+      str.length > 0 ? ' AND ' : ''
+    }${filteringPledgesContributions.search.replace(
+      /<value>/g,
+      `'${search}'`,
+    )}`;
+  }
+
   if (str.length > 0) {
     if (aggregationString) {
       str = aggregationString.replace('<filterString>', ` AND ${str}`);

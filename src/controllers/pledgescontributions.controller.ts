@@ -7,7 +7,7 @@ import {
   RestBindings,
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
-import _ from 'lodash';
+import _, {orderBy} from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import PledgesContributionsGeoFieldsMapping from '../config/mapping/pledgescontributions/geo.json';
@@ -140,6 +140,20 @@ export class PledgescontributionsController {
       this.req.query.valueType ?? PledgesContributionsGeoFieldsMapping.pledge
     ).toString();
     const url = `${urls.pledgescontributions}/?${params}${filterString}`;
+    const sortBy = this.req.query.sortBy;
+    const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'asc';
+
+    let pinsSortByValue = 'geoName';
+    let featuresSortByValue = 'properties.name';
+
+    if (sortByValue === 'value') {
+      pinsSortByValue = 'amounts[0].value';
+      featuresSortByValue = 'properties.data.amounts[0].value';
+    }
 
     return axios
       .all([
@@ -396,8 +410,12 @@ export class PledgescontributionsController {
 
           return {
             maxValue,
-            layers: features,
-            pins: nonCountrySectorDonors,
+            layers: orderBy(features, featuresSortByValue, sortByDirection),
+            pins: orderBy(
+              nonCountrySectorDonors,
+              pinsSortByValue,
+              sortByDirection,
+            ),
           };
         }),
       )
