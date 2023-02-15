@@ -35,6 +35,13 @@ export function getFilterString(params: any, defaultFilter?: string) {
     }(${periods.join(filtering.multi_param_separator)})`;
   }
 
+  const search = _.get(params, 'q', '');
+  if (search.length > 0) {
+    str += `${
+      str.length > 0 ? ' AND ' : ''
+    }${filteringEligibility.search.replace(/<value>/g, `'${search}'`)}`;
+  }
+
   if (str.length > 0) {
     if (!defaultFilter) {
       str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;
