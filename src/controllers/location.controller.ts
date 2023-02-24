@@ -8,7 +8,6 @@ import {
 } from '@loopback/rest';
 import axios from 'axios';
 import _ from 'lodash';
-import filtering from '../config/filtering/index.json';
 import locationMappingFields from '../config/mapping/location/index.json';
 import urls from '../config/urls/index.json';
 import {handleDataApiError} from '../utils/dataApiError';
@@ -51,30 +50,24 @@ export class LocationController {
       locationMappingFields.locationFinancialAggregation,
     );
     const financialUrl = `${urls.grantsNoCount}/?${filterString}`;
-    const indicatorsUrl = `${urls.indicators}/?${filtering.filter_operator}${
-      filtering.param_assign_operator
-    }${locationMappingFields.locationIndicatorsDefaultFilter} ${
-      filtering.and_operator
-    } ${locationMappingFields.locationIndicatorsLocationFilter.replace(
-      '<location>',
-      location as string,
-    )}&${filtering.orderby}${filtering.param_assign_operator}${
-      locationMappingFields.locationIndicatorsDefaultOrder
-    }&${filtering.page_size}${filtering.param_assign_operator}${
-      locationMappingFields.locationIndicatorsDefaultCap
-    }`;
     const principalRecipientsFilterString = getFilterString(
       this.req.query,
       locationMappingFields.principalRecipientAggregation,
     );
     const principalRecipientsUrl = `${urls.grantsNoCount}/?${principalRecipientsFilterString}`;
+    const contactsUrl = `${
+      urls.countrycontactinfo
+    }/?${locationMappingFields.contactsFilterString.replace(
+      /<code>/g,
+      location,
+    )}`;
 
     return axios
       .all([
         axios.get(multicountriesUrl),
         axios.get(financialUrl),
-        axios.get(indicatorsUrl),
         axios.get(principalRecipientsUrl),
+        axios.get(contactsUrl),
       ])
       .then(
         axios.spread((...responses) => {
@@ -103,16 +96,49 @@ export class LocationController {
               multiCountryId: '',
             },
           );
-          const locationIndicatorsResp = _.get(
-            responses[2].data,
-            locationMappingFields.locationIndicatorsDataPath,
-            [],
-          );
           const principalRecipientsResp = _.get(
-            responses[3].data,
+            responses[2].data,
             locationMappingFields.multiCountriesDataPath,
             [],
           );
+          const contactsResp = _.get(
+            responses[3].data,
+            locationMappingFields.contactsDataPath,
+            [],
+          );
+
+          const formattedContactsResp = contactsResp.map((c: any) => ({
+            orgName: _.get(
+              c,
+              locationMappingFields.contactOrganisationName,
+              '',
+            ),
+            name: _.get(c, locationMappingFields.contactName, ''),
+            surname: _.get(c, locationMappingFields.contactSurname, ''),
+            role: _.get(c, locationMappingFields.contactRole, ''),
+            salutation: _.get(c, locationMappingFields.contactSalutation, ''),
+            position: _.get(c, locationMappingFields.contactPosition, ''),
+            email: _.get(c, locationMappingFields.contactEmail, ''),
+          }));
+
+          const contacts: any[] = [];
+          const groupedBy = _.groupBy(formattedContactsResp, 'orgName');
+
+          Object.keys(groupedBy).forEach((key: string) => {
+            contacts.push({
+              name: key,
+              items: _.orderBy(groupedBy[key], 'role', 'asc').map(
+                (item: any) => ({
+                  name: `${item.salutation} ${
+                    item.name
+                  } ${item.surname.toUpperCase()}`,
+                  role: item.role,
+                  position: item.position,
+                  email: item.email,
+                }),
+              ),
+            });
+          });
 
           return {
             data: [
@@ -194,23 +220,6 @@ export class LocationController {
                         'asc',
                       )
                     : [],
-                indicators: locationIndicatorsResp.map((indicator: any) => ({
-                  name: _.get(
-                    indicator,
-                    locationMappingFields.locationIndicatorName,
-                    '',
-                  ),
-                  year: _.get(
-                    indicator,
-                    locationMappingFields.locationIndicatorYear,
-                    '',
-                  ),
-                  value: _.get(
-                    indicator,
-                    locationMappingFields.locationIndicatorValue,
-                    '',
-                  ),
-                })),
                 principalRecipients: principalRecipientsResp.map((pr: any) => {
                   const fullName = _.get(
                     pr,
@@ -233,6 +242,11 @@ export class LocationController {
                     name: `${fullName}${shortName ? ` (${shortName})` : ''}`,
                   };
                 }),
+                coordinatingMechanismContacts: _.orderBy(
+                  contacts,
+                  'name',
+                  'asc',
+                ),
               },
             ],
           };
