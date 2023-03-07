@@ -127,16 +127,28 @@ export class LocationController {
           Object.keys(groupedBy).forEach((key: string) => {
             contacts.push({
               name: key,
-              items: _.orderBy(groupedBy[key], 'role', 'asc').map(
-                (item: any) => ({
+              items: groupedBy[key]
+                .map((item: any) => ({
                   name: `${item.salutation} ${
                     item.name
                   } ${item.surname.toUpperCase()}`,
                   role: item.role,
                   position: item.position,
                   email: item.email,
-                }),
-              ),
+                }))
+                .sort(
+                  (a, b) =>
+                    _.get(
+                      locationMappingFields.contactRoleOrder,
+                      `[${a.role}]`,
+                      0,
+                    ) -
+                    _.get(
+                      locationMappingFields.contactRoleOrder,
+                      `[${b.role}]`,
+                      0,
+                    ),
+                ),
             });
           });
 

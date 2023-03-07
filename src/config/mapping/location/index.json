@@ -13,6 +13,11 @@
   "contactName": "contactFirstName",
   "contactSurname": "contactLastName",
   "contactRole": "contactRoleName",
+  "contactRoleOrder": {
+    "Chair": 0,
+    "Vice Chair": 1,
+    "Admin Focal Point": 2
+  },
   "contactSalutation": "contactSalutation",
   "contactPosition": "contactPositionTitle",
   "contactEmail": "contactEmailAddress",
