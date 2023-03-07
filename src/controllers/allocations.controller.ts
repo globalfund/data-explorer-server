@@ -514,6 +514,17 @@ export class AllocationsController {
         encodeURIComponent: (str: string) => str,
       },
     );
+    const aggregateByField =
+      this.req.query.aggregateBy ??
+      AllocationsFieldsMapping.allocationsTableAggregateByFields[0];
+    const nonAggregateByField = (
+      this.req.query.nonAggregateBy
+        ? this.req.query.nonAggregateBy
+        : this.req.query.aggregateBy ===
+          AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
+        ? AllocationsFieldsMapping.allocationsTableAggregateByFields[1]
+        : AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
+    ).toString();
     const url = `${urls.allocations}/?${params}${filterString}&${AllocationsFieldsMapping.allocationsTableExpand}`;
     const sortBy = this.req.query.sortBy;
     const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
@@ -529,15 +540,12 @@ export class AllocationsController {
 
         let data: SimpleTableRow[] = [];
 
-        const groupedBy1 = _.groupBy(
-          rawData,
-          AllocationsFieldsMapping.allocationsComponentAggregation,
-        );
+        const groupedBy1 = _.groupBy(rawData, aggregateByField);
 
         Object.keys(groupedBy1).forEach(compKey => {
           const groupedBy2 = _.groupBy(
             groupedBy1[compKey],
-            AllocationsFieldsMapping.allocationsCountryAggregation,
+            nonAggregateByField,
           );
           const subData: SimpleTableRow[] = [];
           Object.keys(groupedBy2).forEach(countryKey => {
