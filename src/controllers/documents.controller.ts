@@ -64,18 +64,9 @@ export class DocumentsController {
       this.req.query,
       docsUtils.defaultFilter,
     );
-    // const params = querystring.stringify(
-    //   {
-    //     ...getPage(filtering.page, parseInt(page, 10), parseInt(pageSize, 10)),
-    //     [filtering.page_size]: pageSize,
-    //   },
-    //   '&',
-    //   filtering.param_assign_operator,
-    //   {
-    //     encodeURIComponent: (str: string) => str,
-    //   },
-    // );
     const url = `${urls.documents}/?${docsUtils.defaultSelect}${docsUtils.defaultOrderBy}${filterString}`;
+
+    console.log(url);
 
     return axios
       .get(url)

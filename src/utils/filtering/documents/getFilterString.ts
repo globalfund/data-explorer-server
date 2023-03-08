@@ -3,7 +3,7 @@ import filteringDocuments from '../../../config/filtering/documents.json';
 import filtering from '../../../config/filtering/index.json';
 
 export function getFilterString(params: any, defaultFilter?: string) {
-  let str = defaultFilter ?? '';
+  let str = defaultFilter && !params.documentTypes ? defaultFilter : '';
 
   const locations = _.filter(
     _.get(params, 'locations', '').split(','),
@@ -42,6 +42,16 @@ export function getFilterString(params: any, defaultFilter?: string) {
     }(${multicountries.join(filtering.multi_param_separator)})`;
   }
 
+  const documentTypes = _.filter(
+    _.get(params, 'documentTypes', '').split(','),
+    (comp: string) => comp.length > 0,
+  ).map((comp: string) => `'${comp}'`);
+  if (documentTypes.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringDocuments.documentType}${
+      filtering.in
+    }(${documentTypes.join(filtering.multi_param_separator)})`;
+  }
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${filteringDocuments.search.replace(
@@ -51,7 +61,7 @@ export function getFilterString(params: any, defaultFilter?: string) {
   }
 
   if (str.length > 0) {
-    str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;
+    str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}`;
   }
 
   return str;
