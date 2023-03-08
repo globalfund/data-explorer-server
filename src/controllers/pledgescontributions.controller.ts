@@ -11,12 +11,14 @@ import _, {orderBy} from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import PledgesContributionsGeoFieldsMapping from '../config/mapping/pledgescontributions/geo.json';
+import PledgesContributionsTableFieldsMapping from '../config/mapping/pledgescontributions/table.json';
 import PledgesContributionsTimeCycleFieldsMapping from '../config/mapping/pledgescontributions/timeCycle.json';
 import PledgesContributionsTimeCycleDrilldownFieldsMapping from '../config/mapping/pledgescontributions/timeCycleDrilldown.json';
 import urls from '../config/urls/index.json';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {FilterGroupOption} from '../interfaces/filters';
 import {PledgesContributionsTreemapDataItem} from '../interfaces/pledgesContributions';
+import {SimpleTableRow} from '../interfaces/simpleTable';
 import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/pledges-contributions/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
@@ -723,6 +725,93 @@ export class PledgescontributionsController {
         return {
           count: data.length,
           data: _.orderBy(data, 'value', 'desc'),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/pledges-contributions/table')
+  @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
+  table(): object {
+    const aggregation =
+      PledgesContributionsTableFieldsMapping.aggregations[
+        this.req.query.aggregateBy ===
+        PledgesContributionsTableFieldsMapping.aggregations[0].key
+          ? 0
+          : 1
+      ].value;
+    const aggregationKey =
+      this.req.query.aggregateBy ===
+      PledgesContributionsTableFieldsMapping.aggregations[1].key
+        ? PledgesContributionsTableFieldsMapping.aggregations[1].key
+        : PledgesContributionsTableFieldsMapping.aggregations[0].key;
+    const filterString = getFilterString(this.req.query, aggregation);
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.pledgescontributions}/?${params}${filterString}`;
+    const sortBy = this.req.query.sortBy;
+    const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'asc';
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          PledgesContributionsTableFieldsMapping.dataPath,
+          [],
+        );
+        const groupedByData = _.groupBy(
+          rawData,
+          _.get(
+            PledgesContributionsTableFieldsMapping,
+            aggregationKey,
+            PledgesContributionsTableFieldsMapping.Donor,
+          ),
+        );
+        const data: SimpleTableRow[] = [];
+        Object.keys(groupedByData).forEach(key => {
+          data.push({
+            name: key,
+            Pledges: _.sumBy(
+              _.filter(
+                groupedByData[key],
+                dataItem =>
+                  _.get(
+                    dataItem,
+                    PledgesContributionsTableFieldsMapping.indicator,
+                    '',
+                  ) === PledgesContributionsTableFieldsMapping.pledge,
+              ),
+              PledgesContributionsTableFieldsMapping.amount,
+            ),
+            Contributions: _.sumBy(
+              _.filter(
+                groupedByData[key],
+                dataItem =>
+                  _.get(
+                    dataItem,
+                    PledgesContributionsTableFieldsMapping.indicator,
+                    '',
+                  ) === PledgesContributionsTableFieldsMapping.contribution,
+              ),
+              PledgesContributionsTableFieldsMapping.amount,
+            ),
+          });
+        });
+
+        return {
+          count: data.length,
+          data: _.orderBy(data, sortByValue, sortByDirection),
         };
       })
       .catch(handleDataApiError);
