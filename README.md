@@ -30,6 +30,7 @@ const dbPort = process.env.MONGO_PORT ?? 27017;
 const dbUser = process.env.MONGO_USERNAME ?? '';
 const dbPass = process.env.MONGO_PASSWORD ?? '';
 const database = process.env.MONGO_DB ?? 'the-data-explorer-db';
+const authSource = process.env.MONGO_AUTH_SOURCE ?? '';
 ```
 
 If you want to use different configuration variables then add them as environment variables
@@ -40,6 +41,7 @@ MONGO_PORT=<mongoDB port>
 MONGO_USERNAME=<mongoDB username>
 MONGO_PASSWORD=<mongoDB password>
 MONGO_DB=<mongoDB name>
+MONGO_AUTH_SOURCE=<mongoDB authentication source>
 ```
 
 ## Install dependencies

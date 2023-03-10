@@ -25,6 +25,7 @@ export class ApiApplication extends BootMixin(
     const dbUser = process.env.MONGO_USERNAME ?? '';
     const dbPass = process.env.MONGO_PASSWORD ?? '';
     const database = process.env.MONGO_DB ?? 'the-data-explorer-db';
+    const authSource = process.env.MONGO_AUTH_SOURCE ?? '';
 
     this.bind('datasources.config.db').to({
       name: 'db',
@@ -35,6 +36,7 @@ export class ApiApplication extends BootMixin(
       user: dbUser,
       password: dbPass,
       database: database,
+      authSource: authSource,
       useNewUrlParser: true,
     });
     this.bind('datasources.db').toClass(DbDataSource);
