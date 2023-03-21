@@ -25,12 +25,12 @@ import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {DisbursementsTreemapDataItem} from '../interfaces/disbursementsTreemap';
 import staticCountries from '../static-assets/countries.json';
 import {handleDataApiError} from '../utils/dataApiError';
+import {getFilterString} from '../utils/filtering/disbursements/getFilterString';
 import {
   grantDetailGetFilterString,
   grantDetailTreemapGetFilterString,
 } from '../utils/filtering/disbursements/grantDetailGetFilterString';
 import {getGeoMultiCountriesFilterString} from '../utils/filtering/disbursements/multicountries/getFilterString';
-import {getFilterString} from '../utils/filtering/grants/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 
 const DISBURSEMENTS_TIME_CYCLE_RESPONSE: ResponseObject = {
