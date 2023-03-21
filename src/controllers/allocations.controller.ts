@@ -540,15 +540,21 @@ export class AllocationsController {
 
         let data: SimpleTableRow[] = [];
 
-        const groupedBy1 = _.groupBy(rawData, aggregateByField);
+        let groupedBy1 = _.groupBy(rawData, aggregateByField);
 
-        Object.keys(groupedBy1).forEach(compKey => {
+        _.filter(
+          Object.keys(groupedBy1),
+          compKey => compKey !== 'undefined' && compKey !== 'null',
+        ).forEach(compKey => {
           const groupedBy2 = _.groupBy(
             groupedBy1[compKey],
             nonAggregateByField,
           );
           const subData: SimpleTableRow[] = [];
-          Object.keys(groupedBy2).forEach(countryKey => {
+          _.filter(
+            Object.keys(groupedBy2),
+            countryKey => countryKey !== 'undefined' && countryKey !== 'null',
+          ).forEach(countryKey => {
             let item = {
               name: countryKey,
             };
@@ -607,6 +613,97 @@ export class AllocationsController {
             children: subData,
           };
           data.push(item);
+        });
+
+        groupedBy1 = _.groupBy(
+          rawData,
+          aggregateByField ===
+            AllocationsFieldsMapping.allocationsTableAggregateByFields[1]
+            ? AllocationsFieldsMapping.multicountry
+            : aggregateByField,
+        );
+        _.filter(
+          Object.keys(groupedBy1),
+          compKey => compKey !== 'undefined' && compKey !== 'null',
+        ).forEach(compKey => {
+          const groupedBy2 = _.groupBy(
+            groupedBy1[compKey],
+            nonAggregateByField ===
+              AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
+              ? nonAggregateByField
+              : AllocationsFieldsMapping.multicountry,
+          );
+          const subData: SimpleTableRow[] = [];
+          _.filter(
+            Object.keys(groupedBy2),
+            countryKey => countryKey !== 'undefined' && countryKey !== 'null',
+          ).forEach(countryKey => {
+            let item = {
+              name: countryKey,
+            };
+            _.orderBy(
+              groupedBy2[countryKey],
+              AllocationsFieldsMapping.periodStart,
+              'desc',
+            ).forEach(countryItem => {
+              item = {
+                ...item,
+                [`${_.get(
+                  countryItem,
+                  AllocationsFieldsMapping.periodStart,
+                  '',
+                )}-${_.get(
+                  countryItem,
+                  AllocationsFieldsMapping.periodEnd,
+                  '',
+                )}`]: _.get(
+                  countryItem,
+                  AllocationsFieldsMapping.amountTable,
+                  0,
+                ),
+              };
+            });
+            subData.push(item);
+          });
+          let item: SimpleTableRow = {
+            name: compKey,
+          };
+          const groupedByPeriods = _.groupBy(
+            groupedBy1[compKey],
+            AllocationsFieldsMapping.periodStart,
+          );
+          _.sortBy(Object.keys(groupedByPeriods))
+            .reverse()
+            .forEach(period => {
+              item = {
+                ...item,
+                [`${_.get(
+                  groupedByPeriods[period][0],
+                  AllocationsFieldsMapping.periodStart,
+                  '',
+                )}-${_.get(
+                  groupedByPeriods[period][0],
+                  AllocationsFieldsMapping.periodEnd,
+                  '',
+                )}`]: _.sumBy(
+                  groupedByPeriods[period],
+                  AllocationsFieldsMapping.amountTable,
+                ),
+              };
+            });
+          const fItemIndex = _.findIndex(data, {name: item.name});
+          if (fItemIndex > -1) {
+            data[fItemIndex] = {
+              ...data[fItemIndex],
+              children: [...(data[fItemIndex].children || []), ...subData],
+            };
+          } else {
+            item = {
+              ...item,
+              children: subData,
+            };
+            data.push(item);
+          }
         });
 
         data.forEach((item, index) => {

@@ -5,6 +5,7 @@
   "periodEnd": "periodEndYear",
   "component": "component.componentName",
   "amountTable": "allocationAmount",
+  "multicountry": "multiCountryName",
   "componentColors": {
     "HIV": "#595C70",
     "Tuberculosis": "#1B2127",
