@@ -7,7 +7,7 @@ import {
   RestBindings,
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
-import _, {orderBy} from 'lodash';
+import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import EligibilityFieldsMapping from '../config/mapping/eligibility/dotsChart.json';
@@ -160,7 +160,7 @@ export class EligibilityController {
 
         return {
           count: data.length,
-          data: orderBy(
+          data: _.orderBy(
             data,
             outSortByValue,
             inSortByValue === 'status' ? 'asc' : sortByDirection,
@@ -232,55 +232,56 @@ export class EligibilityController {
         years.unshift(years[0] - 1);
         const data: {id: string; data: EligibilityScatterplotDataItem[]}[] = [];
 
-        (
-          _.orderBy(Object.keys(aggregatedData), undefined, 'asc') as string[]
-        ).forEach((key: string) => {
-          data.push({
-            id: key,
-            data: _.orderBy(
-              aggregatedData[key],
-              ScatterplotFieldsMapping.year,
-              'asc',
-            ).map(item => ({
-              y: key,
-              x: _.get(item, ScatterplotFieldsMapping.year, ''),
-              eligibility: _.get(
-                ScatterplotFieldsMapping,
-                _.get(item, ScatterplotFieldsMapping.status, '')
-                  .toLowerCase()
-                  .trim(),
-                _.get(item, ScatterplotFieldsMapping.status, ''),
-              ),
-              incomeLevel:
-                _.get(item, ScatterplotFieldsMapping.incomeLevel, null) === null
-                  ? 0
-                  : _.findIndex(
-                      ScatterplotFieldsMapping.incomeLevels,
-                      (incomeLevel: string) =>
-                        incomeLevel ===
-                        _.get(
-                          item,
-                          ScatterplotFieldsMapping.incomeLevel,
-                          'None',
-                        ),
-                    ),
-              diseaseBurden:
-                _.get(item, ScatterplotFieldsMapping.diseaseBurden, null) ===
-                null
-                  ? 0
-                  : _.findIndex(
-                      ScatterplotFieldsMapping.diseaseBurdens,
-                      (diseaseBurden: string) =>
-                        diseaseBurden ===
-                        _.get(
-                          item,
-                          ScatterplotFieldsMapping.diseaseBurden,
-                          'None',
-                        ),
-                    ),
-            })),
-          });
-        });
+        _.orderBy(Object.keys(aggregatedData), undefined, 'asc').forEach(
+          (key: string) => {
+            data.push({
+              id: key,
+              data: _.orderBy(
+                aggregatedData[key],
+                ScatterplotFieldsMapping.year,
+                'asc',
+              ).map(item => ({
+                y: key,
+                x: _.get(item, ScatterplotFieldsMapping.year, ''),
+                eligibility: _.get(
+                  ScatterplotFieldsMapping,
+                  _.get(item, ScatterplotFieldsMapping.status, '')
+                    .toLowerCase()
+                    .trim(),
+                  _.get(item, ScatterplotFieldsMapping.status, ''),
+                ),
+                incomeLevel:
+                  _.get(item, ScatterplotFieldsMapping.incomeLevel, null) ===
+                  null
+                    ? 0
+                    : _.findIndex(
+                        ScatterplotFieldsMapping.incomeLevels,
+                        (incomeLevel: string) =>
+                          incomeLevel ===
+                          _.get(
+                            item,
+                            ScatterplotFieldsMapping.incomeLevel,
+                            'None',
+                          ),
+                      ),
+                diseaseBurden:
+                  _.get(item, ScatterplotFieldsMapping.diseaseBurden, null) ===
+                  null
+                    ? 0
+                    : _.findIndex(
+                        ScatterplotFieldsMapping.diseaseBurdens,
+                        (diseaseBurden: string) =>
+                          diseaseBurden ===
+                          _.get(
+                            item,
+                            ScatterplotFieldsMapping.diseaseBurden,
+                            'None',
+                          ),
+                      ),
+              })),
+            });
+          },
+        );
 
         data.forEach((item: any, index: number) => {
           years.forEach((year: number, yearindex: number) => {
@@ -360,7 +361,7 @@ export class EligibilityController {
             tableData = [...tableData, ...comp.data];
           });
 
-          tableData = orderBy(tableData, sortByValue, sortByDirection);
+          tableData = _.orderBy(tableData, sortByValue, sortByDirection);
 
           return {
             count: tableData.length,
@@ -425,5 +426,185 @@ export class EligibilityController {
         };
       })
       .catch(handleDataApiError);
+  }
+
+  @get('/eligibility/location/table')
+  @response(200)
+  eligibilityLocationTable(): object {
+    if (_.get(this.req.query, 'locations', '').length === 0) {
+      return {
+        count: 0,
+        data: [],
+      };
+    }
+    const aggregateByField =
+      this.req.query.aggregateBy ??
+      EligibilityFieldsMapping.aggregateByFields[0];
+    const filterString = getFilterString(this.req.query);
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const url = `${urls.eligibility}/?${params}${filterString}&${ScatterplotFieldsMapping.defaultSelect}`;
+    const sortBy = this.req.query.sortBy;
+    const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'asc';
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const apiData = _.get(resp.data, ScatterplotFieldsMapping.dataPath, []);
+
+        const data: any = [];
+
+        if (
+          aggregateByField === EligibilityFieldsMapping.aggregateByFields[0]
+        ) {
+          const aggregatedDataByComponent = _.groupBy(
+            apiData,
+            ScatterplotFieldsMapping.component,
+          );
+
+          Object.keys(aggregatedDataByComponent).forEach(component => {
+            data.push({
+              component,
+              children: _.orderBy(
+                aggregatedDataByComponent[component].map(item => {
+                  const incomeLevelIndex: number =
+                    _.get(item, ScatterplotFieldsMapping.incomeLevel, null) ===
+                    null
+                      ? 0
+                      : _.findIndex(
+                          ScatterplotFieldsMapping.incomeLevels,
+                          (incomeLevel: string) =>
+                            incomeLevel ===
+                            _.get(
+                              item,
+                              ScatterplotFieldsMapping.incomeLevel,
+                              'None',
+                            ),
+                        );
+                  const incomeLevel: string = _.get(
+                    ScatterplotFieldsMapping.incomeLevels,
+                    incomeLevelIndex,
+                    'None',
+                  );
+                  return {
+                    year: _.get(item, ScatterplotFieldsMapping.year, null),
+                    eligibilityStatus: _.get(
+                      item,
+                      ScatterplotFieldsMapping.status,
+                      '',
+                    ),
+                    diseaseBurden: _.get(
+                      item,
+                      ScatterplotFieldsMapping.diseaseBurden,
+                      '',
+                    ),
+                    incomeLevel,
+                  };
+                }),
+                sortByValue,
+                sortByDirection,
+              ),
+            });
+          });
+        } else {
+          const aggregatedDataByYear = _.groupBy(
+            apiData,
+            ScatterplotFieldsMapping.year,
+          );
+
+          Object.keys(aggregatedDataByYear).forEach(year => {
+            const incomeLevelIndex: number =
+              _.get(
+                aggregatedDataByYear[year][0],
+                ScatterplotFieldsMapping.incomeLevel,
+                null,
+              ) === null
+                ? 0
+                : _.findIndex(
+                    ScatterplotFieldsMapping.incomeLevels,
+                    (incomeLevel: string) =>
+                      incomeLevel ===
+                      _.get(
+                        aggregatedDataByYear[year][0],
+                        ScatterplotFieldsMapping.incomeLevel,
+                        'None',
+                      ),
+                  );
+            const incomeLevel: string = _.get(
+              ScatterplotFieldsMapping.incomeLevels,
+              incomeLevelIndex,
+              'None',
+            );
+            data.push({
+              year,
+              incomeLevel,
+              children: _.orderBy(
+                aggregatedDataByYear[year].map(item => ({
+                  year: '',
+                  component: _.get(
+                    item,
+                    ScatterplotFieldsMapping.component,
+                    '',
+                  ),
+                  eligibilityStatus: _.get(
+                    ScatterplotFieldsMapping.statusValues,
+                    _.get(item, ScatterplotFieldsMapping.status, ''),
+                    _.get(item, ScatterplotFieldsMapping.status, ''),
+                  ),
+                  diseaseBurden: _.get(
+                    item,
+                    ScatterplotFieldsMapping.diseaseBurden,
+                    '',
+                  ),
+                  incomeLevel: '',
+                })),
+                sortByValue,
+                sortByDirection,
+              ),
+            });
+          });
+        }
+
+        return {
+          count: data.length,
+          data: _.orderBy(data, sortByValue, sortByDirection),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/eligibility/status/codelist')
+  @response(200)
+  eligibilityStatusCodelist(): object {
+    const keys = Object.keys(ScatterplotFieldsMapping.statusValues);
+    return {
+      count: keys.length,
+      data: keys.map(key => ({
+        value: key,
+        label: _.get(ScatterplotFieldsMapping.statusValues, `[${key}]`, key),
+      })),
+    };
+  }
+
+  @get('/eligibility/disease-burden/codelist')
+  @response(200)
+  eligibilityDiseaseBurdenCodelist(): object {
+    return {
+      count: ScatterplotFieldsMapping.diseaseBurdens.length,
+      data: ScatterplotFieldsMapping.diseaseBurdens.map(db => ({
+        value: db,
+        label: db,
+      })),
+    };
   }
 }

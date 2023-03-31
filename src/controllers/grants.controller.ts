@@ -314,4 +314,19 @@ export class GrantsController {
       )
       .catch(handleDataApiError);
   }
+
+  @get('/grant-cycles')
+  @response(200)
+  grantCycles(): object {
+    return axios
+      .get(urls.grantCycles)
+      .then(resp => {
+        return {
+          data: resp.data.value
+            .map((item: any) => item.grantCycleCoveragePeriod)
+            .reverse(),
+        };
+      })
+      .catch(handleDataApiError);
+  }
 }
