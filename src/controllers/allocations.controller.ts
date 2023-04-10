@@ -515,12 +515,14 @@ export class AllocationsController {
       },
     );
     const aggregateByField =
-      this.req.query.aggregateBy ??
-      AllocationsFieldsMapping.allocationsTableAggregateByFields[0];
+      this.req.query.aggregateBy &&
+      this.req.query.aggregateBy.toString().length > 0
+        ? this.req.query.aggregateBy
+        : AllocationsFieldsMapping.allocationsTableAggregateByFields[0];
     const nonAggregateByField = (
       this.req.query.nonAggregateBy
         ? this.req.query.nonAggregateBy
-        : this.req.query.aggregateBy ===
+        : aggregateByField ===
           AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
         ? AllocationsFieldsMapping.allocationsTableAggregateByFields[1]
         : AllocationsFieldsMapping.allocationsTableAggregateByFields[0]

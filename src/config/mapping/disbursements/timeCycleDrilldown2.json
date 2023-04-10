@@ -1,0 +1,17 @@
+{
+  "dataPath": "value",
+  "disbursed": "disbursed",
+  "signed": "signed",
+  "committed": "committed",
+  "component": "componentName",
+  "locationName": "geographicAreaName",
+  "locationCode": "geographicAreaCode_ISO3",
+  "grantName": "grantAgreementTitle",
+  "grantCode": "grantAgreementNumber",
+  "grantDisbursed": "totalDisbursedAmount",
+  "grantCommitted": "totalCommittedAmount",
+  "grantSigned": "totalSignedAmount",
+  "disbursementsTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,GrantAgreementNumber,GrantAgreementTitle),aggregate(DisbursementAmount with sum as disbursed))",
+  "signedTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,GrantAgreementNumber,GrantAgreementTitle),aggregate(TotalSignedAmount with sum as signed))",
+  "commitmentTimeCycleDrilldownAggregation": "$apply=<filterString>groupby((GeographicAreaCode_ISO3,GeographicAreaName,GrantAgreementNumber,GrantAgreementTitle),aggregate(CommitmentAmount with sum as committed))"
+}

@@ -14,7 +14,7 @@
   "allocationsAggregation": "$apply=<filterString>groupby((component/componentName),aggregate(allocationAmount with sum as amount))",
   "allocationsTableExpand": "$expand=component($select=componentName),geographicArea($select=geographicAreaName)",
   "allocationsTableAggregateByFields": [
-    "component.componentName",
-    "geographicArea.geographicAreaName"
+    "geographicArea.geographicAreaName",
+    "component.componentName"
   ]
 }
