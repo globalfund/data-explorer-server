@@ -620,7 +620,7 @@ export class AllocationsController {
         groupedBy1 = _.groupBy(
           rawData,
           aggregateByField ===
-            AllocationsFieldsMapping.allocationsTableAggregateByFields[1]
+            AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
             ? AllocationsFieldsMapping.multicountry
             : aggregateByField,
         );
@@ -631,7 +631,7 @@ export class AllocationsController {
           const groupedBy2 = _.groupBy(
             groupedBy1[compKey],
             nonAggregateByField ===
-              AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
+              AllocationsFieldsMapping.allocationsTableAggregateByFields[1]
               ? nonAggregateByField
               : AllocationsFieldsMapping.multicountry,
           );
