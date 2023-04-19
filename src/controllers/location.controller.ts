@@ -232,28 +232,31 @@ export class LocationController {
                         'asc',
                       )
                     : [],
-                principalRecipients: principalRecipientsResp.map((pr: any) => {
-                  const fullName = _.get(
-                    pr,
-                    locationMappingFields.principalRecipientName,
-                    '',
-                  );
-                  const shortName = _.get(
-                    pr,
-                    locationMappingFields.principalRecipientShortName,
-                    '',
-                  );
-                  const id = _.get(
-                    pr,
-                    locationMappingFields.principalRecipientId,
-                    '',
-                  );
+                principalRecipients: _.filter(
+                  principalRecipientsResp.map((pr: any) => {
+                    const fullName = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientName,
+                      '',
+                    );
+                    const shortName = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientShortName,
+                      '',
+                    );
+                    const id = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientId,
+                      '',
+                    );
 
-                  return {
-                    code: id,
-                    name: `${fullName}${shortName ? ` (${shortName})` : ''}`,
-                  };
-                }),
+                    return {
+                      code: id,
+                      name: `${fullName}${shortName ? ` (${shortName})` : ''}`,
+                    };
+                  }),
+                  (pr: any) => pr.code,
+                ),
                 coordinatingMechanismContacts: _.orderBy(
                   contacts,
                   'name',
