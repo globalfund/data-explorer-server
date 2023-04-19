@@ -10,6 +10,7 @@
   "contactsFilterString": "$filter=(geographicAreaCode_ISO3 eq '<code>' OR multiCountryName eq '<code>') AND organizationRoleName eq 'Coordinating Mechanism'",
   "contactsDataPath": "value",
   "contactOrganisationName": "organizationName",
+  "contactOrganisationUrl": "organizationWebsite",
   "contactName": "contactFirstName",
   "contactSurname": "contactLastName",
   "contactRole": "contactRoleName",

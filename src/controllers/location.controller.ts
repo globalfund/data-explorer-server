@@ -60,7 +60,7 @@ export class LocationController {
     }/?${locationMappingFields.contactsFilterString.replace(
       /<code>/g,
       location,
-    )}`;
+    )}&$top=1000`;
 
     return axios
       .all([
@@ -113,6 +113,7 @@ export class LocationController {
               locationMappingFields.contactOrganisationName,
               '',
             ),
+            url: _.get(c, locationMappingFields.contactOrganisationUrl, ''),
             name: _.get(c, locationMappingFields.contactName, ''),
             surname: _.get(c, locationMappingFields.contactSurname, ''),
             role: _.get(c, locationMappingFields.contactRole, ''),
@@ -125,8 +126,13 @@ export class LocationController {
           const groupedBy = _.groupBy(formattedContactsResp, 'orgName');
 
           Object.keys(groupedBy).forEach((key: string) => {
+            let url = groupedBy[key][0].url;
+            if (url && url.indexOf('http') !== 0) {
+              url = `http://${url}`;
+            }
             contacts.push({
               name: key,
+              url,
               items: groupedBy[key]
                 .map((item: any) => ({
                   name: `${item.salutation} ${
