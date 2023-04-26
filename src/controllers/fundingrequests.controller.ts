@@ -65,14 +65,14 @@ export class FundingRequestsController {
               approach: item.approach,
               window: item.trpwindow,
               outcome: item.trpoutcome,
-              gac: moment(item.gacmeeting).format('MMM YY'),
               board: moment(item.boardApproval).format('MMM YY'),
               children: item.items.map((subitem: any) => ({
-                grant1: `${subitem.IPGrantNumber} (${moment(
-                  subitem.IPStartDate,
-                ).format('YYYY/MM/DD')} - ${moment(subitem.IPEndDate).format(
-                  'YYYY/MM/DD',
-                )})`,
+                gac: moment(item.gacmeeting).format('MMM YY'),
+                grant: subitem.IPGrantNumber,
+                start: moment(subitem.IPStartDate).format('YYYY/MM/DD'),
+                end: moment(subitem.IPEndDate).format('YYYY/MM/DD'),
+                component: subitem.component,
+                ip: subitem.IPNumber,
               })),
             })),
           });
