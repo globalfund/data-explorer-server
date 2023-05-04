@@ -17,12 +17,6 @@ export class FundingRequestsController {
   @get('/funding-requests/table')
   @response(200)
   fundingRequestsLocationTable(): object {
-    // if (_.get(this.req.query, 'locations', '').length === 0) {
-    //   return {
-    //     count: 0,
-    //     data: [],
-    //   };
-    // }
     const filterString = getFilterString(this.req.query);
     const params = querystring.stringify(
       {},
@@ -56,25 +50,29 @@ export class FundingRequestsController {
         Object.keys(aggregatedData).forEach((key: string) => {
           data.push({
             name: key,
-            children: aggregatedData[key].map((item: any) => ({
-              id: item.name,
-              date: moment(item.submissionDate).format('D MMMM YYYY'),
-              component: item.components
-                .map((c: any) => c.component)
-                .join(', '),
-              approach: item.approach,
-              window: item.trpwindow,
-              outcome: item.trpoutcome,
-              board: moment(item.boardApproval).format('MMM YY'),
-              children: item.items.map((subitem: any) => ({
-                gac: moment(item.gacmeeting).format('MMM YY'),
-                grant: subitem.IPGrantNumber,
-                start: moment(subitem.IPStartDate).format('YYYY/MM/DD'),
-                end: moment(subitem.IPEndDate).format('YYYY/MM/DD'),
-                component: subitem.component,
-                ip: subitem.IPNumber,
-              })),
-            })),
+            children: aggregatedData[key].map((item: any) => {
+              const date = moment(item.submissionDate).format('D MMMM YYYY');
+              return {
+                id: item.name,
+                date: date === 'Invalid date' ? null : date,
+                component: item.components
+                  .map((c: any) => c.component)
+                  .join(', '),
+                approach: item.approach,
+                window: item.trpwindow,
+                outcome: item.trpoutcome,
+                portfolioCategory: item.portfolioCategory,
+                board: moment(item.boardApproval).format('MMM YY'),
+                children: item.items.map((subitem: any) => ({
+                  gac: moment(item.gacmeeting).format('MMM YY'),
+                  grant: subitem.IPGrantNumber,
+                  start: moment(subitem.IPStartDate).format('DD-MM-YYYY'),
+                  end: moment(subitem.IPEndDate).format('DD-MM-YYYY'),
+                  component: subitem.component,
+                  ip: subitem.IPNumber,
+                })),
+              };
+            }),
           });
         });
 
@@ -94,20 +92,25 @@ export class FundingRequestsController {
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
-        return _.get(resp.data, TableFieldsMapping.dataPath, []).map(
-          (item: any) => ({
-            label: _.get(
-              item,
-              `[${TableFieldsMapping.portfolioCategoryAggregationField}]`,
-              '',
+        return {
+          data: _.filter(
+            _.get(resp.data, TableFieldsMapping.dataPath, []).map(
+              (item: any) => ({
+                label: _.get(
+                  item,
+                  `[${TableFieldsMapping.portfolioCategoryAggregationField}]`,
+                  '',
+                ),
+                value: _.get(
+                  item,
+                  `[${TableFieldsMapping.portfolioCategoryAggregationField}]`,
+                  '',
+                ),
+              }),
             ),
-            value: _.get(
-              item,
-              `[${TableFieldsMapping.portfolioCategoryAggregationField}]`,
-              '',
-            ),
-          }),
-        );
+            (item: any) => item.value !== null && item.value !== 'null',
+          ),
+        };
       })
       .catch(handleDataApiError);
   }

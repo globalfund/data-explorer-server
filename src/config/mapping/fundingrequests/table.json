@@ -18,6 +18,7 @@
       "trpwindow": "trP_Window",
       "trpoutcome": "trP_Outcome",
       "boardApproval": "fundingRequestGrantAgreementImplementationPeriods[0].grantAgreementImplementationPeriod.boardApprovalDate",
+      "portfolioCategory": "portfolioCategory",
       "items": [
         "fundingRequestGrantAgreementImplementationPeriods[]",
         {

@@ -476,96 +476,98 @@ export class EligibilityController {
           );
           data.push({
             level1: aggrKey,
-            children: Object.keys(yearsData).map(year => {
-              let incomeLevelIndex: number =
-                _.get(
-                  yearsData[year][0],
-                  ScatterplotFieldsMapping.incomeLevel,
-                  null,
-                ) === null
-                  ? 0
-                  : _.findIndex(
-                      ScatterplotFieldsMapping.incomeLevels,
-                      (incomeLevel: string) =>
-                        incomeLevel ===
+            children: _.orderBy(Object.keys(yearsData), undefined, 'desc').map(
+              year => {
+                let incomeLevelIndex: number =
+                  _.get(
+                    yearsData[year][0],
+                    ScatterplotFieldsMapping.incomeLevel,
+                    null,
+                  ) === null
+                    ? 0
+                    : _.findIndex(
+                        ScatterplotFieldsMapping.incomeLevels,
+                        (incomeLevel: string) =>
+                          incomeLevel ===
+                          _.get(
+                            yearsData[year][0],
+                            ScatterplotFieldsMapping.incomeLevel,
+                            'None',
+                          ),
+                      );
+                let incomeLevel: string = _.get(
+                  ScatterplotFieldsMapping.incomeLevels,
+                  incomeLevelIndex,
+                  'None',
+                );
+                const groupedByNonAggregate = _.groupBy(
+                  yearsData[year],
+                  nonAggregateByField,
+                );
+                return {
+                  level1: year,
+                  incomeLevel:
+                    aggregateByField ===
+                    EligibilityFieldsMapping.aggregateByFields[1]
+                      ? incomeLevel
+                      : '',
+                  children: _.orderBy(
+                    Object.keys(groupedByNonAggregate).map(nonAggrKey => {
+                      incomeLevelIndex =
                         _.get(
-                          yearsData[year][0],
+                          groupedByNonAggregate[nonAggrKey][0],
                           ScatterplotFieldsMapping.incomeLevel,
-                          'None',
+                          null,
+                        ) === null
+                          ? 0
+                          : _.findIndex(
+                              ScatterplotFieldsMapping.incomeLevels,
+                              (incomeLevel: string) =>
+                                incomeLevel ===
+                                _.get(
+                                  yearsData[year][0],
+                                  ScatterplotFieldsMapping.incomeLevel,
+                                  'None',
+                                ),
+                            );
+                      incomeLevel = _.get(
+                        ScatterplotFieldsMapping.incomeLevels,
+                        incomeLevelIndex,
+                        'None',
+                      );
+                      return {
+                        level2: nonAggrKey,
+                        eligibilityStatus: _.get(
+                          ScatterplotFieldsMapping.statusValues,
+                          _.get(
+                            groupedByNonAggregate[nonAggrKey][0],
+                            ScatterplotFieldsMapping.status,
+                            '',
+                          ),
+                          _.get(
+                            groupedByNonAggregate[nonAggrKey][0],
+                            ScatterplotFieldsMapping.status,
+                            '',
+                          ),
                         ),
-                    );
-              let incomeLevel: string = _.get(
-                ScatterplotFieldsMapping.incomeLevels,
-                incomeLevelIndex,
-                'None',
-              );
-              const groupedByNonAggregate = _.groupBy(
-                yearsData[year],
-                nonAggregateByField,
-              );
-              return {
-                level1: year,
-                incomeLevel:
-                  aggregateByField ===
-                  EligibilityFieldsMapping.aggregateByFields[1]
-                    ? incomeLevel
-                    : '',
-                children: _.orderBy(
-                  Object.keys(groupedByNonAggregate).map(nonAggrKey => {
-                    incomeLevelIndex =
-                      _.get(
-                        groupedByNonAggregate[nonAggrKey][0],
-                        ScatterplotFieldsMapping.incomeLevel,
-                        null,
-                      ) === null
-                        ? 0
-                        : _.findIndex(
-                            ScatterplotFieldsMapping.incomeLevels,
-                            (incomeLevel: string) =>
-                              incomeLevel ===
-                              _.get(
-                                yearsData[year][0],
-                                ScatterplotFieldsMapping.incomeLevel,
-                                'None',
-                              ),
-                          );
-                    incomeLevel = _.get(
-                      ScatterplotFieldsMapping.incomeLevels,
-                      incomeLevelIndex,
-                      'None',
-                    );
-                    return {
-                      level2: nonAggrKey,
-                      eligibilityStatus: _.get(
-                        ScatterplotFieldsMapping.statusValues,
-                        _.get(
+                        diseaseBurden: _.get(
                           groupedByNonAggregate[nonAggrKey][0],
-                          ScatterplotFieldsMapping.status,
+                          ScatterplotFieldsMapping.diseaseBurden,
                           '',
                         ),
-                        _.get(
-                          groupedByNonAggregate[nonAggrKey][0],
-                          ScatterplotFieldsMapping.status,
-                          '',
-                        ),
-                      ),
-                      diseaseBurden: _.get(
-                        groupedByNonAggregate[nonAggrKey][0],
-                        ScatterplotFieldsMapping.diseaseBurden,
-                        '',
-                      ),
-                      incomeLevel:
-                        aggregateByField ===
-                        EligibilityFieldsMapping.aggregateByFields[0]
-                          ? incomeLevel
-                          : '',
-                    };
-                  }),
-                  sortByValue,
-                  sortByDirection,
-                ),
-              };
-            }),
+                        incomeLevel:
+                          aggregateByField ===
+                          EligibilityFieldsMapping.aggregateByFields[0]
+                            ? incomeLevel
+                            : '',
+                      };
+                    }),
+                    sortByValue,
+                    sortByDirection,
+                  ),
+                };
+              },
+            ),
           });
         });
 
