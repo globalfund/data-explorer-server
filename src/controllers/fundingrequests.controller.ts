@@ -50,29 +50,33 @@ export class FundingRequestsController {
         Object.keys(aggregatedData).forEach((key: string) => {
           data.push({
             name: key,
-            children: aggregatedData[key].map((item: any) => {
-              const date = moment(item.submissionDate).format('D MMMM YYYY');
-              return {
-                id: item.name,
-                date: date === 'Invalid date' ? null : date,
-                component: item.components
-                  .map((c: any) => c.component)
-                  .join(', '),
-                approach: item.approach,
-                window: item.trpwindow,
-                outcome: item.trpoutcome,
-                portfolioCategory: item.portfolioCategory,
-                board: moment(item.boardApproval).format('MMM YY'),
-                children: item.items.map((subitem: any) => ({
-                  gac: moment(item.gacmeeting).format('MMM YY'),
-                  grant: subitem.IPGrantNumber,
-                  start: moment(subitem.IPStartDate).format('DD-MM-YYYY'),
-                  end: moment(subitem.IPEndDate).format('DD-MM-YYYY'),
-                  component: subitem.component,
-                  ip: subitem.IPNumber,
-                })),
-              };
-            }),
+            children: _.orderBy(
+              aggregatedData[key].map((item: any) => {
+                const date = moment(item.submissionDate).format('D MMMM YYYY');
+                return {
+                  id: item.name,
+                  date: date === 'Invalid date' ? null : date,
+                  component: item.components
+                    .map((c: any) => c.component)
+                    .join(', '),
+                  approach: item.approach,
+                  window: item.trpwindow,
+                  outcome: item.trpoutcome,
+                  portfolioCategory: item.portfolioCategory,
+                  board: moment(item.boardApproval).format('MMM YY'),
+                  children: item.items.map((subitem: any) => ({
+                    gac: moment(item.gacmeeting).format('MMM YY'),
+                    grant: subitem.IPGrantNumber,
+                    start: moment(subitem.IPStartDate).format('DD-MM-YYYY'),
+                    end: moment(subitem.IPEndDate).format('DD-MM-YYYY'),
+                    component: subitem.component,
+                    ip: subitem.IPNumber,
+                  })),
+                };
+              }),
+              sortByValue,
+              sortByDirection,
+            ),
           });
         });
 
