@@ -112,7 +112,7 @@
       "name": "Result(s)",
       "type": "Result",
       "link": "/results/#<code>",
-      "url": "https://fetch.theglobalfund.org/v3.3/odata/VReportingResults?$apply=filter(<filterStr>)/groupby((reportingResultIndicatorName,reportingResultIndicatorId), aggregate(ReportingResultValue with sum as value))&$orderby=value desc",
+      "url": "https://fetch.theglobalfund.org/v3.3/odata/VReportingResults?$apply=filter(<filterStr>)/groupby((reportingResultIndicatorName,reportingResultIndicatorId), aggregate(ReportingResultValue with sum as value))",
       "itemname": "",
       "filterFields": [
         "GeographicAreaCode_ISO3",
@@ -138,7 +138,7 @@
       "name": "Document(s)",
       "type": "Document",
       "link": "<code>",
-      "url": "https://fetch.theglobalfund.org/v3.3/odata/VProgramDocuments?$select=programDocumentId,geographicAreaName,organizationName,processName,componentName,processYear,processWindow,fileURL,documentTypeDescription,fileLanguage&$filter=documentTypeDescription in ('Application','Country Profiles') AND (<filterStr>)&$orderby=processYear desc, processWindow desc",
+      "url": "https://fetch.theglobalfund.org/v3.3/odata/VProgramDocuments?$select=programDocumentId,geographicAreaName,organizationName,processName,componentName,processYear,processWindow,fileURL,documentTypeDescription,fileLanguage&$filter=documentTypeDescription in ('Application','Country Profiles') AND (<filterStr>)",
       "itemname": "<geographicAreaName> <organizationName> - <processName> <componentName> - <processYear> <processWindow> - <fileLanguage>",
       "filterFields": [
         "GeographicAreaCode_ISO3",
