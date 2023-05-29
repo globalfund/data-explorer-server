@@ -100,7 +100,7 @@ export class GlobalSearchController {
       .then(
         axios.spread((...responses) => {
           const results: SearchResultsTabModel[] = [];
-          globalSearchMapping.categories.map((cat: any, index: number) => {
+          globalSearchMapping.categories.forEach((cat: any, index: number) => {
             const mapper = mapTransform(cat.mappings);
             const categoryResults =
               cat.url.length > 0
@@ -122,6 +122,8 @@ export class GlobalSearchController {
                         : item.altName || item.name,
                     value: item.altCode || item.code,
                     link: cat.link.replace('<code>', item.altCode || item.code),
+                    order: item.order,
+                    order1: item.order1,
                   }))
                 : _.filter(
                     cat.options,
@@ -140,7 +142,11 @@ export class GlobalSearchController {
                   );
             results.push({
               name: cat.name,
-              results: _.uniqBy(categoryResults, 'value'),
+              results: _.orderBy(
+                _.uniqBy(categoryResults, 'value'),
+                ['order', 'order1'],
+                cat.order,
+              ),
             });
           });
           return {
