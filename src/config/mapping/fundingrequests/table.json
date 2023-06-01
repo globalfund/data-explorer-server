@@ -17,7 +17,6 @@
       "approach": "fundingRequestReviewApproach",
       "trpwindow": "trP_Window",
       "trpoutcome": "trP_Outcome",
-      "boardApproval": "fundingRequestGrantAgreementImplementationPeriods[0].grantAgreementImplementationPeriod.boardApprovalDate",
       "portfolioCategory": "portfolioCategory",
       "items": [
         "fundingRequestGrantAgreementImplementationPeriods[]",
@@ -27,6 +26,7 @@
           "IPEndDate": "grantAgreementImplementationPeriod.implementationPeriodEndDate",
           "IPNumber": "grantAgreementImplementationPeriod.implementationPeriodNumber",
           "gacmeeting": "meetingStartDate",
+          "boardApproval": "grantAgreementImplementationPeriod.boardApprovalDate",
           "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName"
         }
       ]
