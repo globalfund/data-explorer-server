@@ -26,7 +26,7 @@
           "IPEndDate": "grantAgreementImplementationPeriod.implementationPeriodEndDate",
           "IPNumber": "grantAgreementImplementationPeriod.implementationPeriodNumber",
           "gacmeeting": "meetingStartDate",
-          "boardApproval": "grantAgreementImplementationPeriod.boardApprovalDate",
+          "boardApproval": "grantAgreementImplementationPeriod.boardApprovedDate",
           "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName"
         }
       ]
