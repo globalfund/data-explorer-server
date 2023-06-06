@@ -65,7 +65,7 @@ export class FundingRequestsController {
                   portfolioCategory: item.portfolioCategory,
                   children: item.items.map((subitem: any) => ({
                     gac: moment(subitem.gacmeeting).format('MMM YY'),
-                    board: moment(subitem.boardApproval).format('MMM YY'),
+                    // board: moment(subitem.boardApproval).format('MMM YY'),
                     grant: subitem.IPGrantNumber,
                     start: moment(subitem.IPStartDate).format('DD-MM-YYYY'),
                     end: moment(subitem.IPEndDate).format('DD-MM-YYYY'),
