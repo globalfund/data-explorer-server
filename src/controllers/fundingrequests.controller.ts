@@ -74,6 +74,7 @@ export class FundingRequestsController {
                     component: subitem.component,
                     ip: subitem.IPNumber,
                   })),
+                  documents: item.documents,
                 };
               }),
               ['rawDate', 'component'],

@@ -29,10 +29,17 @@
           "boardApproval": "grantAgreementImplementationPeriod.boardApprovedDate",
           "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName"
         }
+      ],
+      "documents": [
+        "documents[]",
+        {
+          "lang": "documentLanguage",
+          "url": "documentUrl"
+        }
       ]
     }
   ],
-  "defaultExpand": "$expand=multiCountry,geographicArea,fundingRequestComponents($expand=component),fundingRequestGrantAgreementImplementationPeriods($expand=grantAgreementImplementationPeriod($expand=grantAgreement($expand=component)))",
+  "defaultExpand": "$expand=multiCountry,geographicArea,fundingRequestComponents($expand=component),fundingRequestGrantAgreementImplementationPeriods($expand=grantAgreementImplementationPeriod($expand=grantAgreement($expand=component))),documents",
   "portfolioCategoryAggregationField": "portfolioCategory",
   "portfolioCategoriesCodelistAggregation": "$apply=groupby((portfolioCategory))",
   "trpWindowAggregationField": "trP_Window",
