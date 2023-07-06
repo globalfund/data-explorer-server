@@ -10,6 +10,7 @@
   "grantPeriods": "https://fetch.theglobalfund.org/v3.4/odata/GrantAgreementImplementationPeriods",
   "vgrantPeriods": "https://fetch.theglobalfund.org/v3.4/odata/VGrantAgreementImplementationPeriods",
   "grantCycles": "https://fetch.theglobalfund.org/v3.4/odata/grantCycles",
+  "grantIPGoalsObjectives": "https://fetch.theglobalfund.org/v3.4/odata/GrantAgreementImplementationPeriodGoalsAndObjectives",
   "grantDetailDisbursements": "https://fetch.theglobalfund.org/v3.4/odata/GrantAgreementDisbursements",
   "budgets": "https://fetch.theglobalfund.org/v3.4/odata/GrantAgreementImplementationPeriodDetailedBudgets",
   "allocations": "https://fetch.theglobalfund.org/v3.4/odata/Allocations",
