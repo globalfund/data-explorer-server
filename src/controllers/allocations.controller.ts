@@ -18,6 +18,7 @@ import AllocationsFieldsMapping from '../config/mapping/allocations/index.json';
 import AllocationsPeriodsFieldsMapping from '../config/mapping/allocations/periods.json';
 import urls from '../config/urls/index.json';
 import {AllocationsTreemapDataItem} from '../interfaces/allocations';
+import {SimpleTableRow} from '../interfaces/simpleTable';
 import staticCountries from '../static-assets/countries.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {getFilterString} from '../utils/filtering/allocations/getFilterString';
@@ -498,6 +499,231 @@ export class AllocationsController {
           };
         }),
       )
+      .catch(handleDataApiError);
+  }
+
+  @get('/allocations/table')
+  @response(200, ALLOCATIONS_RESPONSE)
+  allocationsTable(): object {
+    const filterString = getFilterString(this.req.query);
+    const params = querystring.stringify(
+      {},
+      '&',
+      filtering.param_assign_operator,
+      {
+        encodeURIComponent: (str: string) => str,
+      },
+    );
+    const aggregateByField =
+      this.req.query.aggregateBy &&
+      this.req.query.aggregateBy.toString().length > 0
+        ? this.req.query.aggregateBy
+        : AllocationsFieldsMapping.allocationsTableAggregateByFields[0];
+    const nonAggregateByField = (
+      this.req.query.nonAggregateBy
+        ? this.req.query.nonAggregateBy
+        : aggregateByField ===
+          AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
+        ? AllocationsFieldsMapping.allocationsTableAggregateByFields[1]
+        : AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
+    ).toString();
+    const url = `${urls.allocations}/?${params}${filterString}&${AllocationsFieldsMapping.allocationsTableExpand}`;
+    const sortBy = this.req.query.sortBy;
+    const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
+    const sortByDirection: any =
+      sortBy && sortBy.toString().split(' ').length > 1
+        ? sortBy.toString().split(' ')[1].toLowerCase()
+        : 'asc';
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(resp.data, AllocationsFieldsMapping.dataPath, []);
+
+        let data: SimpleTableRow[] = [];
+
+        let groupedBy1 = _.groupBy(rawData, aggregateByField);
+
+        _.filter(
+          Object.keys(groupedBy1),
+          compKey => compKey !== 'undefined' && compKey !== 'null',
+        ).forEach(compKey => {
+          const groupedBy2 = _.groupBy(
+            groupedBy1[compKey],
+            nonAggregateByField,
+          );
+          const subData: SimpleTableRow[] = [];
+          _.filter(
+            Object.keys(groupedBy2),
+            countryKey => countryKey !== 'undefined' && countryKey !== 'null',
+          ).forEach(countryKey => {
+            let item = {
+              name: countryKey,
+            };
+            _.orderBy(
+              groupedBy2[countryKey],
+              AllocationsFieldsMapping.periodStart,
+              'desc',
+            ).forEach(countryItem => {
+              item = {
+                ...item,
+                [`${_.get(
+                  countryItem,
+                  AllocationsFieldsMapping.periodStart,
+                  '',
+                )}-${_.get(
+                  countryItem,
+                  AllocationsFieldsMapping.periodEnd,
+                  '',
+                )}`]: _.get(
+                  countryItem,
+                  AllocationsFieldsMapping.amountTable,
+                  0,
+                ),
+              };
+            });
+            subData.push(item);
+          });
+          let item: SimpleTableRow = {
+            name: compKey,
+          };
+          const groupedByPeriods = _.groupBy(
+            groupedBy1[compKey],
+            AllocationsFieldsMapping.periodStart,
+          );
+          _.sortBy(Object.keys(groupedByPeriods))
+            .reverse()
+            .forEach(period => {
+              item = {
+                ...item,
+                [`${_.get(
+                  groupedByPeriods[period][0],
+                  AllocationsFieldsMapping.periodStart,
+                  '',
+                )}-${_.get(
+                  groupedByPeriods[period][0],
+                  AllocationsFieldsMapping.periodEnd,
+                  '',
+                )}`]: _.sumBy(
+                  groupedByPeriods[period],
+                  AllocationsFieldsMapping.amountTable,
+                ),
+              };
+            });
+          item = {
+            ...item,
+            children: subData,
+          };
+          data.push(item);
+        });
+
+        groupedBy1 = _.groupBy(
+          rawData,
+          aggregateByField ===
+            AllocationsFieldsMapping.allocationsTableAggregateByFields[0]
+            ? AllocationsFieldsMapping.multicountry
+            : aggregateByField,
+        );
+        _.filter(
+          Object.keys(groupedBy1),
+          compKey => compKey !== 'undefined' && compKey !== 'null',
+        ).forEach(compKey => {
+          const groupedBy2 = _.groupBy(
+            groupedBy1[compKey],
+            nonAggregateByField ===
+              AllocationsFieldsMapping.allocationsTableAggregateByFields[1]
+              ? nonAggregateByField
+              : AllocationsFieldsMapping.multicountry,
+          );
+          const subData: SimpleTableRow[] = [];
+          _.filter(
+            Object.keys(groupedBy2),
+            countryKey => countryKey !== 'undefined' && countryKey !== 'null',
+          ).forEach(countryKey => {
+            let item = {
+              name: countryKey,
+            };
+            _.orderBy(
+              groupedBy2[countryKey],
+              AllocationsFieldsMapping.periodStart,
+              'desc',
+            ).forEach(countryItem => {
+              item = {
+                ...item,
+                [`${_.get(
+                  countryItem,
+                  AllocationsFieldsMapping.periodStart,
+                  '',
+                )}-${_.get(
+                  countryItem,
+                  AllocationsFieldsMapping.periodEnd,
+                  '',
+                )}`]: _.get(
+                  countryItem,
+                  AllocationsFieldsMapping.amountTable,
+                  0,
+                ),
+              };
+            });
+            subData.push(item);
+          });
+          let item: SimpleTableRow = {
+            name: compKey,
+          };
+          const groupedByPeriods = _.groupBy(
+            groupedBy1[compKey],
+            AllocationsFieldsMapping.periodStart,
+          );
+          _.sortBy(Object.keys(groupedByPeriods))
+            .reverse()
+            .forEach(period => {
+              item = {
+                ...item,
+                [`${_.get(
+                  groupedByPeriods[period][0],
+                  AllocationsFieldsMapping.periodStart,
+                  '',
+                )}-${_.get(
+                  groupedByPeriods[period][0],
+                  AllocationsFieldsMapping.periodEnd,
+                  '',
+                )}`]: _.sumBy(
+                  groupedByPeriods[period],
+                  AllocationsFieldsMapping.amountTable,
+                ),
+              };
+            });
+          const fItemIndex = _.findIndex(data, {name: item.name});
+          if (fItemIndex > -1) {
+            data[fItemIndex] = {
+              ...data[fItemIndex],
+              children: [...(data[fItemIndex].children || []), ...subData],
+            };
+          } else {
+            item = {
+              ...item,
+              children: subData,
+            };
+            data.push(item);
+          }
+        });
+
+        data.forEach((item, index) => {
+          data[index].children = _.orderBy(
+            data[index].children,
+            instance => instance[sortByValue] || '',
+            sortByDirection,
+          );
+        });
+
+        data = _.orderBy(
+          data,
+          instance => instance[sortByValue] || '',
+          sortByDirection,
+        );
+
+        return {count: data.length, data};
+      })
       .catch(handleDataApiError);
   }
 }

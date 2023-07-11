@@ -5,8 +5,14 @@
   "no": "Not Eligible",
   "year": "eligibilityYear",
   "transition funding": "Transition Funding",
+  "statusValues": {
+    "Yes": "Eligible",
+    "No": "Not Eligible",
+    "Transition Funding": "Transition Funding"
+  },
   "incomeLevel": "incomeLevelClassificationName",
   "diseaseBurden": "diseaseBurdenName",
+  "component": "componentName",
   "aggregateByField": "componentName",
   "defaultFilter": "$filter=geographicAreaCode_ISO3 eq 'AFG'&",
   "defaultSelect": "$select=componentName,geographicAreaName,isEligible,incomeLevelClassificationName,diseaseBurdenName,eligibilityYear",

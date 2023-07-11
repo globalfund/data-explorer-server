@@ -1,0 +1,47 @@
+{
+  "dataPath": "value",
+  "tableMap": [
+    "value[]",
+    {
+      "country": "geographicArea.geographicAreaName",
+      "countryCode": "geographicArea.geographicAreaCode_ISO3",
+      "multicountry": "multiCountry.multiCountryName",
+      "name": "fundingRequestName",
+      "submissionDate": "fundingRequestSubmissionDate",
+      "components": [
+        "fundingRequestComponents",
+        {
+          "component": "component.componentName"
+        }
+      ],
+      "approach": "fundingRequestReviewApproach",
+      "trpwindow": "trP_Window",
+      "trpoutcome": "trP_Outcome",
+      "portfolioCategory": "portfolioCategory",
+      "items": [
+        "fundingRequestGrantAgreementImplementationPeriods[]",
+        {
+          "IPGrantNumber": "grantAgreementImplementationPeriod.grantAgreement.grantAgreementNumber",
+          "IPStartDate": "grantAgreementImplementationPeriod.implementationPeriodStartDate",
+          "IPEndDate": "grantAgreementImplementationPeriod.implementationPeriodEndDate",
+          "IPNumber": "grantAgreementImplementationPeriod.implementationPeriodNumber",
+          "gacmeeting": "meetingStartDate",
+          "boardApproval": "grantAgreementImplementationPeriod.boardApprovedDate",
+          "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName"
+        }
+      ],
+      "documents": [
+        "documents[]",
+        {
+          "lang": "documentLanguage",
+          "url": "documentUrl"
+        }
+      ]
+    }
+  ],
+  "defaultExpand": "$expand=multiCountry,geographicArea,fundingRequestComponents($expand=component),fundingRequestGrantAgreementImplementationPeriods($expand=grantAgreementImplementationPeriod($expand=grantAgreement($expand=component))),documents",
+  "portfolioCategoryAggregationField": "portfolioCategory",
+  "portfolioCategoriesCodelistAggregation": "$apply=groupby((portfolioCategory))",
+  "trpWindowAggregationField": "trP_Window",
+  "trpWindowCodelistAggregation": "$apply=groupby((trP_Window))"
+}

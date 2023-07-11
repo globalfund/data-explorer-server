@@ -15,6 +15,11 @@ export interface GrantDetailInformation {
     name: string;
     email: string;
   };
+  principalRecipient: {
+    code: string;
+    name: string;
+    shortName: string;
+  };
 }
 
 export interface GrantDetailPeriod {

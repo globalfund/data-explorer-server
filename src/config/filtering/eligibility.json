@@ -1,5 +1,9 @@
 {
   "country": "geographicAreaCode_ISO3",
   "component": "componentName",
-  "period": "eligibilityYear"
+  "period": "eligibilityYear",
+  "cycle": "allocationCycleName",
+  "disease": "diseaseBurdenName",
+  "status": "isEligible",
+  "search": "(contains(geographicAreaName,<value>) OR contains(componentName,<value>) OR contains(isEligible,<value>) OR contains(diseaseBurdenName,<value>) OR contains(incomeLevelClassificationName,<value>))"
 }

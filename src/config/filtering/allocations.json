@@ -3,5 +3,6 @@
   "component": "component/componentName",
   "multicountry": "multiCountryName",
   "periodStart": "periodStartYear",
-  "periodEnd": "periodEndYear"
+  "periodEnd": "periodEndYear",
+  "search": "(contains(component/componentName,<value>) OR contains(geographicArea/geographicAreaName,<value>) OR contains(multiCountryName,<value>))"
 }

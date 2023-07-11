@@ -1,0 +1,9 @@
+{
+  "country": "geographicArea/geographicAreaCode_ISO3",
+  "component": "fundingRequestComponents/any(c: c/component/componentName in (<value>))",
+  "cycle": "grantCycle/grantCycleCoveragePeriod",
+  "trpwindow": "trP_Window",
+  "portfolioCategory": "portfolioCategory",
+  "multicountry": "multicountry/multiCountryName",
+  "search": "(contains(geographicArea/geographicAreaName,<value>) OR contains(multiCountry/multiCountryName,<value>) OR fundingRequestComponents/any(c: contains(c/component/componentName,<value>)) OR contains(grantCycle/grantCycleCoveragePeriod,<value>) OR contains(trP_Window,<value>))"
+}

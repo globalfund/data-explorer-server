@@ -50,9 +50,25 @@ export class LocationController {
       locationMappingFields.locationFinancialAggregation,
     );
     const financialUrl = `${urls.grantsNoCount}/?${filterString}`;
+    const principalRecipientsFilterString = getFilterString(
+      this.req.query,
+      locationMappingFields.principalRecipientAggregation,
+    );
+    const principalRecipientsUrl = `${urls.grantsNoCount}/?${principalRecipientsFilterString}`;
+    const contactsUrl = `${
+      urls.countrycontactinfo
+    }/?${locationMappingFields.contactsFilterString.replace(
+      /<code>/g,
+      location,
+    )}&$top=1000`;
 
     return axios
-      .all([axios.get(multicountriesUrl), axios.get(financialUrl)])
+      .all([
+        axios.get(multicountriesUrl),
+        axios.get(financialUrl),
+        axios.get(principalRecipientsUrl),
+        axios.get(contactsUrl),
+      ])
       .then(
         axios.spread((...responses) => {
           const multicountriesResp = _.get(
@@ -80,6 +96,67 @@ export class LocationController {
               multiCountryId: '',
             },
           );
+          const principalRecipientsResp = _.get(
+            responses[2].data,
+            locationMappingFields.multiCountriesDataPath,
+            [],
+          );
+          const contactsResp = _.get(
+            responses[3].data,
+            locationMappingFields.contactsDataPath,
+            [],
+          );
+
+          const formattedContactsResp = contactsResp.map((c: any) => ({
+            orgName: _.get(
+              c,
+              locationMappingFields.contactOrganisationName,
+              '',
+            ),
+            url: _.get(c, locationMappingFields.contactOrganisationUrl, ''),
+            name: _.get(c, locationMappingFields.contactName, ''),
+            surname: _.get(c, locationMappingFields.contactSurname, ''),
+            role: _.get(c, locationMappingFields.contactRole, ''),
+            salutation: _.get(c, locationMappingFields.contactSalutation, ''),
+            position: _.get(c, locationMappingFields.contactPosition, ''),
+            email: _.get(c, locationMappingFields.contactEmail, ''),
+          }));
+
+          const contacts: any[] = [];
+          const groupedBy = _.groupBy(formattedContactsResp, 'orgName');
+
+          Object.keys(groupedBy).forEach((key: string) => {
+            let url = groupedBy[key][0].url;
+            if (url && url.indexOf('http') !== 0) {
+              url = `http://${url}`;
+            }
+            contacts.push({
+              name: key,
+              url,
+              items: groupedBy[key]
+                .map((item: any) => ({
+                  name: `${item.salutation} ${
+                    item.name
+                  } ${item.surname.toUpperCase()}`,
+                  role: item.role,
+                  position: item.position,
+                  email: item.email,
+                }))
+                .sort(
+                  (a, b) =>
+                    _.get(
+                      locationMappingFields.contactRoleOrder,
+                      `[${a.role}]`,
+                      0,
+                    ) -
+                    _.get(
+                      locationMappingFields.contactRoleOrder,
+                      `[${b.role}]`,
+                      0,
+                    ),
+                ),
+            });
+          });
 
           return {
             data: [
@@ -161,6 +238,36 @@ export class LocationController {
                         'asc',
                       )
                     : [],
+                principalRecipients: _.filter(
+                  principalRecipientsResp.map((pr: any) => {
+                    const fullName = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientName,
+                      '',
+                    );
+                    const shortName = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientShortName,
+                      '',
+                    );
+                    const id = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientId,
+                      '',
+                    );
+
+                    return {
+                      code: id,
+                      name: `${fullName}${shortName ? ` (${shortName})` : ''}`,
+                    };
+                  }),
+                  (pr: any) => pr.code,
+                ),
+                coordinatingMechanismContacts: _.orderBy(
+                  contacts,
+                  'name',
+                  'asc',
+                ),
               },
             ],
           };

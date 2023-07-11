@@ -1,11 +1,20 @@
 {
   "dataPath": "value",
   "amount": "amount",
+  "periodStart": "periodStartYear",
+  "periodEnd": "periodEndYear",
   "component": "component.componentName",
+  "amountTable": "allocationAmount",
+  "multicountry": "multiCountryName",
   "componentColors": {
     "HIV": "#595C70",
     "Tuberculosis": "#1B2127",
     "Malaria": "#727F95"
   },
-  "allocationsAggregation": "$apply=<filterString>groupby((component/componentName),aggregate(allocationAmount with sum as amount))"
+  "allocationsAggregation": "$apply=<filterString>groupby((component/componentName),aggregate(allocationAmount with sum as amount))",
+  "allocationsTableExpand": "$expand=component($select=componentName),geographicArea($select=geographicAreaName)",
+  "allocationsTableAggregateByFields": [
+    "geographicArea.geographicAreaName",
+    "component.componentName"
+  ]
 }
