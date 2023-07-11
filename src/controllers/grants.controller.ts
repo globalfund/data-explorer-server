@@ -343,7 +343,7 @@ export class GrantsController {
       };
     }
     const mapper = mapTransform(grantPeriodGoalsObjectivesMap);
-    const url = `${urls.grantIPGoalsObjectives}/?$filter=${grantDetailUtils.periodInfoRatingGrantNumber} eq '${grantNumber}' AND ${grantDetailUtils.periodInfoRatingPeriodNumber} eq ${IPnumber}`;
+    const url = `${urls.grantIPGoalsObjectives}/?$filter=${grantDetailUtils.periodInfoRatingGrantNumber} eq '${grantNumber}' AND ${grantDetailUtils.periodInfoRatingPeriodNumber} eq ${IPnumber}&${grantDetailUtils.goalsObjectivesSort}`;
 
     return axios
       .get(url)

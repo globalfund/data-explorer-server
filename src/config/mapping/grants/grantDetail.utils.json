@@ -12,5 +12,6 @@
   "periodInfoRatingGrantNumber": "grantAgreementImplementationPeriod/grantAgreement/grantAgreementNumber",
   "periodInfoRatingPeriodNumber": "grantAgreementImplementationPeriod/implementationPeriodNumber",
   "periodInfoRatingExtraFilter": " and performanceRating ne null",
+  "goalsObjectivesSort": "$orderby=goalObjectiveIndex asc,goalObjectiveName asc&",
   "grantNumber": "grantAgreementNumber"
 }
