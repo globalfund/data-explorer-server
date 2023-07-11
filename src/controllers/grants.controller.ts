@@ -14,6 +14,7 @@ import filtering from '../config/filtering/index.json';
 import {getPage} from '../config/filtering/utils';
 import grantDetailMap from '../config/mapping/grants/grantDetail.json';
 import grantDetailUtils from '../config/mapping/grants/grantDetail.utils.json';
+import grantPeriodGoalsObjectivesMap from '../config/mapping/grants/grantPeriodGoalsObjectives.json';
 import grantPeriodInfoMap from '../config/mapping/grants/grantPeriodInfo.json';
 import grantPeriodsMap from '../config/mapping/grants/grantPeriods.json';
 import GrantsRadialMapping from '../config/mapping/grants/grantsRadial.json';
@@ -325,6 +326,31 @@ export class GrantsController {
           data: resp.data.value
             .map((item: any) => item.grantCycleCoveragePeriod)
             .reverse(),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/grant/goals-objectives')
+  @response(200)
+  grantGoalsObjectives(): object {
+    const grantNumber = _.get(this.req.query, 'grantNumber', null);
+    const IPnumber = _.get(this.req.query, 'IPnumber', null);
+    if (!grantNumber && !IPnumber) {
+      return {
+        data: [],
+        message: '"grantId" and "IPnumber" parameters is required.',
+      };
+    }
+    const mapper = mapTransform(grantPeriodGoalsObjectivesMap);
+    const url = `${urls.grantIPGoalsObjectives}/?$filter=${grantDetailUtils.periodInfoRatingGrantNumber} eq '${grantNumber}' AND ${grantDetailUtils.periodInfoRatingPeriodNumber} eq ${IPnumber}`;
+
+    return axios
+      .get(url)
+      .then(resp => {
+        const res = mapper(resp.data) as never[];
+        return {
+          data: res,
         };
       })
       .catch(handleDataApiError);

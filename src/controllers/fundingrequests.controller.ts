@@ -52,7 +52,8 @@ export class FundingRequestsController {
             name: key,
             children: _.orderBy(
               aggregatedData[key].map((item: any) => {
-                const date = moment(item.submissionDate).format('D MMMM YYYY');
+                const rawDate = moment(item.submissionDate);
+                const date = rawDate.format('D MMMM YYYY');
                 return {
                   id: item.name,
                   date: date === 'Invalid date' ? null : date,
@@ -63,19 +64,21 @@ export class FundingRequestsController {
                   window: item.trpwindow,
                   outcome: item.trpoutcome,
                   portfolioCategory: item.portfolioCategory,
-                  board: moment(item.boardApproval).format('MMM YY'),
+                  rawDate: date === 'Invalid date' ? 0 : rawDate,
                   children: item.items.map((subitem: any) => ({
-                    gac: moment(item.gacmeeting).format('MMM YY'),
+                    gac: moment(subitem.gacmeeting).format('MMM YY'),
+                    // board: moment(subitem.boardApproval).format('MMM YY'),
                     grant: subitem.IPGrantNumber,
                     start: moment(subitem.IPStartDate).format('DD-MM-YYYY'),
                     end: moment(subitem.IPEndDate).format('DD-MM-YYYY'),
                     component: subitem.component,
                     ip: subitem.IPNumber,
                   })),
+                  documents: item.documents,
                 };
               }),
-              sortByValue,
-              sortByDirection,
+              ['rawDate', 'component'],
+              ['desc', 'asc'],
             ),
           });
         });
