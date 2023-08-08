@@ -225,7 +225,7 @@ export class DisbursementsController {
                 _.get(item, TimeCycleFieldsMapping.disbursed, 0),
                 10,
               );
-              if (value) {
+              if (!isNaN(value)) {
                 const name = _.get(item, TimeCycleFieldsMapping.component, '');
                 const prevYearComponent = _.get(
                   data,
@@ -244,35 +244,33 @@ export class DisbursementsController {
           );
           const disbursed = _.sumBy(yearComponents, 'disbursed');
           const cumulative = _.sumBy(yearComponents, 'cumulative');
-          if (disbursed > 0) {
-            data.push({
-              year,
-              disbursed,
-              cumulative,
-              disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.disbursed,
-                }),
-              ),
-              cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.cumulative,
-                }),
-              ),
-            });
-          }
+          data.push({
+            year,
+            disbursed,
+            cumulative,
+            disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.disbursed,
+              }),
+            ),
+            cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.cumulative,
+              }),
+            ),
+          });
         });
         return {
           count: data.length,
@@ -359,35 +357,33 @@ export class DisbursementsController {
           });
           const disbursed = _.sumBy(yearComponents, 'disbursed');
           const cumulative = _.sumBy(yearComponents, 'cumulative');
-          if (disbursed > 0) {
-            data.push({
-              year,
-              disbursed,
-              cumulative,
-              disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.disbursed,
-                }),
-              ),
-              cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.cumulative,
-                }),
-              ),
-            });
-          }
+          data.push({
+            year,
+            disbursed,
+            cumulative,
+            disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.disbursed,
+              }),
+            ),
+            cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.cumulative,
+              }),
+            ),
+          });
         });
         return {
           count: data.length,
@@ -468,35 +464,34 @@ export class DisbursementsController {
           });
           const disbursed = _.sumBy(yearComponents, 'disbursed');
           const cumulative = _.sumBy(yearComponents, 'cumulative');
-          if (disbursed > 0) {
-            data.push({
-              year,
-              disbursed,
-              cumulative,
-              disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.disbursed,
-                }),
-              ),
-              cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.cumulative,
-                }),
-              ),
-            });
-          }
+
+          data.push({
+            year,
+            disbursed,
+            cumulative,
+            disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.disbursed,
+              }),
+            ),
+            cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.cumulative,
+              }),
+            ),
+          });
         });
         return {
           count: data.length,
@@ -3090,35 +3085,34 @@ export class DisbursementsController {
           });
           const disbursed = _.sumBy(yearComponents, 'disbursed');
           const cumulative = _.sumBy(yearComponents, 'cumulative');
-          if (disbursed > 0) {
-            data.push({
-              year,
-              disbursed,
-              cumulative,
-              disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    GrantDetailTimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.disbursed,
-                }),
-              ),
-              cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    GrantDetailTimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.cumulative,
-                }),
-              ),
-            });
-          }
+
+          data.push({
+            year,
+            disbursed,
+            cumulative,
+            disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  GrantDetailTimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.disbursed,
+              }),
+            ),
+            cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  GrantDetailTimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.cumulative,
+              }),
+            ),
+          });
         });
         return {
           count: data.length,
@@ -3207,35 +3201,34 @@ export class DisbursementsController {
           });
           const disbursed = _.sumBy(yearComponents, 'disbursed');
           const cumulative = _.sumBy(yearComponents, 'cumulative');
-          if (disbursed > 0) {
-            data.push({
-              year,
-              disbursed,
-              cumulative,
-              disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.disbursed,
-                }),
-              ),
-              cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
-                (yc: any) => ({
-                  name: yc.name,
-                  color: _.get(
-                    TimeCycleFieldsMapping.componentColors,
-                    yc.name,
-                    '',
-                  ),
-                  value: yc.cumulative,
-                }),
-              ),
-            });
-          }
+
+          data.push({
+            year,
+            disbursed,
+            cumulative,
+            disbursedChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.disbursed,
+              }),
+            ),
+            cumulativeChildren: _.orderBy(yearComponents, 'name', 'asc').map(
+              (yc: any) => ({
+                name: yc.name,
+                color: _.get(
+                  TimeCycleFieldsMapping.componentColors,
+                  yc.name,
+                  '',
+                ),
+                value: yc.cumulative,
+              }),
+            ),
+          });
         });
         return {
           count: data.length,
