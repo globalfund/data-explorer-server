@@ -271,6 +271,31 @@ export class DisbursementsController {
               }),
             ),
           });
+          if (
+            data.length > 1 &&
+            data[data.length - 1].cumulativeChildren.length <
+              data[data.length - 2].cumulativeChildren.length
+          ) {
+            const prev = data[data.length - 2];
+            const current = data[data.length - 1];
+            const temp = _.filter(
+              prev.cumulativeChildren,
+              (item: any) =>
+                _.findIndex(current.cumulativeChildren, {
+                  name: item.name,
+                }) === -1,
+            );
+            data[data.length - 1].cumulativeChildren = [
+              ...temp,
+              ...data[data.length - 1].cumulativeChildren,
+            ];
+            data[data.length - 1].cumulative += _.sumBy(temp, 'value');
+            data[data.length - 1].cumulativeChildren = _.orderBy(
+              data[data.length - 1].cumulativeChildren,
+              'name',
+              'asc',
+            );
+          }
         });
         return {
           count: data.length,
@@ -384,6 +409,31 @@ export class DisbursementsController {
               }),
             ),
           });
+          if (
+            data.length > 1 &&
+            data[data.length - 1].cumulativeChildren.length <
+              data[data.length - 2].cumulativeChildren.length
+          ) {
+            const prev = data[data.length - 2];
+            const current = data[data.length - 1];
+            const temp = _.filter(
+              prev.cumulativeChildren,
+              (item: any) =>
+                _.findIndex(current.cumulativeChildren, {
+                  name: item.name,
+                }) === -1,
+            );
+            data[data.length - 1].cumulativeChildren = [
+              ...temp,
+              ...data[data.length - 1].cumulativeChildren,
+            ];
+            data[data.length - 1].cumulative += _.sumBy(temp, 'value');
+            data[data.length - 1].cumulativeChildren = _.orderBy(
+              data[data.length - 1].cumulativeChildren,
+              'name',
+              'asc',
+            );
+          }
         });
         return {
           count: data.length,
@@ -492,6 +542,32 @@ export class DisbursementsController {
               }),
             ),
           });
+
+          if (
+            data.length > 1 &&
+            data[data.length - 1].cumulativeChildren.length <
+              data[data.length - 2].cumulativeChildren.length
+          ) {
+            const prev = data[data.length - 2];
+            const current = data[data.length - 1];
+            const temp = _.filter(
+              prev.cumulativeChildren,
+              (item: any) =>
+                _.findIndex(current.cumulativeChildren, {
+                  name: item.name,
+                }) === -1,
+            );
+            data[data.length - 1].cumulativeChildren = [
+              ...temp,
+              ...data[data.length - 1].cumulativeChildren,
+            ];
+            data[data.length - 1].cumulative += _.sumBy(temp, 'value');
+            data[data.length - 1].cumulativeChildren = _.orderBy(
+              data[data.length - 1].cumulativeChildren,
+              'name',
+              'asc',
+            );
+          }
         });
         return {
           count: data.length,
