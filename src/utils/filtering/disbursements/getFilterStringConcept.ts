@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import filteringDisbursements from '../../../config/filtering/disbursements.json';
+import filteringDisbursements from '../../../config/filtering/disbursementss.json';
 import filtering from '../../../config/filtering/index.json';
 
 export function getFilterString(params: any, aggregationString?: string) {
@@ -86,36 +86,9 @@ export function getFilterString(params: any, aggregationString?: string) {
     (period: string) => period.length > 0,
   ).map((period: string) => `'${period}'`);
   if (periods.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${
-      filteringDisbursements.barPeriod
-    }${filtering.in}(${periods.join(filtering.multi_param_separator)})`;
-  }
-  const barPeriod = _.get(params, 'barPeriod', null);
-  if (barPeriod) {
-    str += `${str.length > 0 ? ' AND ' : ''}${
-      filteringDisbursements.barPeriod
-    }${filtering.eq}${barPeriod}`;
-  }
-  const signedBarPeriod = _.get(params, 'signedBarPeriod', null);
-  if (signedBarPeriod) {
-    str += `${
-      str.length > 0 ? ' AND ' : ''
-    }${filteringDisbursements.signedBarPeriod
-      .replace('<date1>', `${signedBarPeriod}-01-01`)
-      .replace('<date2>', `${parseInt(signedBarPeriod, 10) + 1}-01-01`)}`;
-  }
-  const committedBarPeriod = _.get(params, 'committedBarPeriod', null);
-  if (committedBarPeriod) {
-    str += `${str.length > 0 ? ' AND ' : ''}${
-      filteringDisbursements.committedBarPeriod
-    }${filtering.eq}${committedBarPeriod}`;
-  }
-
-  const search = _.get(params, 'q', '');
-  if (search.length > 0) {
-    str += `${
-      str.length > 0 ? ' AND ' : ''
-    }${filteringDisbursements.search.replace(/<value>/g, `'${search}'`)}`;
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringDisbursements.period}${
+      filtering.in
+    }(${periods.join(filtering.multi_param_separator)})`;
   }
 
   if (str.length > 0) {
