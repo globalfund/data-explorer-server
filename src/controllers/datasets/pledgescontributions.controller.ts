@@ -8,12 +8,8 @@ import {
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import fs from 'fs-extra';
-import querystring from 'querystring';
-import filtering from '../../config/filtering/index.json';
-import PledgesContributionsTableFieldsMapping from '../../config/mapping/pledgescontributions/table.json';
 import urls from '../../config/urls/index.json';
 import {handleDataApiError} from '../../utils/dataApiError';
-import {getFilterString} from '../../utils/filtering/pledges-contributions/getFilterString';
 
 const PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE: ResponseObject = {
   description: 'Pledges and Contributions time-cycle Response',
@@ -45,24 +41,7 @@ export class PledgescontributionsDatasetController {
   @get('/pledges-contributions-dataset')
   @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
   table(): object {
-    const aggregation =
-      PledgesContributionsTableFieldsMapping.aggregations[
-        this.req.query.aggregateBy ===
-        PledgesContributionsTableFieldsMapping.aggregations[0].key
-          ? 0
-          : 1
-      ].value;
-
-    const filterString = getFilterString(this.req.query, aggregation);
-    const params = querystring.stringify(
-      {},
-      '&',
-      filtering.param_assign_operator,
-      {
-        encodeURIComponent: (str: string) => str,
-      },
-    );
-    const url = `${urls.pledgescontributions}/?${params}${filterString}`;
+    const url = `${urls.pledgescontributions}`;
 
     return axios
       .get(url)
@@ -70,29 +49,29 @@ export class PledgescontributionsDatasetController {
         let dataTypes = {};
         const filterOptionGroups: any = [];
         const data = resp.data.value;
-        const element = data[0];
-        filterOptionGroups.push('replenishmentPeriod');
+
+        const sample = data.map((item: any) => {
+          const tempItem = {
+            ...item,
+          };
+          delete tempItem['pledgeContributionId'];
+          delete tempItem['replenishmentPeriodId'];
+          delete tempItem['donorId'];
+
+          return tempItem;
+        });
+
+        const element = sample[0];
 
         Object.keys(element).forEach(key => {
           if (element[key]) {
-            if (key !== '@odata.id' && key !== 'replenishmentPeriod') {
-              filterOptionGroups.push(key);
-            }
+            filterOptionGroups.push(key);
+
             dataTypes = {
               ...dataTypes,
               [key]: typeof element[key],
             };
           }
-        });
-        const sample = resp.data.value.map((item: any) => {
-          const tempItem = {
-            ...item,
-            replenishmentPeriodName:
-              item.replenishmentPeriod.replenishmentPeriodName,
-          };
-          delete tempItem['@odata.id'];
-          delete tempItem['replenishmentPeriod'];
-          return tempItem;
         });
         const body = {
           count: resp.data.value.length,

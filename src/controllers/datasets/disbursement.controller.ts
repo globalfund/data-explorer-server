@@ -9,12 +9,8 @@ import {
 
 import axios, {AxiosResponse} from 'axios';
 import fs from 'fs-extra';
-import querystring from 'querystring';
-import filtering from '../../config/filtering/index.json';
-import TreemapFieldsMapping from '../../config/mapping/disbursements/treemap.json';
 import urls from '../../config/urls/index.json';
 import {handleDataApiError} from '../../utils/dataApiError';
-import {getFilterString} from '../../utils/filtering/disbursements/getFilterString';
 
 const DISBURSEMENTS_TREEMAP_RESPONSE: ResponseObject = {
   description: 'Disbursements Treemap Response',
@@ -108,22 +104,10 @@ const DISBURSEMENTS_TREEMAP_RESPONSE: ResponseObject = {
 };
 export class DisbursementsDatasetsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
-  @get('/commitment-dataset')
+  @get('/disbursement-dataset')
   @response(200, DISBURSEMENTS_TREEMAP_RESPONSE)
   treemapCommitment(): object {
-    const filterString = getFilterString(
-      this.req.query,
-      TreemapFieldsMapping.disbursementsTreemapAggregation,
-    );
-    const params = querystring.stringify(
-      {},
-      '&',
-      filtering.param_assign_operator,
-      {
-        encodeURIComponent: (str: string) => str,
-      },
-    );
-    const url = `${urls.grantsNoCount}/?${params}${filterString}`;
+    const url = `${urls.disbursements}`;
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
@@ -150,7 +134,7 @@ export class DisbursementsDatasetsController {
           stats: [],
         };
         fs.writeFileSync(
-          `./src/parsed-data-files/commitment-dataset.json`,
+          `./src/parsed-data-files/disbursement-dataset.json`,
           JSON.stringify(body, null, 4),
         );
 

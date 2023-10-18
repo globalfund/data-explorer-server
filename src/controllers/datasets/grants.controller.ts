@@ -57,7 +57,7 @@ export class GrantsDatasetController {
   grants(): object {
     const mapper = mapTransform(grantsMap);
     const page = (this.req.query.page ?? '1').toString();
-    const pageSize = (this.req.query.pageSize ?? '10').toString();
+    const pageSize = (this.req.query.pageSize ?? '100').toString();
     const orderBy = this.req.query.orderBy ?? grantsUtils.defaultOrderBy;
     const filterString = getFilterString(this.req.query);
     const params = querystring.stringify(
@@ -81,6 +81,7 @@ export class GrantsDatasetController {
         let dataTypes = {};
         const filterOptionGroups: any = [];
         const data = resp.data.value;
+
         const element = data[0];
         Object.keys(element).forEach(key => {
           if (element[key]) {
@@ -102,7 +103,7 @@ export class GrantsDatasetController {
           stats: [],
         };
         fs.writeFileSync(
-          `./src/parsed-data-files/eligibility-dataset.json`,
+          `./src/parsed-data-files/grants-dataset.json`,
           JSON.stringify(body, null, 4),
         );
 

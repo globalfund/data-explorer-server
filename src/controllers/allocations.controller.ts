@@ -50,7 +50,7 @@ const ALLOCATIONS_RESPONSE: ResponseObject = {
 export class AllocationsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
-  @get('/allocations')
+  @get('/allocations-dataset')
   @response(200, ALLOCATIONS_RESPONSE)
   allocations(): object {
     const filterString = getFilterString(

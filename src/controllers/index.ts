@@ -4,6 +4,8 @@ export * from './charts.controller';
 export * from './data-themes/index.controller';
 export * from './data-themes/raw-data.controller';
 export * from './datasets/allocation.controller';
+export * from './datasets/budgets.controller';
+export * from './datasets/disbursement.controller';
 export * from './datasets/eligibility.controller';
 export * from './datasets/grants.controller';
 export * from './datasets/pledgescontributions.controller';

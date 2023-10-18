@@ -6,12 +6,10 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
-import fs from 'fs-extra';
-
 import axios, {AxiosResponse} from 'axios';
+import fs from 'fs-extra';
 import querystring from 'querystring';
 import filtering from '../../config/filtering/index.json';
-import AllocationsFieldsMapping from '../../config/mapping/allocations/index.json';
 import urls from '../../config/urls/index.json';
 import {handleDataApiError} from '../../utils/dataApiError';
 import {getFilterString} from '../../utils/filtering/allocations/getFilterString';
@@ -54,27 +52,45 @@ export class AllocationsDatasetController {
       },
     );
 
-    const url = `${urls.allocations}/?${params}${filterString}&${AllocationsFieldsMapping.allocationsTableExpand}`;
+    const url = `${urls.allocations}`;
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
         let dataTypes = {};
         const filterOptionGroups: any = [];
         const data = resp.data.value;
-        const element = data[0];
+        const dataSlice = data.slice(0, 300);
+
+        // console.log(resp.data.value, 'resp');
+        const sample = dataSlice.map((item: any) => {
+          const tempItem = {
+            ...item,
+          };
+          delete tempItem['component'];
+          delete tempItem['geographicArea'];
+          delete tempItem['allocationId'];
+          delete tempItem['geographicAreaId'];
+          delete tempItem['componentId'];
+          return tempItem;
+        });
+        console.log(data, 'sample');
+
+        const element = sample[0];
         Object.keys(element).forEach(key => {
           if (element[key]) {
             filterOptionGroups.push(key);
+
             dataTypes = {
               ...dataTypes,
               [key]: typeof element[key],
             };
           }
         });
+
         const body = {
           count: resp.data.value.length,
-          dataset: resp.data.value,
-          sample: resp.data.value,
+          dataset: sample,
+          sample,
           dataTypes,
           errors: [],
           filterOptionGroups,

@@ -232,7 +232,7 @@ export class ChartsController {
     await this.chartRepository.deleteById(id);
   }
 
-  @get('/chart/duplicate/{id}')
+  @get('/chart/duplicate/{id}/{name}')
   @response(200, {
     description: 'Chart model instance',
     content: {
@@ -241,10 +241,13 @@ export class ChartsController {
       },
     },
   })
-  async duplicate(@param.path.string('id') id: string): Promise<Chart> {
+  async duplicate(
+    @param.path.string('id') id: string,
+    @param.path.string('name') name: string,
+  ): Promise<Chart> {
     const fChart = await this.chartRepository.findById(id);
     return this.chartRepository.create({
-      name: `${fChart.name} copy`,
+      name,
       public: fChart.public,
       vizType: fChart.vizType,
       datasetId: fChart.datasetId,

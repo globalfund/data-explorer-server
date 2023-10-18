@@ -66,8 +66,6 @@ export class DocumentsController {
     );
     const url = `${urls.documents}/?${docsUtils.defaultSelect}${docsUtils.defaultOrderBy}${filterString}`;
 
-    console.log(url);
-
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
