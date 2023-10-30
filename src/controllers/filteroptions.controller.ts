@@ -10,6 +10,8 @@ import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import mappingComponents from '../config/mapping/filteroptions/components.json';
 import mappingDonors from '../config/mapping/filteroptions/donors.json';
+import mappingExpendituresinvestmentlandscapes from '../config/mapping/filteroptions/expendituresinvestmentlandscapes.json';
+import mappingExpendituresmoduleinterventions from '../config/mapping/filteroptions/expendituresmoduleinterventions.json';
 import mappingLocations from '../config/mapping/filteroptions/locations.json';
 import mappingMulticountries from '../config/mapping/filteroptions/multicountries.json';
 import mappingPartnertypes from '../config/mapping/filteroptions/partnertypes.json';
@@ -443,6 +445,148 @@ export class FilteroptionsController {
 
         return {
           name: 'Donors',
+          options: _.orderBy(options, 'label', 'asc'),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/filter-options/expenditure/investment-landscapes')
+  @response(200, FILTER_OPTIONS_RESPONSE)
+  expenditureInvestmentLandscapes(): object {
+    const url = urls.filteroptionsexpendituresinvestmentlandscapes;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = resp.data;
+
+        const groupedByPartnerType = _.groupBy(
+          rawData,
+          mappingExpendituresinvestmentlandscapes.label,
+        );
+
+        const options: FilterGroupOption[] = [];
+
+        Object.keys(groupedByPartnerType).forEach((partnerType: string) => {
+          const groupedBySubPartnerType = _.groupBy(
+            groupedByPartnerType[partnerType],
+            mappingExpendituresinvestmentlandscapes.subLabel,
+          );
+          const subOptions: FilterGroupOption[] = [];
+          Object.keys(groupedBySubPartnerType).forEach(
+            (subPartnerType: string) => {
+              subOptions.push({
+                label:
+                  subPartnerType && subPartnerType !== 'null'
+                    ? subPartnerType
+                    : 'Not Classified',
+                value: _.get(
+                  groupedBySubPartnerType[subPartnerType][0],
+                  mappingExpendituresinvestmentlandscapes.subValue,
+                  '',
+                ),
+                subOptions: _.orderBy(
+                  groupedBySubPartnerType[subPartnerType].map(
+                    (partner: any) => ({
+                      label: _.get(
+                        partner,
+                        mappingExpendituresinvestmentlandscapes.subSubLabel,
+                        '',
+                      ),
+                      value: _.get(
+                        partner,
+                        mappingExpendituresinvestmentlandscapes.subSubValue,
+                        '',
+                      ),
+                    }),
+                  ),
+                  'label',
+                  'asc',
+                ),
+              });
+            },
+          );
+          options.push({
+            label:
+              partnerType && partnerType !== 'null'
+                ? partnerType
+                : 'Not Classified',
+            value: _.get(
+              groupedByPartnerType[partnerType][0],
+              mappingExpendituresinvestmentlandscapes.value,
+              '',
+            ),
+            subOptions: _.orderBy(subOptions, 'label', 'asc'),
+          });
+        });
+
+        return {
+          name: 'Investment landscapes',
+          options: _.orderBy(options, 'label', 'asc'),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/filter-options/expenditure/modules-interventions')
+  @response(200, FILTER_OPTIONS_RESPONSE)
+  expenditureModuleInterventions(): object {
+    const url = urls.filteroptionsexpendituresmoduleinterventions;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          mappingExpendituresmoduleinterventions.dataPath,
+          [],
+        );
+
+        const groupedByPartnerType = _.groupBy(
+          rawData,
+          mappingExpendituresmoduleinterventions.label,
+        );
+
+        const options: FilterGroupOption[] = [];
+
+        Object.keys(groupedByPartnerType).forEach((partnerType: string) => {
+          const groupedBySubPartnerType = _.groupBy(
+            groupedByPartnerType[partnerType],
+            mappingExpendituresmoduleinterventions.subLabel,
+          );
+          const subOptions: FilterGroupOption[] = [];
+          Object.keys(groupedBySubPartnerType).forEach(
+            (subPartnerType: string) => {
+              subOptions.push({
+                label:
+                  subPartnerType && subPartnerType !== 'null'
+                    ? subPartnerType
+                    : 'Not Classified',
+                value: _.get(
+                  groupedBySubPartnerType[subPartnerType][0],
+                  mappingExpendituresmoduleinterventions.subValue,
+                  '',
+                ),
+              });
+            },
+          );
+          options.push({
+            label:
+              partnerType && partnerType !== 'null'
+                ? partnerType
+                : 'Not Classified',
+            value: _.get(
+              groupedByPartnerType[partnerType][0],
+              mappingExpendituresmoduleinterventions.value,
+              '',
+            ),
+            subOptions: _.orderBy(subOptions, 'label', 'asc'),
+          });
+        });
+
+        return {
+          name: 'Modules & Interventions',
           options: _.orderBy(options, 'label', 'asc'),
         };
       })

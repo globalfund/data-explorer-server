@@ -1,0 +1,37 @@
+{
+  "dataPath": "value",
+  "expenditureAmount": "expenditureAmount",
+  "budgetAmount": "budgetAmount",
+  "totalAggregation": "$apply=<filterString>aggregate(expenditureAmount with sum as expenditureAmount)",
+  "aggregation": "$apply=<filterString>groupby((groupby1,groupby2),aggregate(aggregate1 with sum as aggregate1, aggregate2 with sum as aggregate2))",
+  "modulesInterventionsFields": {
+    "period": "expenditureYear",
+    "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName",
+    "location": "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName",
+    "grantCycle": "grantAgreementImplementationPeriod.grantCycle.grantCycleCoveragePeriod",
+    "principalRecipient": [
+      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.implementerClassification.implementerClassificationParent.implementerClassificationName",
+      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.implementerClassification.implementerClassificationName",
+      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.organizationName"
+    ],
+    "modules": [
+      "activityArea.activityAreaParent.activityAreaName",
+      "activityArea.activityAreaName"
+    ]
+  },
+  "investmentLandscapesFields": {
+    "period": "expenditureYear",
+    "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName",
+    "location": "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName",
+    "grantCycle": "grantAgreementImplementationPeriod.grantCycle.grantCycleCoveragePeriod",
+    "principalRecipient": [
+      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.organizationParent.organizationName",
+      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.organizationName"
+    ],
+    "investmentLandscape": [
+      "budgetCategory.budgetCategoryParent.budgetCategoryParent.budgetCategoryName",
+      "budgetCategory.budgetCategoryParent.budgetCategoryName",
+      "budgetCategory.budgetCategoryName"
+    ]
+  }
+}

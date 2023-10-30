@@ -17,6 +17,8 @@
   "eligibility": "https://fetch.theglobalfund.org/v3.4/odata/VEligibility",
   "geojson": "https://data.theglobalfund.org/static/simple.geo.json",
   "countrycontactinfo": "https://fetch.theglobalfund.org/v3.4/odata/VContacts",
+  "expendituremoduleinterventions": "https://fetch.theglobalfund.org/v3.4/odata/grantExpenditureModuleInterventions",
+  "expenditureinvestmentlandscapes": "https://fetch.theglobalfund.org/v3.4/odata/grantExpenditureInvestmentLandscapes",
   "pledgescontributions": "https://fetch.theglobalfund.org/v3.4/odata/PledgesAndContributions",
   "performancerating": "https://fetch.theglobalfund.org/v3.4/odata/GrantAgreementProgressUpdates",
   "performanceframework": "https://fetch.theglobalfund.org/v3.4/odata/GrantAgreementImplementationPeriodPerformanceFrameworks",
@@ -31,5 +33,7 @@
   "filteroptionsstatus1": "https://fetch.theglobalfund.org/v3.4/odata/VGrantAgreementImplementationPeriods?$apply=groupby((implementationPeriodStatusTypeName))",
   "filteroptionsdonors": "https://fetch.theglobalfund.org/v3.4/odata/donors/?$filter=donorId%20eq%20c06eaea9-c81b-442b-b403-dc348f3734eb%20or%20donorId%20eq%2025188dfc-7567-4e08-b8d0-088a6b83f238%20or%20donorId%20eq%20641c05fa-129d-4b57-a213-b5f6852ddc5f%20or%20donorid%20eq%20cc30fc59-b2fa-49e3-aa5a-762727daa68c&$expand=members($expand=members($expand=members($expand=members)))",
   "filteroptionsreplenishmentperiods": "https://fetch.theglobalfund.org/v3.4/odata/replenishmentperiods",
+  "filteroptionsexpendituresinvestmentlandscapes": "https://fetch.theglobalfund.org/v3.4/odata/grantExpenditureInvestmentLandscapes?$apply=filter(isLatestAnnualExpenditure eq true)/groupby((budgetCategory/budgetCategoryParent/budgetCategoryParent/budgetCategoryName,budgetCategory/budgetCategoryParent/budgetCategoryName,budgetCategory/budgetCategoryName))",
+  "filteroptionsexpendituresmoduleinterventions": "https://fetch.theglobalfund.org/v3.4/odata/grantExpenditureModuleInterventions?$apply=filter(isLatestAnnualExpenditure eq true)/groupby((activityArea/activityAreaParent/activityAreaName,activityArea/activityAreaName))",
   "multicountriescountriesdata": "https://fetch.theglobalfund.org/v3.4/odata/MultiCountries?$expand=MultiCountryComposition($select=GeographicArea;$expand=GeographicArea($select=GeographicAreaCode_ISO3))&$select=MultiCountryName,MultiCountryComposition"
 }
