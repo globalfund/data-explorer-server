@@ -7,7 +7,11 @@
   "modulesInterventionsFields": {
     "period": "expenditureYear",
     "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName",
-    "location": "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName",
+    "location": [
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaParent.geographicAreaParent.geographicAreaName",
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaParent.geographicAreaName",
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName"
+    ],
     "grantCycle": "grantAgreementImplementationPeriod.grantCycle.grantCycleCoveragePeriod",
     "principalRecipient": [
       "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.implementerClassification.implementerClassificationParent.implementerClassificationName",
@@ -22,7 +26,11 @@
   "investmentLandscapesFields": {
     "period": "expenditureYear",
     "component": "grantAgreementImplementationPeriod.grantAgreement.component.componentName",
-    "location": "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName",
+    "location": [
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaParent.geographicAreaParent.geographicAreaName",
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaParent.geographicAreaName",
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName"
+    ],
     "grantCycle": "grantAgreementImplementationPeriod.grantCycle.grantCycleCoveragePeriod",
     "principalRecipient": [
       "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.organizationParent.organizationName",

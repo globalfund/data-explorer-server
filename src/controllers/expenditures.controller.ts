@@ -277,10 +277,6 @@ export class ExpendituresController {
     }
     columnDimension = columnDimension.toString();
 
-    // console.log(this.req.query);
-    // console.log('rowDimension', rowDimension);
-    // console.log('columnDimension', columnDimension);
-
     // url preparation
     let url =
       dataset === 'moduleInterventions'
