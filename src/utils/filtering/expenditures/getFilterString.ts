@@ -71,6 +71,66 @@ export function getFilterString(
     }(${periods.join(filtering.multi_param_separator)})`;
   }
 
+  const moduleInterventionsLevel0 = _.filter(
+    _.get(params, 'moduleInterventionsLevel0', '').split(','),
+    (item: string) => item.length > 0,
+  ).map((item: string) => `'${item}'`);
+  if (moduleInterventionsLevel0.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringExpenditures.moduleInterventionsLevel0
+    }${filtering.in}(${moduleInterventionsLevel0.join(
+      filtering.multi_param_separator,
+    )})`;
+  }
+
+  const moduleInterventionsLevel1 = _.filter(
+    _.get(params, 'moduleInterventionsLevel1', '').split(','),
+    (item: string) => item.length > 0,
+  ).map((item: string) => `'${item}'`);
+  if (moduleInterventionsLevel1.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringExpenditures.moduleInterventionsLevel1
+    }${filtering.in}(${moduleInterventionsLevel1.join(
+      filtering.multi_param_separator,
+    )})`;
+  }
+
+  const investmentLandscapesLevel0 = _.filter(
+    _.get(params, 'investmentLandscapesLevel0', '').split(','),
+    (item: string) => item.length > 0,
+  ).map((item: string) => `'${item}'`);
+  if (investmentLandscapesLevel0.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringExpenditures.investmentLandscapesLevel0
+    }${filtering.in}(${investmentLandscapesLevel0.join(
+      filtering.multi_param_separator,
+    )})`;
+  }
+
+  const investmentLandscapesLevel1 = _.filter(
+    _.get(params, 'investmentLandscapesLevel1', '').split(','),
+    (item: string) => item.length > 0,
+  ).map((item: string) => `'${item}'`);
+  if (investmentLandscapesLevel1.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringExpenditures.investmentLandscapesLevel1
+    }${filtering.in}(${investmentLandscapesLevel1.join(
+      filtering.multi_param_separator,
+    )})`;
+  }
+
+  const investmentLandscapesLevel2 = _.filter(
+    _.get(params, 'investmentLandscapesLevel2', '').split(','),
+    (item: string) => item.length > 0,
+  ).map((item: string) => `'${item}'`);
+  if (investmentLandscapesLevel2.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      filteringExpenditures.investmentLandscapesLevel2
+    }${filtering.in}(${investmentLandscapesLevel2.join(
+      filtering.multi_param_separator,
+    )})`;
+  }
+
   if (str.length > 0) {
     str = `${filtering.filter_operator}${filtering.param_assign_operator}${str}&`;
     if (aggregationString) {

@@ -6,5 +6,10 @@
   "cycle": "grantAgreementImplementationPeriod/grantCycle/grantCycleCoveragePeriod",
   "partner": "grantAgreementImplementationPeriod/grantAgreement/principalRecipient/implementerClassification/implementerClassificationParent/implementerClassificationName",
   "partner_sub_type": "grantAgreementImplementationPeriod/grantAgreement/principalRecipient/implementerClassification/implementerClassificationName",
-  "partner_type": "grantAgreementImplementationPeriod/grantAgreement/principalRecipient/organizationName"
+  "partner_type": "grantAgreementImplementationPeriod/grantAgreement/principalRecipient/organizationName",
+  "moduleInterventionsLevel0": "activityArea/activityAreaParent/activityAreaName",
+  "moduleInterventionsLevel1": "activityArea/activityAreaName",
+  "investmentLandscapesLevel0": "budgetCategory/budgetCategoryParent/budgetCategoryParent/budgetCategoryName",
+  "investmentLandscapesLevel1": "budgetCategory/budgetCategoryParent/budgetCategoryName",
+  "investmentLandscapesLevel2": "budgetCategory/budgetCategoryName"
 }
