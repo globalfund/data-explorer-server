@@ -135,9 +135,9 @@ export class LocationController {
               url,
               items: groupedBy[key]
                 .map((item: any) => ({
-                  name: `${item.salutation} ${
-                    item.name
-                  } ${item.surname.toUpperCase()}`,
+                  name: `${item.salutation} ${item.name} ${(
+                    item.surname ?? ''
+                  ).toUpperCase()}`,
                   role: item.role,
                   position: item.position,
                   email: item.email,
