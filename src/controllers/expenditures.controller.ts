@@ -92,7 +92,10 @@ export class ExpendituresController {
       url +
       '?' +
       mapping.aggregation
-        .replace('<filterString>', 'filter(isLatestAnnualExpenditure eq true)/')
+        .replace(
+          '<filterString>',
+          'filter(isCumulativeAnnualExpenditure eq true)/',
+        )
         .replace('groupby1', rowDimension.replace(/\./g, '/'))
         .replace('groupby2', columnDimension.replace(/\./g, '/'))
         .replace(/aggregate1/g, mapping.expenditureAmount)
@@ -288,7 +291,7 @@ export class ExpendituresController {
       getFilterString(
         this.req.query,
         mapping.aggregation,
-        'isLatestAnnualExpenditure eq true',
+        'isCumulativeAnnualExpenditure eq true',
       )
         .replace('groupby1', rowDimension.replace(/\./g, '/'))
         .replace('groupby2', columnDimension.replace(/\./g, '/'))
@@ -424,7 +427,7 @@ export class ExpendituresController {
       getFilterString(
         this.req.query,
         mapping.totalAggregation,
-        'isLatestAnnualExpenditure eq true',
+        'isCumulativeAnnualExpenditure eq true',
       );
 
     // api call

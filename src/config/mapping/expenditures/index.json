@@ -1,8 +1,8 @@
 {
   "dataPath": "value",
-  "expenditureAmount": "expenditureAmount",
-  "budgetAmount": "budgetAmount",
-  "totalAggregation": "$apply=<filterString>aggregate(expenditureAmount with sum as expenditureAmount)",
+  "expenditureAmount": "cumulativeExpenditureAmount",
+  "budgetAmount": "cumulativeBudgetAmount",
+  "totalAggregation": "$apply=<filterString>aggregate(cumulativeExpenditureAmount with sum as cumulativeExpenditureAmount)",
   "aggregation": "$apply=<filterString>groupby((groupby1,groupby2),aggregate(aggregate1 with sum as aggregate1, aggregate2 with sum as aggregate2))",
   "modulesInterventionsFields": {
     "period": "expenditureYear",
