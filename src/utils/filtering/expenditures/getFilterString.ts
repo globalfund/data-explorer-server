@@ -71,6 +71,16 @@ export function getFilterString(
     }(${periods.join(filtering.multi_param_separator)})`;
   }
 
+  const grantCycles = _.filter(
+    _.get(params, 'grantCycles', '').split(','),
+    (grantCycle: string) => grantCycle.length > 0,
+  ).map((grantCycle: string) => `'${grantCycle}'`);
+  if (grantCycles.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${filteringExpenditures.cycle}${
+      filtering.in
+    }(${grantCycles.join(filtering.multi_param_separator)})`;
+  }
+
   const moduleInterventionsLevel0 = _.filter(
     _.get(params, 'moduleInterventionsLevel0', '').split(','),
     (item: string) => item.length > 0,

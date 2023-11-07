@@ -38,197 +38,9 @@ const EXPENDITURE_RESPONSE: ResponseObject = {
 export class ExpendituresController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
-  @get('/expenditures-0')
-  @response(200, EXPENDITURE_RESPONSE)
-  _expenditures(): object {
-    let dataset = this.req.query.dataset ?? 'moduleInterventions';
-    dataset = dataset.toString();
-    if (
-      ['moduleInterventions', 'investmentLandscapes'].indexOf(dataset) === -1
-    ) {
-      dataset = 'moduleInterventions';
-    }
-
-    const fields =
-      dataset === 'moduleInterventions'
-        ? mapping.modulesInterventionsFields
-        : mapping.investmentLandscapesFields;
-
-    let rowDimension = this.req.query.rowDimension ?? fields.component;
-    rowDimension = rowDimension.toString();
-    if (Object.keys(fields).indexOf(rowDimension) === -1) {
-      rowDimension = fields.component;
-    }
-    const isRowDimensionArray = Array.isArray(
-      _.get(fields, rowDimension, null),
-    );
-    let rowDimensionArray: string[] = [];
-    if (isRowDimensionArray) {
-      rowDimensionArray = _.get(fields, rowDimension, []);
-      rowDimension = rowDimensionArray.join(',');
-    }
-    rowDimension = rowDimension.toString();
-
-    let columnDimension = this.req.query.columnDimension ?? fields.grantCycle;
-    columnDimension = columnDimension.toString();
-    if (Object.keys(fields).indexOf(columnDimension) === -1) {
-      columnDimension = fields.grantCycle;
-    }
-    const isColumnDimensionArray = Array.isArray(
-      _.get(fields, columnDimension, null),
-    );
-    let columnDimensionArray: string[] = [];
-    if (isColumnDimensionArray) {
-      columnDimensionArray = _.get(fields, columnDimension, []);
-      columnDimension = columnDimensionArray.join(',');
-    }
-    columnDimension = columnDimension.toString();
-
-    let url =
-      dataset === 'moduleInterventions'
-        ? urls.expendituremoduleinterventions
-        : urls.expenditureinvestmentlandscapes;
-    url =
-      url +
-      '?' +
-      mapping.aggregation
-        .replace(
-          '<filterString>',
-          'filter(IsLatestReportedExpenditure eq true)/',
-        )
-        .replace('groupby1', rowDimension.replace(/\./g, '/'))
-        .replace('groupby2', columnDimension.replace(/\./g, '/'))
-        .replace(/aggregate1/g, mapping.expenditureAmount)
-        .replace(/aggregate2/g, mapping.budgetAmount);
-
-    console.log(url);
-
-    return axios
-      .get(url)
-      .then(resp => {
-        const data =
-          dataset === 'moduleInterventions' ? resp.data.value : resp.data;
-
-        const returnData: {
-          rowName: string;
-          values: {
-            name: string;
-            expenditure: number;
-            budget: number;
-            percentage: number;
-          }[];
-          subItems?: {
-            name: string;
-            expenditure: number;
-            budget: number;
-            percentage: number;
-          }[];
-        }[] = [];
-
-        const columns: string[] = _.uniq(
-          data.map((item: any) => _.get(item, columnDimension as string, '')),
-        );
-
-        const groupedByRowDimension = _.groupBy(
-          data,
-          isRowDimensionArray ? rowDimensionArray[0] : rowDimension,
-        );
-
-        Object.keys(groupedByRowDimension).forEach(rowDimensionValue => {
-          const subItems: any[] = [];
-
-          if (isRowDimensionArray) {
-            let tempSubItems: any[] = [];
-            columns.forEach(columnDimensionValue => {
-              tempSubItems = [
-                ...tempSubItems,
-                ..._.filter(
-                  groupedByRowDimension[rowDimensionValue],
-                  (item: any) => {
-                    return (
-                      _.get(item, columnDimension as string) ===
-                      columnDimensionValue
-                    );
-                  },
-                ).map((subItem: any) => ({
-                  column: columnDimensionValue,
-                  rowName: _.get(subItem, rowDimensionArray[1]).toString(),
-                  expenditure: _.get(
-                    subItem,
-                    mapping.expenditureAmount as string,
-                  ),
-                  budget: _.get(subItem, mapping.budgetAmount as string),
-                })),
-              ];
-            });
-            const groupedBySubItems = _.groupBy(tempSubItems, 'rowName');
-            Object.keys(groupedBySubItems).forEach(subItem => {
-              subItems.push({
-                rowName: subItem,
-                values: groupedBySubItems[subItem].map((item: any) => {
-                  return {
-                    name: item.column,
-                    expenditure: item.expenditure,
-                    budget: item.budget,
-                    percentage:
-                      item.budgetAmount && item.budgetAmount > 0
-                        ? (item.expenditureAmount / item.budgetAmount) * 100
-                        : 120,
-                  };
-                }),
-              });
-            });
-          }
-
-          returnData.push({
-            rowName: rowDimensionValue,
-            values: columns.map(columnDimensionValue => {
-              const columnSubItemsValues: {
-                name: string;
-                expenditure: number;
-                budget: number;
-                percentage: number;
-              }[] = [];
-
-              subItems.forEach(subItem => {
-                subItem.values.forEach((subItemValue: any) => {
-                  if (subItemValue.name === columnDimensionValue) {
-                    columnSubItemsValues.push(subItemValue);
-                  }
-                });
-              });
-
-              const expenditureAmount = _.sumBy(
-                columnSubItemsValues,
-                'expenditure',
-              );
-
-              const budgetAmount = _.sumBy(columnSubItemsValues, 'budget');
-
-              return {
-                name: columnDimensionValue,
-                expenditure: expenditureAmount,
-                budget: budgetAmount,
-                percentage:
-                  budgetAmount && budgetAmount > 0
-                    ? (expenditureAmount / budgetAmount) * 100
-                    : 120,
-              };
-            }),
-            subItems,
-          });
-        });
-
-        return returnData;
-      })
-      .catch(error => {
-        return error;
-      });
-  }
-
   @get('/expenditures')
   @response(200, EXPENDITURE_RESPONSE)
-  expenditures(): object {
+  async expenditures(): Promise<object> {
     // params validation
     let dataset = this.req.query.dataset ?? 'moduleInterventions';
     dataset = dataset.toString();
@@ -291,12 +103,38 @@ export class ExpendituresController {
       getFilterString(
         this.req.query,
         mapping.aggregation,
-        'IsLatestReportedExpenditure eq true',
+        `IsLatestReportedExpenditure eq true${
+          this.req.query.rowDimension === 'multicountry' ||
+          this.req.query.columnDimension === 'multicountry'
+            ? ' and grantAgreementImplementationPeriod/grantAgreement/multiCountryId ne null'
+            : ''
+        }`,
       )
         .replace('groupby1', rowDimension.replace(/\./g, '/'))
         .replace('groupby2', columnDimension.replace(/\./g, '/'))
         .replace(/aggregate1/g, mapping.expenditureAmount)
         .replace(/aggregate2/g, mapping.budgetAmount);
+
+    let mcData: any = null;
+
+    if (
+      this.req.query.rowDimension === 'location' ||
+      this.req.query.columnDimension === 'location'
+    ) {
+      mcData = await axios.get(
+        `http://${this.req.hostname}:${
+          this.req.connection.localPort
+        }/expenditures?dataset=${dataset}&rowDimension=${
+          this.req.query.rowDimension === 'location'
+            ? 'multicountry'
+            : this.req.query.rowDimension
+        }&columnDimension=${
+          this.req.query.columnDimension === 'location'
+            ? 'multicountry'
+            : this.req.query.columnDimension
+        }`,
+      );
+    }
 
     // api call
     return axios
@@ -305,7 +143,7 @@ export class ExpendituresController {
         const data =
           dataset === 'moduleInterventions' ? resp.data.value : resp.data;
 
-        const returnData: {
+        let returnData: {
           row: string;
           column: string;
           budget: number;
@@ -321,8 +159,6 @@ export class ExpendituresController {
               ? columnDimensionArray
               : [columnDimension]
             ).forEach((columnDimensionValue, columnIndex) => {
-              // console.log('rowDimensionValue', rowDimensionValue);
-              // console.log('columnDimensionValue', columnDimensionValue);
               data.forEach((item: any) => {
                 const row = _.get(item, rowDimensionValue as string, '');
                 const column = _.get(item, columnDimensionValue as string, '');
@@ -352,6 +188,12 @@ export class ExpendituresController {
                           returnData[fItemIndex].budget) *
                         100
                       : 120;
+                  returnData[fItemIndex].percentage = Math.round(
+                    returnData[fItemIndex].percentage,
+                  );
+                  if (returnData[fItemIndex].percentage > 120) {
+                    returnData[fItemIndex].percentage = 120;
+                  }
                 } else if (row && column) {
                   let parentRow =
                     rowIndex > 0
@@ -379,24 +221,36 @@ export class ExpendituresController {
                     expenditure: expenditureAmount,
                     percentage:
                       budgetAmount && budgetAmount > 0
-                        ? (expenditureAmount / budgetAmount) * 100
+                        ? Math.round((expenditureAmount / budgetAmount) * 100)
                         : 120,
                   });
+                  if (returnData[returnData.length - 1].percentage > 120) {
+                    returnData[returnData.length - 1].percentage = 120;
+                  }
                 }
               });
             });
           },
         );
 
+        if (
+          (this.req.query.rowDimension === 'location' ||
+            this.req.query.columnDimension === 'location') &&
+          mcData
+        ) {
+          const parentPath =
+            this.req.query.rowDimension === 'location'
+              ? 'parentRow'
+              : 'parentColumn';
+          const mcDataValues = _.filter(
+            _.get(mcData, 'data.vizData', []),
+            (item: any) => item[parentPath],
+          );
+          returnData = [...returnData, ...mcDataValues];
+        }
+
         return {
           vizData: _.orderBy(returnData, ['row', 'column'], ['asc', 'asc']),
-          total: _.sumBy(
-            _.filter(returnData, {
-              parentRow: undefined,
-              parentColumn: undefined,
-            }),
-            'expenditure',
-          ),
         };
       })
       .catch(error => {
@@ -417,12 +271,20 @@ export class ExpendituresController {
     }
 
     // url preparation
-    let url =
+    const baseUrl =
       dataset === 'moduleInterventions'
         ? urls.expendituremoduleinterventions
         : urls.expenditureinvestmentlandscapes;
-    url =
-      url +
+    const totalUrl =
+      baseUrl +
+      '?' +
+      getFilterString(
+        {},
+        mapping.totalAggregation,
+        'IsLatestReportedExpenditure eq true',
+      );
+    const viewUrl =
+      baseUrl +
       '?' +
       getFilterString(
         this.req.query,
@@ -430,14 +292,16 @@ export class ExpendituresController {
         'IsLatestReportedExpenditure eq true',
       );
 
-    // api call
-    return axios
-      .get(url)
-      .then(resp => {
+    // api calls
+    return Promise.all([axios.get(totalUrl), axios.get(viewUrl)])
+      .then(([totalResp, viewResp]) => {
         return {
           total: (dataset === 'moduleInterventions'
-            ? resp.data.value
-            : resp.data)[0].expenditureAmount,
+            ? totalResp.data.value
+            : totalResp.data)[0].cumulativeExpenditureAmount,
+          view: (dataset === 'moduleInterventions'
+            ? viewResp.data.value
+            : viewResp.data)[0].cumulativeExpenditureAmount,
         };
       })
       .catch(error => {

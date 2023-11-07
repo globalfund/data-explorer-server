@@ -12,6 +12,10 @@
       "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaParent.geographicAreaName",
       "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName"
     ],
+    "multicountry": [
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName",
+      "grantAgreementImplementationPeriod.grantAgreement.multiCountry.multiCountryName"
+    ],
     "grantCycle": "grantAgreementImplementationPeriod.grantCycle.grantCycleCoveragePeriod",
     "principalRecipient": [
       "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.implementerClassification.implementerClassificationParent.implementerClassificationName",
@@ -31,9 +35,14 @@
       "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaParent.geographicAreaName",
       "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName"
     ],
+    "multicountry": [
+      "grantAgreementImplementationPeriod.grantAgreement.geographicArea.geographicAreaName",
+      "grantAgreementImplementationPeriod.grantAgreement.multiCountry.multiCountryName"
+    ],
     "grantCycle": "grantAgreementImplementationPeriod.grantCycle.grantCycleCoveragePeriod",
     "principalRecipient": [
-      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.organizationParent.organizationName",
+      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.implementerClassification.implementerClassificationParent.implementerClassificationName",
+      "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.implementerClassification.implementerClassificationName",
       "grantAgreementImplementationPeriod.grantAgreement.principalRecipient.organizationName"
     ],
     "investmentLandscape": [
