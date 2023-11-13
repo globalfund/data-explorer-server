@@ -40,6 +40,8 @@
   "portfolioManagerEmail": "portfolioManagerEmailAddress",
   "multiCountryId": "multiCountryId",
   "geoId": "geographicAreaId",
+  "prevPrincipalRecipientStatusFilter": "Administratively Closed,In Closure,Terminated",
+  "currPrincipalRecipientStatusFilter": "Active",
   "principalRecipientAggregation": "$apply=<filterString>groupby((PrincipalRecipientId,PrincipalRecipientName,PrincipalRecipientShortName))",
   "principalRecipientName": "principalRecipientName",
   "principalRecipientShortName": "principalRecipientShortName",

@@ -50,11 +50,22 @@ export class LocationController {
       locationMappingFields.locationFinancialAggregation,
     );
     const financialUrl = `${urls.grantsNoCount}/?${filterString}`;
-    const principalRecipientsFilterString = getFilterString(
-      this.req.query,
+    const prevPrincipalRecipientsFilterString = getFilterString(
+      {
+        ...this.req.query,
+        status: locationMappingFields.prevPrincipalRecipientStatusFilter,
+      },
       locationMappingFields.principalRecipientAggregation,
     );
-    const principalRecipientsUrl = `${urls.grantsNoCount}/?${principalRecipientsFilterString}`;
+    const currPrincipalRecipientsFilterString = getFilterString(
+      {
+        ...this.req.query,
+        status: locationMappingFields.currPrincipalRecipientStatusFilter,
+      },
+      locationMappingFields.principalRecipientAggregation,
+    );
+    const prevPrincipalRecipientsUrl = `${urls.grantsNoCount}/?${prevPrincipalRecipientsFilterString}`;
+    const currPrincipalRecipientsUrl = `${urls.grantsNoCount}/?${currPrincipalRecipientsFilterString}`;
     const contactsUrl = `${
       urls.countrycontactinfo
     }/?${locationMappingFields.contactsFilterString.replace(
@@ -66,7 +77,8 @@ export class LocationController {
       .all([
         axios.get(multicountriesUrl),
         axios.get(financialUrl),
-        axios.get(principalRecipientsUrl),
+        axios.get(prevPrincipalRecipientsUrl),
+        axios.get(currPrincipalRecipientsUrl),
         axios.get(contactsUrl),
       ])
       .then(
@@ -96,13 +108,18 @@ export class LocationController {
               multiCountryId: '',
             },
           );
-          const principalRecipientsResp = _.get(
+          const prevPrincipalRecipientsResp = _.get(
             responses[2].data,
             locationMappingFields.multiCountriesDataPath,
             [],
           );
-          const contactsResp = _.get(
+          const currPrincipalRecipientsResp = _.get(
             responses[3].data,
+            locationMappingFields.multiCountriesDataPath,
+            [],
+          );
+          const contactsResp = _.get(
+            responses[4].data,
             locationMappingFields.contactsDataPath,
             [],
           );
@@ -238,8 +255,37 @@ export class LocationController {
                         'asc',
                       )
                     : [],
-                principalRecipients: _.filter(
-                  principalRecipientsResp.map((pr: any) => {
+                prevPrincipalRecipients: _.filter(
+                  prevPrincipalRecipientsResp.map((pr: any) => {
+                    const fullName = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientName,
+                      '',
+                    );
+                    const shortName = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientShortName,
+                      '',
+                    );
+                    const id = _.get(
+                      pr,
+                      locationMappingFields.principalRecipientId,
+                      '',
+                    );
+
+                    return {
+                      code: id,
+                      name: `${fullName}${shortName ? ` (${shortName})` : ''}`,
+                    };
+                  }),
+                  (pr: any) =>
+                    pr.code &&
+                    !_.find(currPrincipalRecipientsResp, {
+                      [locationMappingFields.principalRecipientId]: pr.code,
+                    }),
+                ),
+                currPrincipalRecipients: _.filter(
+                  currPrincipalRecipientsResp.map((pr: any) => {
                     const fullName = _.get(
                       pr,
                       locationMappingFields.principalRecipientName,
