@@ -9,7 +9,12 @@ export function buildGlobalSearchFilterString(
 
   keywords.forEach((keyword: string) => {
     const fieldStrArray: string[] = fields.map((field: string) =>
-      template.replace('<field>', field).replace('<value>', `'${keyword}'`),
+      template
+        .replace('<field>', field)
+        .replace(
+          '<value>',
+          `'${encodeURIComponent(keyword.replace(/'/g, "''"))}'`,
+        ),
     );
     strArray.push(`(${fieldStrArray.join(` ${filteringUtils.or_operator} `)})`);
   });
