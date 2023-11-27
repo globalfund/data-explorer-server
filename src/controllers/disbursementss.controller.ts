@@ -283,7 +283,7 @@ function multiLevelDimensionResponseFormatter(
     const children = _.map(value, (item: any) => {
       const id = _.get(item, `[${childrenDimensionFields.id}]`, '');
       const name =
-        `${dimensionId === 'Grants' ? 'Cycle ' : ''}` +
+        `${dimensionId === 'Grants' ? 'Implementation period ' : ''}` +
         _.get(item, `[${childrenDimensionFields.name}]`, '');
       return {
         id: id ? id.toString() : '',
