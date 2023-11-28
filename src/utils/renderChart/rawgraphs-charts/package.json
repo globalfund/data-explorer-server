@@ -14,7 +14,7 @@
     "format": "prettier --write src",
     "sandbox": "webpack-dev-server",
     "prebuild": "rimraf lib",
-    "build": "rollup -c && mkdir -p ../dx.client/rawgraphs-charts && cp -r . ../dx.client/rawgraphs-charts && mkdir -p ../dx.server/src/utils/renderChart/rawgraphs-charts && cp -r . ../dx.server/src/utils/renderChart/rawgraphs-charts"
+    "build": "rollup -c"
   },
   "author": "",
   "license": "Apache-2.0",
