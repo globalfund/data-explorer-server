@@ -8,11 +8,8 @@ import {
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import fs from 'fs-extra';
-import querystring from 'querystring';
-import filtering from '../../config/filtering/index.json';
 import urls from '../../config/urls/index.json';
 import {handleDataApiError} from '../../utils/dataApiError';
-import {getFilterString} from '../../utils/filtering/allocations/getFilterString';
 
 const ALLOCATIONS_RESPONSE: ResponseObject = {
   description: 'Allocations Response',
@@ -36,32 +33,21 @@ const ALLOCATIONS_RESPONSE: ResponseObject = {
     },
   },
 };
+
 export class AllocationsDatasetController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
   @get('/allocations-dataset')
   @response(200, ALLOCATIONS_RESPONSE)
-  allocationsTable(): object {
-    const filterString = getFilterString(this.req.query);
-    const params = querystring.stringify(
-      {},
-      '&',
-      filtering.param_assign_operator,
-      {
-        encodeURIComponent: (str: string) => str,
-      },
-    );
-
-    const url = `${urls.allocations}`;
+  allocations(): object {
     return axios
-      .get(url)
+      .get(urls.allocations)
       .then((resp: AxiosResponse) => {
         let dataTypes = {};
         const filterOptionGroups: any = [];
         const data = resp.data.value;
         const dataSlice = data.slice(0, 300);
 
-        // console.log(resp.data.value, 'resp');
         const sample = dataSlice.map((item: any) => {
           const tempItem = {
             ...item,
@@ -73,7 +59,6 @@ export class AllocationsDatasetController {
           delete tempItem['componentId'];
           return tempItem;
         });
-        console.log(data, 'sample');
 
         const element = sample[0];
         Object.keys(element).forEach(key => {

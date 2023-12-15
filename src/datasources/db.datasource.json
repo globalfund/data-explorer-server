@@ -6,6 +6,6 @@
     "port": 27017,
     "user": "",
     "password": "",
-    "database": "the-data-explorer-db",
+    "database": "tgf-data-explorer-db",
     "useNewUrlParser": true
 }

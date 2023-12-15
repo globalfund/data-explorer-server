@@ -1,7 +1,6 @@
 export * from './allocations.controller';
 export * from './budgets.controller';
 export * from './charts.controller';
-export * from './data-themes/index.controller';
 export * from './data-themes/raw-data.controller';
 export * from './datasets/allocation.controller';
 export * from './datasets/budgets.controller';

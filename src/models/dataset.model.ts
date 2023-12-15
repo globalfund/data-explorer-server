@@ -39,6 +39,12 @@ export class Dataset extends Entity {
   })
   createdDate?: string;
 
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  updatedDate?: string;
+
   constructor(data?: Partial<Dataset>) {
     super(data);
   }

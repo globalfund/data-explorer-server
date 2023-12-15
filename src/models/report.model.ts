@@ -85,10 +85,21 @@ export class Report extends Entity {
   dateColor: string;
 
   @property({
+    type: 'string',
+  })
+  owner: string;
+
+  @property({
     type: 'date',
     default: () => new Date(),
   })
   createdDate: string;
+
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  updatedDate: string;
 
   constructor(data?: Partial<Report>) {
     super(data);
