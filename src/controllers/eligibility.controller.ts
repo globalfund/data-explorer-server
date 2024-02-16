@@ -453,6 +453,8 @@ export class EligibilityController {
       },
     );
     const url = `${urls.eligibility}/?${params}${filterString}&${ScatterplotFieldsMapping.defaultSelect}`;
+    console.log(url, 'url');
+
     const sortBy = this.req.query.sortBy;
     const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
     const sortByDirection: any =
