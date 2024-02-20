@@ -82,18 +82,17 @@ export class GlobalSearchController {
       globalSearchMapping.categories,
       (category: any) => category.url.length > 0,
     ).map((category: any) => {
-      return axios.get(
-        category.url
-          .replace(
-            '<filterStr>',
-            buildGlobalSearchFilterString(
-              category.filterFields,
-              category.filterTemplate,
-              keywords,
-            ),
-          )
-          .replace('<keyword>', keyword),
-      );
+      const call = category.url
+        .replace(
+          '<filterStr>',
+          buildGlobalSearchFilterString(
+            category.filterFields,
+            category.filterTemplate,
+            keywords,
+          ),
+        )
+        .replace('<keyword>', keyword);
+      return axios.get(call);
     });
     return axios
       .all(calls)

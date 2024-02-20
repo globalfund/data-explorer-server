@@ -30,7 +30,8 @@
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "yarn run clean && yarn run build",
     "dev": "nodemon server.js",
-    "deploy": "yarn prestart && pm2 start pm2.config.js --env production"
+    "deploy": "yarn prestart && pm2 start pm2.config.js --env production",
+    "docker": "yarn prestart && pm2-runtime start pm2.config.js --env production"
   },
   "nodemonConfig": {
     "verbose": true,
