@@ -4,6 +4,7 @@ export * from './data-themes/raw-data.controller';
 export * from './disbursements.controller';
 export * from './documents.controller';
 export * from './eligibility.controller';
+export * from './expenditures.controller';
 export * from './filteroptions.controller';
 export * from './fundingrequests.controller';
 export * from './global-search.controller';

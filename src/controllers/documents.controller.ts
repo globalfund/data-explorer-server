@@ -10,10 +10,12 @@ import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import docsMap from '../config/mapping/documents/index.json';
+import DocumentsListMapping from '../config/mapping/documents/list.json';
 import docsUtils from '../config/mapping/documents/utils.json';
 import urls from '../config/urls/index.json';
 import {DocumentsTableRow} from '../interfaces/documentsTable';
 import {handleDataApiError} from '../utils/dataApiError';
+import {filterDocuments} from '../utils/filtering/documents';
 import {getFilterString} from '../utils/filtering/documents/getFilterString';
 
 const RESULTS_RESPONSE: ResponseObject = {
@@ -56,9 +58,54 @@ const RESULTS_RESPONSE: ResponseObject = {
 export class DocumentsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
+  // v3
+
   @get('/documents')
+  @response(200)
+  async documents() {
+    const filterString = filterDocuments(
+      this.req.query,
+      DocumentsListMapping.urlParams,
+    );
+    const url = `${urls.DOCUMENTS}${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, DocumentsListMapping.dataPath, []);
+
+        const groupedByLocation = _.groupBy(
+          raw,
+          DocumentsListMapping.geography,
+        );
+
+        return {
+          data: _.map(groupedByLocation, (value, key) => {
+            const groupedByType = _.groupBy(value, DocumentsListMapping.type);
+
+            return {
+              name: key,
+              documents: Object.keys(value).length,
+              _children: _.map(groupedByType, (value1, key) => ({
+                name: key,
+                documents: Object.keys(value1).length,
+                _children: _.map(value1, value2 => ({
+                  name: _.get(value2, DocumentsListMapping.title, ''),
+                  documents: _.get(value2, DocumentsListMapping.url, ''),
+                })),
+              })),
+            };
+          }),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  // v2
+
+  @get('/v2/documents')
   @response(200, RESULTS_RESPONSE)
-  documents(): object {
+  documentsV2(): object {
     const mapper = mapTransform(docsMap);
     const filterString = getFilterString(
       this.req.query,

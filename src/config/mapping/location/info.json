@@ -1,0 +1,19 @@
+{
+  "dataPath": "value",
+  "name": "[0].name",
+  "regionName": "[0].parent.name",
+  "level": "[0].level",
+  "countryLevel": "Country",
+  "multicountryLevel": "Multicountry",
+  "FPMSalutation": "[0].fundPortfolioManager.salutation",
+  "FPMFirstName": "[0].fundPortfolioManager.firstName",
+  "FPMMiddleName": "[0].fundPortfolioManager.middleName",
+  "FPMLastName": "[0].fundPortfolioManager.lastName",
+  "FPMEmail": "[0].fundPortfolioManager.emailAddress",
+  "principalRecipientName": "principalRecipient.name",
+  "principalRecipientCode": "principalRecipient.shortName",
+  "urlParams": "?$filter=code eq '<code>'&$expand=parent",
+  "FPMurlParams": "?$top=1&$filter=geography/code eq '<code>'&$expand=fundPortfolioManager",
+  "currentPrincipalRecipientsUrlParams": "?$apply=filter(status/statusName eq 'Active' AND geography/code eq '<code>')/groupby((principalRecipient/name))",
+  "formerPrincipalRecipientsUrlParams": "?$apply=filter(status/statusName in ('Administratively Closed','In Closure','Terminated') AND geography/code eq '<code>')/groupby((principalRecipient/name))"
+}

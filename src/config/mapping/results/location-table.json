@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "cycle": "resultValueYear",
+  "name": "indicatorName",
+  "component": "activityArea.name",
+  "value": "value",
+  "urlParams": "?$apply=filter(geography/code eq '<countryCode>' AND resultValueYear eq <cycle> AND programmaticDataset eq 'Annual_Results')/groupby((indicatorName,activityArea/name),aggregate(resultValueNumerator with sum as value))"
+}

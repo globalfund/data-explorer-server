@@ -4,25 +4,20 @@
       "name": "Location(s)",
       "type": "Country",
       "link": "/location/<code>/overview",
-      "url": "https://fetch.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((GeographicAreaCode_ISO3,GeographicAreaName,MultiCountryName),aggregate(GrantAgreementId with countdistinct as count))",
+      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((geography/code,geography/name),aggregate(id with countdistinct as count))",
       "itemname": "",
       "filterFields": [
-        "GeographicAreaCode_ISO3",
-        "GeographicAreaName",
-        "ComponentName",
-        "MultiCountryName"
+        "geography/code",
+        "geography/name",
+        "activityArea/parent/parent/name"
       ],
       "filterTemplate": "contains(<field>,<value>)",
-      "order": [
-        "desc"
-      ],
+      "order": ["desc"],
       "mappings": [
         "value[]",
         {
-          "name": "geographicAreaName",
-          "altName": "multiCountryName",
-          "code": "geographicAreaCode_ISO3",
-          "altCode": "multiCountryName",
+          "name": "geography.name",
+          "code": "geography.code",
           "count": "count",
           "order": "count"
         }
@@ -32,26 +27,24 @@
     {
       "name": "Partner(s)",
       "type": "Partner",
-      "link": "/partner/<code>/investments",
-      "url": "https://fetch.theglobalfund.org/v3.3/odata/VGrantAgreements?$apply=filter(<filterStr>)/groupby((PrincipalRecipientId,PrincipalRecipientName,PrincipalRecipientShortName),aggregate(GrantAgreementId with countdistinct as count))",
+      "link": "",
+      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((principalRecipient/id,principalRecipient/name,principalRecipient/shortName),aggregate(id with countdistinct as count))",
       "itemname": "<shortName&longName>",
       "filterFields": [
-        "GeographicAreaCode_ISO3",
-        "GeographicAreaName",
-        "ComponentName",
-        "PrincipalRecipientName",
-        "PrincipalRecipientShortName"
+        "geography/code",
+        "geography/name",
+        "activityArea/parent/parent/name",
+        "principalRecipient/name",
+        "principalRecipient/shortName"
       ],
       "filterTemplate": "contains(<field>,<value>)",
-      "order": [
-        "desc"
-      ],
+      "order": ["desc"],
       "mappings": [
         "value[]",
         {
-          "longName": "principalRecipientName",
-          "shortName": "principalRecipientShortName",
-          "code": "principalRecipientId",
+          "longName": "principalRecipient/name",
+          "shortName": "principalRecipient/shortName",
+          "code": "principalRecipient/id",
           "count": "count",
           "order": "count"
         }
@@ -61,7 +54,7 @@
     {
       "name": "Donor(s)",
       "type": "Donor",
-      "link": "/viz/pledges-contributions/time-cycle?donors=<code>",
+      "link": "",
       "url": "http://localhost:4200/filter-options/donors?q=<keyword>",
       "itemname": "",
       "filterFields": [],
@@ -79,31 +72,27 @@
       "name": "Grant(s)",
       "type": "Grant",
       "link": "/grant/<code>",
-      "url": "https://fetch.theglobalfund.org/v3.3/odata/VGrantAgreements?$select=grantAgreementTitle,grantAgreementNumber,grantAgreementStatusTypeName&$filter=(<filterStr>)&$orderby=GrantAgreementStatusTypeName asc,GrantAgreementTitle asc",
-      "itemname": "<code> | <name>",
+      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$select=code,status&$expand=status(select=statusName)&$filter=(<filterStr>)&$orderby=status/statusName asc",
+      "itemname": "<code>",
       "filterFields": [
-        "GeographicAreaCode_ISO3",
-        "GeographicAreaName",
-        "ComponentName",
-        "GrantAgreementTitle",
-        "GrantAgreementNumber",
-        "PrincipalRecipientName",
-        "PrincipalRecipientShortName",
-        "GrantAgreementStatusTypeName"
+        "geography/code",
+        "geography/name",
+        "activityArea/parent/parent/name",
+        "title",
+        "code",
+        "principalRecipient/name",
+        "principalRecipient/shortName",
+        "status/statusName"
       ],
       "filterTemplate": "contains(<field>,<value>)",
-      "order": [
-        "asc",
-        "asc"
-      ],
+      "order": ["asc", "asc"],
       "mappings": [
         "value[]",
         {
-          "name": "grantAgreementTitle",
-          "code": "grantAgreementNumber",
-          "type": "grantAgreementStatusTypeName",
-          "order": "grantAgreementStatusTypeName",
-          "order1": "GrantAgreementTitle"
+          "code": "code",
+          "type": "status/statusName",
+          "order": "status/statusName",
+          "order1": "code"
         }
       ],
       "options": []
@@ -111,24 +100,22 @@
     {
       "name": "Result(s)",
       "type": "Result",
-      "link": "/results/#<code>",
-      "url": "https://fetch.theglobalfund.org/v3.3/odata/VReportingResults?$apply=filter(<filterStr>)/groupby((reportingResultIndicatorName,reportingResultIndicatorId), aggregate(ReportingResultValue with sum as value))",
+      "link": "",
+      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/allProgrammaticIndicators?$apply=filter(<filterStr> AND programmaticDataset eq 'Annual_Results')/groupby((indicatorName,recordId),aggregate(resultValueNumerator with sum as value))",
       "itemname": "",
       "filterFields": [
-        "GeographicAreaCode_ISO3",
-        "GeographicAreaName",
-        "ComponentName",
-        "ReportingResultIndicatorName"
+        "geography/code",
+        "geography/name",
+        "activityArea/parent/parent/name",
+        "indicatorName"
       ],
       "filterTemplate": "contains(<field>,<value>)",
-      "order": [
-        "desc"
-      ],
+      "order": ["desc"],
       "mappings": [
         "value[]",
         {
-          "name": "reportingResultIndicatorName",
-          "code": "reportingResultIndicatorId",
+          "name": "indicatorName",
+          "code": "recordId",
           "order": "value"
         }
       ],
@@ -148,10 +135,7 @@
         "OrganizationName"
       ],
       "filterTemplate": "contains(tolower(<field>),tolower(<value>))",
-      "order": [
-        "desc",
-        "desc"
-      ],
+      "order": ["desc", "desc"],
       "mappings": [
         "value[]",
         {

@@ -8,6 +8,10 @@ import {
 } from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
+import ComponentMapping from '../config/mapping/filter-options/components.json';
+import DonorMapping from '../config/mapping/filter-options/donors.json';
+import GeographyMapping from '../config/mapping/filter-options/geography.json';
+import ReplenishmentPeriodMapping from '../config/mapping/filter-options/replenishment-periods.json';
 import mappingComponents from '../config/mapping/filteroptions/components.json';
 import mappingDonors from '../config/mapping/filteroptions/donors.json';
 import mappingLocations from '../config/mapping/filteroptions/locations.json';
@@ -71,7 +75,256 @@ const FILTER_OPTIONS_RESPONSE: ResponseObject = {
 export class FilteroptionsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
-  @get('/filter-options/locations')
+  // v3
+
+  @get('/filter-options/geography')
+  @response(200)
+  async filterOptionsGeography() {
+    const url = urls.FILTER_OPTIONS_GEOGRAPHY;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(resp.data, GeographyMapping.dataPath, []);
+        const data: FilterGroupOption[] = [];
+
+        rawData.forEach((item1: any) => {
+          const subOptions = _.get(item1, GeographyMapping.children, []);
+          data.push({
+            label: _.get(item1, GeographyMapping.label, ''),
+            value: _.get(item1, GeographyMapping.value, ''),
+            extraInfo: {
+              isDonor: _.get(item1, GeographyMapping.isDonor, false),
+              isRecipient: _.get(item1, GeographyMapping.isRecipient, false),
+              level: _.get(item1, GeographyMapping.level, undefined),
+            },
+            subOptions:
+              subOptions && subOptions.length > 0
+                ? _.orderBy(
+                    subOptions.map((item2: any) => {
+                      const item2SubOptions = _.get(
+                        item2,
+                        GeographyMapping.children,
+                        [],
+                      );
+                      return {
+                        label: _.get(item2, GeographyMapping.label, ''),
+                        value: _.get(item2, GeographyMapping.value, ''),
+                        extraInfo: {
+                          isDonor: _.get(
+                            item2,
+                            GeographyMapping.isDonor,
+                            false,
+                          ),
+                          isRecipient: _.get(
+                            item2,
+                            GeographyMapping.isRecipient,
+                            false,
+                          ),
+                          level: _.get(
+                            item2,
+                            GeographyMapping.level,
+                            undefined,
+                          ),
+                        },
+                        subOptions:
+                          item2SubOptions && item2SubOptions.length > 0
+                            ? _.orderBy(
+                                item2SubOptions.map((item3: any) => {
+                                  const item3SubOptions = _.get(
+                                    item3,
+                                    GeographyMapping.children,
+                                    [],
+                                  );
+                                  return {
+                                    label: _.get(
+                                      item3,
+                                      GeographyMapping.label,
+                                      '',
+                                    ),
+                                    value: _.get(
+                                      item3,
+                                      GeographyMapping.value,
+                                      '',
+                                    ),
+                                    extraInfo: {
+                                      isDonor: _.get(
+                                        item3,
+                                        GeographyMapping.isDonor,
+                                        false,
+                                      ),
+                                      isRecipient: _.get(
+                                        item3,
+                                        GeographyMapping.isRecipient,
+                                        false,
+                                      ),
+                                      level: _.get(
+                                        item3,
+                                        GeographyMapping.level,
+                                        undefined,
+                                      ),
+                                    },
+                                    subOptions:
+                                      item3SubOptions &&
+                                      item3SubOptions.length > 0
+                                        ? _.orderBy(
+                                            item3SubOptions.map(
+                                              (item4: any) => {
+                                                return {
+                                                  label: _.get(
+                                                    item4,
+                                                    GeographyMapping.label,
+                                                    '',
+                                                  ),
+                                                  value: _.get(
+                                                    item4,
+                                                    GeographyMapping.value,
+                                                    '',
+                                                  ),
+                                                  extraInfo: {
+                                                    isDonor: _.get(
+                                                      item4,
+                                                      GeographyMapping.isDonor,
+                                                      false,
+                                                    ),
+                                                    isRecipient: _.get(
+                                                      item4,
+                                                      GeographyMapping.isRecipient,
+                                                      false,
+                                                    ),
+                                                    level: _.get(
+                                                      item4,
+                                                      GeographyMapping.level,
+                                                      undefined,
+                                                    ),
+                                                  },
+                                                };
+                                              },
+                                            ),
+                                            'label',
+                                            'asc',
+                                          )
+                                        : undefined,
+                                  };
+                                }),
+                                'label',
+                                'asc',
+                              )
+                            : undefined,
+                      };
+                    }),
+                    'label',
+                    'asc',
+                  )
+                : undefined,
+          });
+        });
+
+        return {
+          name: 'Geography',
+          options: _.orderBy(data, 'label', 'asc'),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/filter-options/components')
+  @response(200)
+  async filterOptionsComponents() {
+    const url = urls.FILTER_OPTIONS_COMPONENTS;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(resp.data, ComponentMapping.dataPath, []);
+
+        return {
+          name: 'Component',
+          options: rawData.map((item: any) => ({
+            label: _.get(item, ComponentMapping.label, ''),
+            value: _.get(item, ComponentMapping.value, ''),
+          })),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/filter-options/replenishment-periods')
+  @response(200)
+  async filterOptionsReplenishmentPeriods() {
+    const url = urls.FILTER_OPTIONS_REPLENISHMENT_PERIODS;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          ReplenishmentPeriodMapping.dataPath,
+          [],
+        );
+
+        return {
+          name: 'Replenishment period',
+          options: _.orderBy(
+            rawData.map((item: any) => ({
+              label: _.get(item, ReplenishmentPeriodMapping.label, ''),
+              value: _.get(item, ReplenishmentPeriodMapping.value, ''),
+            })),
+            'label',
+            'asc',
+          ),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/filter-options/donors')
+  @response(200)
+  async filterOptionsDonors() {
+    const url = urls.FILTER_OPTIONS_DONORS;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(resp.data, DonorMapping.dataPath, []);
+
+        const options: FilterGroupOption[] = [];
+
+        _.map(_.groupBy(rawData, DonorMapping.type), (donors, type) => {
+          const typeOptions: FilterGroupOption = {
+            label: type,
+            value: type,
+            subOptions: donors.map((donor: any) => ({
+              label: donor[DonorMapping.label],
+              value: donor[DonorMapping.value],
+            })),
+          };
+
+          options.push(typeOptions);
+        });
+
+        return {
+          name: 'Donor',
+          options: _.orderBy(options, 'label', 'asc'),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/filter-options/principal-recipients')
+  @response(200)
+  async filterOptionsPRs() {
+    const url = urls.FILTER_OPTIONS_PRINCIPAL_RECIPIENTS;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {})
+      .catch(handleDataApiError);
+  }
+
+  // v2
+
+  @get('/v2/filter-options/locations')
   @response(200, FILTER_OPTIONS_RESPONSE)
   locations(): object {
     const url = urls.filteroptionslocations;
@@ -212,7 +465,7 @@ export class FilteroptionsController {
       .catch(handleDataApiError);
   }
 
-  @get('/filter-options/components')
+  @get('/v2/filter-options/components')
   @response(200, FILTER_OPTIONS_RESPONSE)
   components(): object {
     const url = urls.filteroptionscomponents;
@@ -328,7 +581,7 @@ export class FilteroptionsController {
       .catch(handleDataApiError);
   }
 
-  @get('/filter-options/replenishment-periods')
+  @get('/v2/filter-options/replenishment-periods')
   @response(200, FILTER_OPTIONS_RESPONSE)
   replenishmentPeriods(): object {
     const url = urls.filteroptionsreplenishmentperiods;
@@ -357,7 +610,7 @@ export class FilteroptionsController {
       .catch(handleDataApiError);
   }
 
-  @get('/filter-options/donors')
+  @get('/v2/filter-options/donors')
   @response(200, FILTER_OPTIONS_RESPONSE)
   donors(): object {
     const keyword = (this.req.query.q ?? '').toString().trim();

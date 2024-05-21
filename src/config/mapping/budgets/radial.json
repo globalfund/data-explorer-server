@@ -1,0 +1,7 @@
+{
+  "dataPath": "value",
+  "name": "activityAreaGroup.parent.parent.name",
+  "value": "value",
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((activityAreaGroup/parent/parent/name),aggregate(plannedAmount with sum as value))",
+  "colors": ["#0A2840", "#013E77", "#00B5AE", "#C3EDFD", "#F3F5F4"]
+}

@@ -1,0 +1,8 @@
+{
+  "dataPath": "value[0].children",
+  "name": "name",
+  "value": "code",
+  "category": "level",
+  "isRecipient": "isRecipient",
+  "items": "children"
+}

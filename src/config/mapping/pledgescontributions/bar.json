@@ -1,0 +1,17 @@
+{
+  "dataPath": "value",
+  "cycle": "periodFrom",
+  "name": "periodCovered",
+  "value": "value",
+  "countryCode": "donor/geography/code",
+  "pledgesUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Pledge - Reference Rate'<filterString>)/groupby((periodCovered),aggregate(plannedAmount with sum as value))&$orderby=periodCovered asc",
+  "contributionsUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Contribution - Reference Rate'<filterString>)/groupby((periodCovered),aggregate(actualAmount with sum as value))&$orderby=periodCovered asc",
+  "donorBarType": "donor.type.name",
+  "donorBarDonor": "donor.name",
+  "donorBarIndicatorField": "indicatorName",
+  "donorBarIndicatorPledge": "Pledge - Reference Rate",
+  "donorBarIndicatorContribution": "Contribution - Reference Rate",
+  "donorBarIndicatorPledgeAmount": "plannedAmount",
+  "donorBarIndicatorContributionAmount": "actualAmount",
+  "donorBarUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions'<filterString>)/groupby((donor/name,donor/type/name,indicatorName),aggregate(plannedAmount with sum as plannedAmount,actualAmount with sum as actualAmount))"
+}

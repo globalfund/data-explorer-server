@@ -1,0 +1,37 @@
+{
+  "dataPath": "value",
+  "cycle": "periodFrom",
+  "name": "activityAreaGroup.parent.parent.name",
+  "value": "value",
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((activityAreaGroup/parent/parent/name),aggregate(plannedAmount with sum as value))",
+  "textbgcolors": [
+    {
+      "color": "#0A2840",
+      "textcolor": "#FFFFFF"
+    },
+    {
+      "color": "#013E77",
+      "textcolor": "#FFFFFF"
+    },
+    {
+      "color": "#00B5AE",
+      "textcolor": "#FFFFFF"
+    },
+    {
+      "color": "#10708F",
+      "textcolor": "#FFFFFF"
+    },
+    {
+      "color": "#9EDBE9",
+      "textcolor": "#000000"
+    },
+    {
+      "color": "#C3EDFD",
+      "textcolor": "#000000"
+    },
+    {
+      "color": "#F3F5F4",
+      "textcolor": "#000000"
+    }
+  ]
+}

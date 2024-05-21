@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "name": "activityArea.parent.parent.name",
+  "itemName": "activityArea.parent.name",
+  "indicatorName": "indicatorName",
+  "value": "actualCumulative",
+  "urlParams": "?$apply=filter(indicatorName in ('Expenditure: Module-Intervention - Reference Rate') AND isLatestReported eq true<filterString>)/groupby((indicatorName,activityArea/parent/name,activityArea/parent/parent/name),aggregate(actualAmountCumulative with sum as actualCumulative))"
+}

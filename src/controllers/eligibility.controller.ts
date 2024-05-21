@@ -1,6 +1,7 @@
 import {inject} from '@loopback/core';
 import {
   get,
+  param,
   Request,
   response,
   ResponseObject,
@@ -11,12 +12,16 @@ import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import EligibilityFieldsMapping from '../config/mapping/eligibility/dotsChart.json';
+import EligibilityHeatmap from '../config/mapping/eligibility/heatmap.json';
 import ScatterplotFieldsMapping from '../config/mapping/eligibility/scatterplot.json';
+import EligibilityStatsMapping from '../config/mapping/eligibility/stats.json';
+import EligibilityTableMapping from '../config/mapping/eligibility/table.json';
 import EligibilityYearsFieldsMapping from '../config/mapping/eligibility/years.json';
 import urls from '../config/urls/index.json';
 import {EligibilityDotDataItem} from '../interfaces/eligibilityDot';
 import {EligibilityScatterplotDataItem} from '../interfaces/eligibilityScatterplot';
 import {handleDataApiError} from '../utils/dataApiError';
+import {filterEligibility} from '../utils/filtering/eligibility';
 import {getFilterString} from '../utils/filtering/eligibility/getFilterString';
 
 const ELIGIBILITY_RESPONSE: ResponseObject = {
@@ -91,6 +96,229 @@ const ELIGIBILITY_COUNTRY_RESPONSE: ResponseObject = {
 
 export class EligibilityController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+
+  // v3
+
+  @get('/eligibility/stats/{year}')
+  @response(200)
+  async eligibilityStats(@param.path.string('year') year: string) {
+    const filterString = filterEligibility(
+      {...this.req.query, years: year},
+      EligibilityStatsMapping.urlParams,
+    );
+    const url = `${urls.ELIGIBILITY}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, EligibilityStatsMapping.dataPath, []);
+        const groupedByComponent = _.groupBy(
+          raw,
+          EligibilityStatsMapping.component,
+        );
+        return {
+          data: _.map(groupedByComponent, (value, key) => ({
+            name: key,
+            value: value.length,
+          })),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/eligibility/table')
+  @response(200)
+  async eligibilityTable() {
+    const filterString = filterEligibility(
+      this.req.query,
+      EligibilityTableMapping.urlParams,
+    );
+    const url = `${urls.ELIGIBILITY}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, EligibilityTableMapping.dataPath, []);
+
+        const groupedByGeography = _.groupBy(
+          raw,
+          EligibilityTableMapping.geography,
+        );
+
+        const data: {
+          [key: string]:
+            | string
+            | number
+            | boolean
+            | null
+            | object
+            | Array<object>;
+        }[] = _.map(groupedByGeography, (value, key) => {
+          const item: {
+            [key: string]:
+              | string
+              | number
+              | boolean
+              | null
+              | object
+              | Array<object>;
+          } = {
+            name: key,
+            _children: [
+              {
+                name: 'Income Level',
+              },
+            ],
+          };
+
+          const geoGroupedByYear = _.groupBy(
+            value,
+            EligibilityTableMapping.year,
+          );
+
+          _.forEach(geoGroupedByYear, (value, key) => {
+            (item._children as object[])[0] = {
+              ...(item._children as object[])[0],
+              [key]: _.get(value, '[0].incomeLevel', ''),
+            };
+          });
+
+          const groupedByComponent = _.groupBy(
+            value,
+            EligibilityTableMapping.component,
+          );
+
+          item._children = _.map(groupedByComponent, (value, key) => {
+            const componentItem: {
+              [key: string]:
+                | string
+                | number
+                | boolean
+                | null
+                | object
+                | Array<object>;
+            } = {
+              name: key,
+              _children: [
+                {
+                  name: 'Disease Burden',
+                },
+                {
+                  name: 'Eligibility',
+                },
+              ],
+            };
+
+            const componentGroupedByYear = _.groupBy(
+              value,
+              EligibilityTableMapping.year,
+            );
+
+            _.forEach(componentGroupedByYear, (value, key) => {
+              let isEligible = _.get(
+                value,
+                `[0]["${EligibilityTableMapping.isEligible}"]`,
+                '',
+              );
+              if (isEligible) {
+                isEligible = EligibilityTableMapping.eligibilityValues.eligible;
+              } else if (isEligible === false) {
+                isEligible =
+                  EligibilityTableMapping.eligibilityValues.notEligible;
+              } else {
+                isEligible =
+                  EligibilityTableMapping.eligibilityValues.transitionFunding;
+              }
+              (componentItem._children as object[])[0] = {
+                ...(componentItem._children as object[])[0],
+                [key]: _.get(
+                  value,
+                  `[0]["${EligibilityTableMapping.diseaseBurden}"]`,
+                  '',
+                ),
+              };
+              (componentItem._children as object[])[1] = {
+                ...(componentItem._children as object[])[1],
+                [key]: isEligible,
+              };
+            });
+
+            return componentItem;
+          });
+
+          return item;
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/eligibility/heatmap/{countryCode}')
+  @response(200)
+  async eligibilityHeatmap(
+    @param.path.string('countryCode') countryCode: string,
+  ) {
+    let filterString = EligibilityHeatmap.urlParams.replace(
+      '<countryCode>',
+      countryCode,
+    );
+    const url = `${urls.ELIGIBILITY}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, EligibilityHeatmap.dataPath, []);
+        const data = raw.map((item: any) => ({
+          column: _.get(item, EligibilityHeatmap.eligibilityYear, ''),
+          row: _.get(item, EligibilityHeatmap.component, ''),
+          value: _.get(
+            EligibilityHeatmap.isEligibleValueMapping,
+            _.get(item, EligibilityHeatmap.isEligible, '').toString(),
+            '',
+          ),
+          diseaseBurden: _.get(
+            EligibilityHeatmap.diseaseBurdenValueMapping,
+            _.get(item, EligibilityHeatmap.diseaseBurden, ''),
+            '',
+          ),
+        }));
+
+        const groupedByYears = _.groupBy(
+          raw,
+          EligibilityHeatmap.eligibilityYear,
+        );
+        Object.keys(groupedByYears).forEach(year => {
+          data.push({
+            column: year,
+            row: '_Income Level',
+            value: '',
+            diseaseBurden: _.get(
+              EligibilityHeatmap.incomeLevelValueMapping,
+              _.get(
+                groupedByYears[year][0],
+                EligibilityHeatmap.incomeLevel,
+                '',
+              ),
+              '',
+            ),
+          });
+        });
+
+        return {
+          data: _.orderBy(data, ['column', 'row'], ['desc', 'asc']).map(
+            (item: any) => ({
+              ...item,
+              column: item.column.toString(),
+              row: item.row === '_Income Level' ? 'Income Level' : item.row,
+            }),
+          ),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  // v2
 
   @get('/eligibility')
   @response(200, ELIGIBILITY_RESPONSE)
@@ -428,9 +656,9 @@ export class EligibilityController {
       .catch(handleDataApiError);
   }
 
-  @get('/eligibility/table')
+  @get('/v2/eligibility/table')
   @response(200)
-  eligibilityTable(): object {
+  eligibilityTableV2(): object {
     const aggregateByField =
       this.req.query.aggregateBy &&
       this.req.query.aggregateBy.toString().length > 0

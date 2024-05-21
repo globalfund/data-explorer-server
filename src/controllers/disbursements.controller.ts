@@ -13,14 +13,18 @@ import _ from 'lodash';
 import querystring from 'querystring';
 import filteringGrants from '../config/filtering/grants.json';
 import filtering from '../config/filtering/index.json';
+import BarChartFieldsMapping from '../config/mapping/disbursements/barChart.json';
 import GeomapFieldsMapping from '../config/mapping/disbursements/geomap.json';
 import GrantCommittedTimeCycleFieldsMapping from '../config/mapping/disbursements/grantCommittedTimeCycle.json';
 import GrantDetailTimeCycleFieldsMapping from '../config/mapping/disbursements/grantDetailTimeCycle.json';
 import GrantDetailTreemapFieldsMapping from '../config/mapping/disbursements/grantDetailTreemap.json';
+import LineChartFieldsMapping from '../config/mapping/disbursements/lineChart.json';
+import TableFieldsMapping from '../config/mapping/disbursements/table.json';
 import TimeCycleFieldsMapping from '../config/mapping/disbursements/timeCycle.json';
 import TimeCycleDrilldownFieldsMapping from '../config/mapping/disbursements/timeCycleDrilldown.json';
 import TimeCycleDrilldownFieldsMapping2 from '../config/mapping/disbursements/timeCycleDrilldown2.json';
 import TreemapFieldsMapping from '../config/mapping/disbursements/treemap.json';
+import FinancialInsightsStatsMapping from '../config/mapping/financialInsightsStats.json';
 import urls from '../config/urls/index.json';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {DisbursementsTreemapDataItem} from '../interfaces/disbursementsTreemap';
@@ -32,6 +36,7 @@ import {
   grantDetailTreemapGetFilterString,
 } from '../utils/filtering/disbursements/grantDetailGetFilterString';
 import {getGeoMultiCountriesFilterString} from '../utils/filtering/disbursements/multicountries/getFilterString';
+import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 
 const DISBURSEMENTS_TIME_CYCLE_RESPONSE: ResponseObject = {
@@ -174,6 +179,181 @@ const DISBURSEMENTS_TREEMAP_RESPONSE: ResponseObject = {
 
 export class DisbursementsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+
+  // v3
+
+  @get('/financial-insights/stats')
+  @response(200)
+  async financialInsightsStats() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      FinancialInsightsStatsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(
+          resp.data,
+          FinancialInsightsStatsMapping.dataPath,
+          [],
+        );
+        return {
+          data: [
+            {
+              signed: _.get(
+                _.find(raw, {
+                  [FinancialInsightsStatsMapping.indicatorField]:
+                    FinancialInsightsStatsMapping.signed,
+                }),
+                FinancialInsightsStatsMapping.valueField,
+                0,
+              ),
+              committed: _.get(
+                _.find(raw, {
+                  [FinancialInsightsStatsMapping.indicatorField]:
+                    FinancialInsightsStatsMapping.commitment,
+                }),
+                FinancialInsightsStatsMapping.valueField,
+                0,
+              ),
+              disbursed: _.get(
+                _.find(raw, {
+                  [FinancialInsightsStatsMapping.indicatorField]:
+                    FinancialInsightsStatsMapping.disbursement,
+                }),
+                FinancialInsightsStatsMapping.valueField,
+                0,
+              ),
+            },
+          ],
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/disbursements/bar-chart')
+  @response(200)
+  async barChart() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      BarChartFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, BarChartFieldsMapping.dataPath, []);
+
+        return {
+          data: raw.map((item: any, index: number) => ({
+            name: _.get(item, BarChartFieldsMapping.name, ''),
+            value: _.get(item, BarChartFieldsMapping.value, 0),
+            itemStyle: {
+              color:
+                index === 0
+                  ? BarChartFieldsMapping.biggerBarColor
+                  : BarChartFieldsMapping.barColor,
+            },
+          })),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/disbursements/line-chart')
+  @response(200)
+  async lineChart() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      LineChartFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, LineChartFieldsMapping.dataPath, []);
+        const groupedByLine = _.groupBy(raw, LineChartFieldsMapping.line);
+        const lines = Object.keys(groupedByLine);
+        const years = _.groupBy(raw, LineChartFieldsMapping.cycle);
+        return {
+          data: _.map(groupedByLine, (items, line) => ({
+            name: line,
+            data: _.orderBy(
+              items.map((item: any) => item[LineChartFieldsMapping.value]),
+              'x',
+              'asc',
+            ),
+            itemStyle: {
+              color: _.get(
+                LineChartFieldsMapping.colors,
+                `[${lines.indexOf(line)}]`,
+                '',
+              ),
+            },
+          })),
+          xAxisKeys: Object.keys(years),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/disbursements/table')
+  @response(200)
+  async table() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      TableFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, TableFieldsMapping.dataPath, []);
+
+        const groupedByComponent = _.groupBy(raw, TableFieldsMapping.component);
+
+        return {
+          data: _.map(groupedByComponent, (items, component) => {
+            return {
+              component,
+              grants: _.get(items[0], TableFieldsMapping.grants, 0),
+              signed: _.get(
+                _.find(items, {
+                  [TableFieldsMapping.indicatorField]:
+                    TableFieldsMapping.signedIndicator,
+                }),
+                TableFieldsMapping.valueField,
+                0,
+              ),
+              committed: _.get(
+                _.find(items, {
+                  [TableFieldsMapping.indicatorField]:
+                    TableFieldsMapping.commitmentIndicator,
+                }),
+                TableFieldsMapping.valueField,
+                0,
+              ),
+              disbursed: _.get(
+                _.find(items, {
+                  [TableFieldsMapping.indicatorField]:
+                    TableFieldsMapping.disbursementIndicator,
+                }),
+                TableFieldsMapping.valueField,
+                0,
+              ),
+            };
+          }),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  // v2
 
   // Time/Cycle
 

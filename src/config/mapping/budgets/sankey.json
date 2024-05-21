@@ -1,0 +1,9 @@
+{
+  "dataPath": "value",
+  "level1Field": "activityAreaGroup.parent.name",
+  "level2Field": "activityAreaGroup.name",
+  "valueField": "value",
+  "cycle": "periodFrom",
+  "nodeColors": ["#252C34", "#252C34", "#252C34"],
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((activityAreaGroup/parent/name,activityAreaGroup/name),aggregate(plannedAmount with sum as value))"
+}

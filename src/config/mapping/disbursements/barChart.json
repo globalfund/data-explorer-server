@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "name": "activityArea.name",
+  "value": "value",
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((activityArea/name),aggregate(actualAmount with sum as value))&$orderby=value desc",
+  "biggerBarColor": "#00B5AE",
+  "barColor": "#013E77"
+}

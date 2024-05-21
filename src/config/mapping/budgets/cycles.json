@@ -1,0 +1,6 @@
+{
+  "dataPath": "value",
+  "from": "implementationPeriod/periodFrom",
+  "to": "implementationPeriod/periodTo",
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate')/groupby((implementationPeriod/perioFrom,implementationPeriod/periodTo))"
+}

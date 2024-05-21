@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "year": "resultValueYear",
+  "name": "indicatorName",
+  "component": "activityArea.name",
+  "value": "value",
+  "urlParams": "?$apply=filter(programmaticDataset eq 'Annual_Results'<filterString>)/groupby((indicatorName,activityArea/name,resultValueYear),aggregate(resultValueNumerator with sum as value))&$orderby=value desc"
+}

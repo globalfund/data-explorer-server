@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "value": "value",
+  "cycle": "periodCovered",
+  "component": "activityArea.name",
+  "colors": ["#0A2840", "#013E77", "#00B5AE", "#C3EDFD", "#D9D9D9"],
+  "urlParams": "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((periodCovered,activityArea/name),aggregate(actualAmount with sum as value))"
+}

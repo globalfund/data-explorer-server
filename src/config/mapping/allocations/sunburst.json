@@ -1,0 +1,7 @@
+{
+  "dataPath": "value",
+  "value": "value",
+  "region": "geography.parent.name",
+  "country": "geography.name",
+  "urlParams": "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((geography/parent/name,geography/name),aggregate(actualAmount with sum as value))"
+}

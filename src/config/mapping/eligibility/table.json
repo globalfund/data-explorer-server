@@ -1,0 +1,15 @@
+{
+  "dataPath": "value",
+  "geography": "geography.name",
+  "year": "eligibilityYear",
+  "component": "activityArea.name",
+  "incomeLevel": "incomeLevel",
+  "diseaseBurden": "diseaseBurden",
+  "isEligible": "isEligible",
+  "eligibilityValues": {
+    "eligible": "Eligible",
+    "notEligible": "Not Eligible",
+    "transitionFunding": "Transition Funding"
+  },
+  "urlParams": "?$apply=<filterString>/groupby((geography/name,eligibilityYear,activityArea/name,isEligible,incomeLevel,diseaseBurden))&$orderby=geography/name,activityArea/name"
+}

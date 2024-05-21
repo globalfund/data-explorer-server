@@ -1,0 +1,16 @@
+{
+  "dataPath": "value",
+  "indicatorNameField": "indicatorName",
+  "expenditureIndicatorName": "Total Expenditure to Last Expenditure Reporting Period - Reference Rate",
+  "budgetIndicatorName": "Total Budget to Last Expenditure Reporting Period - Reference Rate",
+  "disbursementIndicatorName": "Total Disbursement to Last Expenditure Reporting Period - Reference Rate",
+  "cashBalanceIndicatorName": "Opening Cash Balance - Reference Rate",
+  "organisationName": "implementationPeriod.grant.principalRecipient.name",
+  "organisationType": "implementationPeriod.grant.principalRecipient.type.name",
+  "expenditureValue": "actualCumulative",
+  "budgetValue": "plannedCumulative",
+  "disbursementValue": "actualCumulative",
+  "cashBalanceValue": "actual",
+  "urlParams": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount')/groupby((indicatorName),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))",
+  "urlParamsOrganisations": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount')/groupby((indicatorName,implementationPeriod/grant/principalRecipient/type/name,implementationPeriod/grant/principalRecipient/name),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))"
+}

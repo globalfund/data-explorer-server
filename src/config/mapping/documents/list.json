@@ -1,0 +1,8 @@
+{
+  "dataPath": "value",
+  "type": "documentType.parent.name",
+  "title": "title",
+  "url": "url",
+  "geography": "geography.name",
+  "urlParams": "?$apply=filter(<filterString>)/groupby((geography/name,documentType/index,documentType/parent/name,title,url))&$orderby=documentType/index asc,title asc"
+}

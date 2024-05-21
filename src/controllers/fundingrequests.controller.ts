@@ -1,18 +1,95 @@
 import {inject} from '@loopback/core';
-import {get, Request, response, RestBindings} from '@loopback/rest';
+import {get, param, Request, response, RestBindings} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
 import moment from 'moment';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
+import Table2FieldsMapping from '../config/mapping/fundingrequests/table-2.json';
 import TableFieldsMapping from '../config/mapping/fundingrequests/table.json';
 import urls from '../config/urls/index.json';
 import {handleDataApiError} from '../utils/dataApiError';
+import {filterFundingRequests} from '../utils/filtering/fundingRequests';
 import {getFilterString} from '../utils/filtering/fundingrequests/getFilterString';
 
 export class FundingRequestsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+
+  // v3
+
+  @get('/funding-requests')
+  @response(200)
+  async fundingRequests() {
+    const filterString = filterFundingRequests(
+      this.req.query,
+      Table2FieldsMapping.urlParams,
+    );
+    const url = `${urls.FUNDING_REQUESTS}/${filterString}&$orderby=geography/name asc`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const mapper = mapTransform(Table2FieldsMapping.map);
+        const data = mapper(resp.data) as never[];
+
+        const groupedByGeo = _.groupBy(data, Table2FieldsMapping.groupby);
+
+        return {
+          data: _.map(groupedByGeo, (items, key) => {
+            return {
+              components: key,
+              _children: items.map((item: any) => {
+                return {
+                  components: item.components,
+                  submissionDate: moment(item.submissionDate).format(
+                    'D MMMM YYYY',
+                  ),
+                  approach: item.approach,
+                  trpWindow: item.trpWindow,
+                  trpOutcome: item.trpOutcome,
+                  portfolioCategorization: item.portfolioCategorization,
+                  _children: item.items.map((subitem: any) => {
+                    return {
+                      boardApproval: subitem.boardApproval,
+                      gacMeeting: moment(item.gacMeeting).format('MMMM YYYY'),
+                      grant: subitem.grant.code,
+                      startingDate: moment(subitem.startDate).format(
+                        'DD-MM-YYYY',
+                      ),
+                      endingDate: moment(subitem.endDate).format('DD-MM-YYYY'),
+                      principalRecipient: subitem.principalRecipient,
+                    };
+                  }),
+                };
+              }),
+            };
+          }),
+          submittedCount: _.map(groupedByGeo, (items, key) => ({
+            name: key,
+            count: items.length,
+          })),
+          signedCount: _.map(groupedByGeo, (items, key) => ({
+            name: key,
+            count: _.filter(items, (item: any) => item.items.length > 0).length,
+          })),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/funding-requests/{countryCode}')
+  @response(200)
+  async fundingRequestsByCountry(
+    @param.path.string('countryCode') countryCode: string,
+  ) {
+    return axios
+      .get(`http://localhost:4200/funding-requests?geographies=${countryCode}`)
+      .then((resp: AxiosResponse) => resp.data)
+      .catch(handleDataApiError);
+  }
+
+  // v2
 
   @get('/funding-requests/table')
   @response(200)

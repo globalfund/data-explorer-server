@@ -1,0 +1,24 @@
+{
+  "dataPath": "value[0]",
+  "code": "code",
+  "titleArray": "narratives",
+  "title": {
+    "text": "narrativeText",
+    "lang": "narrativeLanguage"
+  },
+  "implementationPeriodArray": "implementationPeriods",
+  "implementationPeriodFrom": "implementationPeriodFrom",
+  "implementationPeriodTitle": "title",
+  "countryCode": "geography.code",
+  "countryName": "geography.name",
+  "principalRecipientId": "principalRecipient.id",
+  "principalRecipientName": "principalRecipient.name",
+  "principalRecipientShortName": "principalRecipient.shortName",
+  "component": "activityArea.name",
+  "FPMSalutation": "fundPortfolioManager.salutation",
+  "FPMFirstName": "fundPortfolioManager.firstName",
+  "FPMMiddleName": "fundPortfolioManager.middleName",
+  "FPMLastName": "fundPortfolioManager.lastName",
+  "FPMEmail": "fundPortfolioManager.emailAddress",
+  "urlParams": "?$filter=code eq '<code>'&$expand=geography,principalRecipient,activityArea,implementationPeriods,fundPortfolioManager"
+}

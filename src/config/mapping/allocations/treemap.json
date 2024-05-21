@@ -1,0 +1,37 @@
+{
+  "dataPath": "value",
+  "value": "value",
+  "component": "activityArea.name",
+  "geography": "geography.name",
+  "colors": [
+    {
+      "bg": "#0A2840",
+      "text": "#FFFFFF",
+      "items": "#164366"
+    },
+    {
+      "bg": "#013E77",
+      "text": "#FFFFFF",
+      "items": "#0B5191"
+    },
+    {
+      "bg": "#00B5AE",
+      "text": "#000000",
+      "items": "#18CCC5"
+    },
+    {
+      "bg": "#C3EDFD",
+      "text": "#FFFFFF",
+      "items": "#B3D7E5"
+    },
+    {
+      "bg": "#F3F5F4",
+      "text": "#FFFFFF",
+      "items": "#DDDDDD"
+    }
+  ],
+  "urlParams": [
+    "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((activityArea/name),aggregate(actualAmount with sum as value))",
+    "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((activityArea/name,geography/name),aggregate(actualAmount with sum as value))"
+  ]
+}

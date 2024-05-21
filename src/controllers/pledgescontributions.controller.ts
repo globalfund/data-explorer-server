@@ -1,6 +1,7 @@
 import {inject} from '@loopback/core';
 import {
   get,
+  param,
   Request,
   response,
   ResponseObject,
@@ -10,16 +11,18 @@ import axios, {AxiosResponse} from 'axios';
 import _, {orderBy} from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
+import PledgesContributionsBarFieldsMapping from '../config/mapping/pledgescontributions/bar.json';
 import PledgesContributionsGeoFieldsMapping from '../config/mapping/pledgescontributions/geo.json';
-import PledgesContributionsTableFieldsMapping from '../config/mapping/pledgescontributions/table.json';
+import PledgesContributionsStatsFieldsMapping from '../config/mapping/pledgescontributions/stats.json';
+import PledgesContributionsSunburstFieldsMapping from '../config/mapping/pledgescontributions/sunburst.json';
 import PledgesContributionsTimeCycleFieldsMapping from '../config/mapping/pledgescontributions/timeCycle.json';
 import PledgesContributionsTimeCycleDrilldownFieldsMapping from '../config/mapping/pledgescontributions/timeCycleDrilldown.json';
 import urls from '../config/urls/index.json';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
 import {FilterGroupOption} from '../interfaces/filters';
 import {PledgesContributionsTreemapDataItem} from '../interfaces/pledgesContributions';
-import {SimpleTableRow} from '../interfaces/simpleTable';
 import {handleDataApiError} from '../utils/dataApiError';
+import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 import {getFilterString} from '../utils/filtering/pledges-contributions/getFilterString';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 import {getD2HCoordinates} from '../utils/pledgescontributions/getD2HCoordinates';
@@ -49,8 +52,386 @@ const PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE: ResponseObject = {
   },
 };
 
+async function getBarData(urls: string[]) {
+  return axios
+    .all(urls.map(url => axios.get(url)))
+    .then(async responses => {
+      const pledgesData = _.get(
+        responses[0].data,
+        PledgesContributionsBarFieldsMapping.dataPath,
+        [],
+      );
+      const contributionsData = _.get(
+        responses[1].data,
+        PledgesContributionsBarFieldsMapping.dataPath,
+        [],
+      );
+
+      const pledges = _.groupBy(
+        pledgesData,
+        PledgesContributionsBarFieldsMapping.name,
+      );
+      const contributions = _.groupBy(
+        contributionsData,
+        PledgesContributionsBarFieldsMapping.name,
+      );
+
+      const years = _.uniq([
+        ...Object.keys(pledges),
+        ...Object.keys(contributions),
+      ]);
+
+      const data = years.map(year => {
+        return {
+          name: year,
+          value: _.sumBy(
+            pledges[year],
+            PledgesContributionsBarFieldsMapping.value,
+          ),
+          value1: _.sumBy(
+            contributions[year],
+            PledgesContributionsBarFieldsMapping.value,
+          ),
+        };
+      });
+
+      return data;
+    })
+    .catch(handleDataApiError);
+}
+
 export class PledgescontributionsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+
+  // v3
+
+  @get('/pledges-contributions/stats')
+  @response(200)
+  async stats() {
+    const filterString1 = filterFinancialIndicators(
+      this.req.query,
+      PledgesContributionsStatsFieldsMapping.totalValuesUrlParams,
+    );
+    const filterString2 = filterFinancialIndicators(
+      this.req.query,
+      PledgesContributionsStatsFieldsMapping.donorTypesCountUrlParams,
+    );
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+
+    return axios
+      .all([axios.get(url1), axios.get(url2)])
+      .then(responses => {
+        const totalValues = _.get(
+          responses[0].data,
+          PledgesContributionsStatsFieldsMapping.dataPath,
+          [],
+        );
+        const donorTypesCount = _.get(
+          responses[1].data,
+          PledgesContributionsStatsFieldsMapping.dataPath,
+          [],
+        );
+
+        const totalPledges = _.get(
+          _.find(totalValues, {
+            [PledgesContributionsStatsFieldsMapping.indicatorField]:
+              PledgesContributionsStatsFieldsMapping.pledgeIndicator,
+          }),
+          PledgesContributionsStatsFieldsMapping.pledgeAmount,
+          0,
+        );
+
+        const totalContributions = _.get(
+          _.find(totalValues, {
+            [PledgesContributionsStatsFieldsMapping.indicatorField]:
+              PledgesContributionsStatsFieldsMapping.contributionIndicator,
+          }),
+          PledgesContributionsStatsFieldsMapping.contributionAmount,
+          0,
+        );
+
+        const data = {
+          totalPledges,
+          totalContributions,
+          percentage: (totalContributions * 100) / totalPledges,
+          donorTypesCount: _.map(donorTypesCount, item => ({
+            name: _.get(
+              item,
+              `[${PledgesContributionsStatsFieldsMapping.donorType}]`,
+              '',
+            ),
+            value: _.get(item, PledgesContributionsStatsFieldsMapping.count, 0),
+          })),
+        };
+
+        return data;
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/pledges-contributions/expandable-bar')
+  @response(200)
+  async expandableBar() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      PledgesContributionsBarFieldsMapping.donorBarUrlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          PledgesContributionsBarFieldsMapping.dataPath,
+          [],
+        );
+
+        const groupedByIndicator = _.groupBy(
+          rawData,
+          PledgesContributionsBarFieldsMapping.donorBarType,
+        );
+
+        const data: {
+          name: string;
+          value: number;
+          value1: number;
+          items: {
+            name: string;
+            value: number;
+            value1: number;
+          }[];
+        }[] = [];
+
+        _.forEach(groupedByIndicator, (value, key) => {
+          const groupedByDonor = _.groupBy(
+            value,
+            PledgesContributionsBarFieldsMapping.donorBarDonor,
+          );
+          data.push({
+            name: key,
+            value: _.sumBy(
+              _.filter(value, {
+                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                  PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
+              }),
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+            ),
+            value1: _.sumBy(
+              _.filter(value, {
+                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                  PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
+              }),
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
+            ),
+            items: _.map(groupedByDonor, (donorValue, donorKey) => ({
+              name: donorKey,
+              value: _.sumBy(
+                _.filter(donorValue, {
+                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                    PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
+                }),
+                PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+              ),
+              value1: _.sumBy(
+                _.filter(donorValue, {
+                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                    PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
+                }),
+                PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
+              ),
+            })),
+          });
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/pledges-contributions/sunburst/{type}')
+  @response(200)
+  async sunburst(@param.path.string('type') type: string) {
+    const urlParams =
+      type === 'pledge'
+        ? PledgesContributionsSunburstFieldsMapping.pledgeUrlParams
+        : PledgesContributionsSunburstFieldsMapping.contributionUrlParams;
+    const filterString = filterFinancialIndicators(this.req.query, urlParams);
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          PledgesContributionsSunburstFieldsMapping.dataPath,
+          [],
+        );
+
+        const groupedByDonorType = _.groupBy(
+          rawData,
+          PledgesContributionsSunburstFieldsMapping.type,
+        );
+
+        const data: {
+          name: string;
+          value: number;
+          children: {
+            name: string;
+            value: number;
+          }[];
+        }[] = [];
+
+        _.forEach(groupedByDonorType, (value, key) => {
+          const groupedByDonor = _.groupBy(
+            value,
+            PledgesContributionsSunburstFieldsMapping.donor,
+          );
+          data.push({
+            name: key,
+            value: _.sumBy(
+              value,
+              PledgesContributionsSunburstFieldsMapping.amount,
+            ),
+            children: _.map(groupedByDonor, (donorValue, donorKey) => ({
+              name: donorKey,
+              value: _.sumBy(
+                donorValue,
+                PledgesContributionsSunburstFieldsMapping.amount,
+              ),
+            })),
+          });
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/pledges-contributions/table')
+  @response(200)
+  async table() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      PledgesContributionsBarFieldsMapping.donorBarUrlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          PledgesContributionsBarFieldsMapping.dataPath,
+          [],
+        );
+
+        const groupedByIndicator = _.groupBy(
+          rawData,
+          PledgesContributionsBarFieldsMapping.donorBarType,
+        );
+
+        const data: {
+          name: string;
+          pledge: number;
+          contribution: number;
+          _children: {
+            name: string;
+            pledge: number;
+            contribution: number;
+          }[];
+        }[] = [];
+
+        _.forEach(groupedByIndicator, (value, key) => {
+          const groupedByDonor = _.groupBy(
+            value,
+            PledgesContributionsBarFieldsMapping.donorBarDonor,
+          );
+          data.push({
+            name: key,
+            pledge: _.sumBy(
+              _.filter(value, {
+                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                  PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
+              }),
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+            ),
+            contribution: _.sumBy(
+              _.filter(value, {
+                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                  PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
+              }),
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
+            ),
+            _children: _.map(groupedByDonor, (donorValue, donorKey) => ({
+              name: donorKey,
+              pledge: _.sumBy(
+                _.filter(donorValue, {
+                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                    PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
+                }),
+                PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+              ),
+              contribution: _.sumBy(
+                _.filter(donorValue, {
+                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
+                    PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
+                }),
+                PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
+              ),
+            })),
+          });
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/pledges-contributions/bar')
+  @response(200)
+  async bar() {
+    let filterString1 = filterFinancialIndicators(
+      this.req.query,
+      PledgesContributionsBarFieldsMapping.pledgesUrlParams,
+    );
+    let filterString2 = filterFinancialIndicators(
+      this.req.query,
+      PledgesContributionsBarFieldsMapping.contributionsUrlParams,
+    );
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+
+    const data = await getBarData([url1, url2]);
+
+    return {data};
+  }
+
+  @get('/pledges-contributions/bar/{countryCode}')
+  @response(200)
+  async barInLocation(@param.path.string('countryCode') countryCode: string) {
+    let filterString1 = filterFinancialIndicators(
+      {
+        ...this.req.query,
+        geographies: countryCode,
+      },
+      PledgesContributionsBarFieldsMapping.pledgesUrlParams,
+    );
+    let filterString2 = filterFinancialIndicators(
+      {
+        ...this.req.query,
+        geographies: countryCode,
+      },
+      PledgesContributionsBarFieldsMapping.contributionsUrlParams,
+    );
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+
+    return getBarData([url1, url2]);
+  }
+
+  // v2
 
   @get('/pledges-contributions/time-cycle')
   @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
@@ -730,90 +1111,90 @@ export class PledgescontributionsController {
       .catch(handleDataApiError);
   }
 
-  @get('/pledges-contributions/table')
-  @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
-  table(): object {
-    const aggregation =
-      PledgesContributionsTableFieldsMapping.aggregations[
-        this.req.query.aggregateBy ===
-        PledgesContributionsTableFieldsMapping.aggregations[0].key
-          ? 0
-          : 1
-      ].value;
-    const aggregationKey =
-      this.req.query.aggregateBy ===
-      PledgesContributionsTableFieldsMapping.aggregations[1].key
-        ? PledgesContributionsTableFieldsMapping.aggregations[1].key
-        : PledgesContributionsTableFieldsMapping.aggregations[0].key;
-    const filterString = getFilterString(this.req.query, aggregation);
-    const params = querystring.stringify(
-      {},
-      '&',
-      filtering.param_assign_operator,
-      {
-        encodeURIComponent: (str: string) => str,
-      },
-    );
-    const url = `${urls.pledgescontributions}/?${params}${filterString}`;
-    const sortBy = this.req.query.sortBy;
-    const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
-    const sortByDirection: any =
-      sortBy && sortBy.toString().split(' ').length > 1
-        ? sortBy.toString().split(' ')[1].toLowerCase()
-        : 'asc';
+  // @get('/pledges-contributions/table')
+  // @response(200, PLEDGES_AND_CONTRIBUTIONS_TIME_CYCLE_RESPONSE)
+  // table(): object {
+  //   const aggregation =
+  //     PledgesContributionsTableFieldsMapping.aggregations[
+  //       this.req.query.aggregateBy ===
+  //       PledgesContributionsTableFieldsMapping.aggregations[0].key
+  //         ? 0
+  //         : 1
+  //     ].value;
+  //   const aggregationKey =
+  //     this.req.query.aggregateBy ===
+  //     PledgesContributionsTableFieldsMapping.aggregations[1].key
+  //       ? PledgesContributionsTableFieldsMapping.aggregations[1].key
+  //       : PledgesContributionsTableFieldsMapping.aggregations[0].key;
+  //   const filterString = getFilterString(this.req.query, aggregation);
+  //   const params = querystring.stringify(
+  //     {},
+  //     '&',
+  //     filtering.param_assign_operator,
+  //     {
+  //       encodeURIComponent: (str: string) => str,
+  //     },
+  //   );
+  //   const url = `${urls.pledgescontributions}/?${params}${filterString}`;
+  //   const sortBy = this.req.query.sortBy;
+  //   const sortByValue = sortBy ? sortBy.toString().split(' ')[0] : 'name';
+  //   const sortByDirection: any =
+  //     sortBy && sortBy.toString().split(' ').length > 1
+  //       ? sortBy.toString().split(' ')[1].toLowerCase()
+  //       : 'asc';
 
-    return axios
-      .get(url)
-      .then((resp: AxiosResponse) => {
-        const rawData = _.get(
-          resp.data,
-          PledgesContributionsTableFieldsMapping.dataPath,
-          [],
-        );
-        const groupedByData = _.groupBy(
-          rawData,
-          _.get(
-            PledgesContributionsTableFieldsMapping,
-            aggregationKey,
-            PledgesContributionsTableFieldsMapping.Donor,
-          ),
-        );
-        const data: SimpleTableRow[] = [];
-        Object.keys(groupedByData).forEach(key => {
-          data.push({
-            name: key,
-            Pledges: _.sumBy(
-              _.filter(
-                groupedByData[key],
-                dataItem =>
-                  _.get(
-                    dataItem,
-                    PledgesContributionsTableFieldsMapping.indicator,
-                    '',
-                  ) === PledgesContributionsTableFieldsMapping.pledge,
-              ),
-              PledgesContributionsTableFieldsMapping.amount,
-            ),
-            Contributions: _.sumBy(
-              _.filter(
-                groupedByData[key],
-                dataItem =>
-                  _.get(
-                    dataItem,
-                    PledgesContributionsTableFieldsMapping.indicator,
-                    '',
-                  ) === PledgesContributionsTableFieldsMapping.contribution,
-              ),
-              PledgesContributionsTableFieldsMapping.amount,
-            ),
-          });
-        });
+  //   return axios
+  //     .get(url)
+  //     .then((resp: AxiosResponse) => {
+  //       const rawData = _.get(
+  //         resp.data,
+  //         PledgesContributionsTableFieldsMapping.dataPath,
+  //         [],
+  //       );
+  //       const groupedByData = _.groupBy(
+  //         rawData,
+  //         _.get(
+  //           PledgesContributionsTableFieldsMapping,
+  //           aggregationKey,
+  //           PledgesContributionsTableFieldsMapping.Donor,
+  //         ),
+  //       );
+  //       const data: SimpleTableRow[] = [];
+  //       Object.keys(groupedByData).forEach(key => {
+  //         data.push({
+  //           name: key,
+  //           Pledges: _.sumBy(
+  //             _.filter(
+  //               groupedByData[key],
+  //               dataItem =>
+  //                 _.get(
+  //                   dataItem,
+  //                   PledgesContributionsTableFieldsMapping.indicator,
+  //                   '',
+  //                 ) === PledgesContributionsTableFieldsMapping.pledge,
+  //             ),
+  //             PledgesContributionsTableFieldsMapping.amount,
+  //           ),
+  //           Contributions: _.sumBy(
+  //             _.filter(
+  //               groupedByData[key],
+  //               dataItem =>
+  //                 _.get(
+  //                   dataItem,
+  //                   PledgesContributionsTableFieldsMapping.indicator,
+  //                   '',
+  //                 ) === PledgesContributionsTableFieldsMapping.contribution,
+  //             ),
+  //             PledgesContributionsTableFieldsMapping.amount,
+  //           ),
+  //         });
+  //       });
 
-        return {
-          count: data.length,
-          data: _.orderBy(data, sortByValue, sortByDirection),
-        };
-      })
-      .catch(handleDataApiError);
-  }
+  //       return {
+  //         count: data.length,
+  //         data: _.orderBy(data, sortByValue, sortByDirection),
+  //       };
+  //     })
+  //     .catch(handleDataApiError);
+  // }
 }

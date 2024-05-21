@@ -1,6 +1,7 @@
 import {inject} from '@loopback/core';
 import {
   get,
+  param,
   Request,
   response,
   ResponseObject,
@@ -12,11 +13,19 @@ import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
+import BudgetsBreakdownFieldsMapping from '../config/mapping/budgets/breakdown.json';
+import BudgetsCyclesMapping from '../config/mapping/budgets/cycles.json';
 import BudgetsFlowFieldsMapping from '../config/mapping/budgets/flow.json';
 import BudgetsFlowDrilldownFieldsMapping from '../config/mapping/budgets/flowDrilldown.json';
 import BudgetsGeomapFieldsMapping from '../config/mapping/budgets/geomap.json';
+import BudgetsMetricsFieldsMapping from '../config/mapping/budgets/metrics.json';
+import BudgetsRadialFieldsMapping from '../config/mapping/budgets/radial.json';
+import BudgetsSankeyFieldsMapping from '../config/mapping/budgets/sankey.json';
+import BudgetsTableFieldsMapping from '../config/mapping/budgets/table.json';
 import BudgetsTimeCycleFieldsMapping from '../config/mapping/budgets/timeCycle.json';
+import BudgetsTreemapFieldsMapping from '../config/mapping/budgets/treemap.json';
 import urls from '../config/urls/index.json';
+import {BudgetSankeyChartData} from '../interfaces/budgetSankey';
 import {BudgetsFlowData} from '../interfaces/budgetsFlow';
 import {BudgetsTimeCycleData} from '../interfaces/budgetsTimeCycle';
 import {BudgetsTreemapDataItem} from '../interfaces/budgetsTreemap';
@@ -24,6 +33,7 @@ import staticCountries from '../static-assets/countries.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {getDrilldownFilterString} from '../utils/filtering/budgets/getDrilldownFilterString';
 import {getFilterString} from '../utils/filtering/budgets/getFilterString';
+import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 import {formatFinancialValue} from '../utils/formatFinancialValue';
 
 const BUDGETS_FLOW_RESPONSE: ResponseObject = {
@@ -85,6 +95,707 @@ const BUDGETS_TIME_CYCLE_RESPONSE: ResponseObject = {
 
 export class BudgetsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+
+  // v3
+
+  @get('/budgets/radial')
+  @response(200)
+  async radial() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      BudgetsRadialFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return _.get(resp.data, BudgetsRadialFieldsMapping.dataPath, []).map(
+          (item: any, index: number) => ({
+            name: _.get(item, BudgetsRadialFieldsMapping.name, ''),
+            value: _.get(item, BudgetsRadialFieldsMapping.value, 0),
+            itemStyle: {
+              color: _.get(BudgetsRadialFieldsMapping.colors, index, ''),
+            },
+          }),
+        );
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/budgets/sankey')
+  @response(200)
+  async sankey() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      BudgetsSankeyFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          BudgetsSankeyFieldsMapping.dataPath,
+          [],
+        );
+        const data: BudgetSankeyChartData = {
+          nodes: [
+            {
+              name: 'Total budget',
+              level: 0,
+              itemStyle: {
+                color: BudgetsSankeyFieldsMapping.nodeColors[0],
+              },
+            },
+          ],
+          links: [],
+        };
+        const groupedDataLevel1 = _.groupBy(
+          rawData,
+          BudgetsSankeyFieldsMapping.level1Field,
+        );
+        _.forEach(groupedDataLevel1, (level1Data, level1) => {
+          data.nodes.push({
+            name: level1,
+            level: 1,
+            itemStyle: {
+              color: BudgetsSankeyFieldsMapping.nodeColors[1],
+            },
+          });
+          data.links.push({
+            source: data.nodes[0].name,
+            target: level1,
+            value: _.sumBy(level1Data, BudgetsSankeyFieldsMapping.valueField),
+          });
+          const groupedDataLevel2 = _.groupBy(
+            level1Data,
+            BudgetsSankeyFieldsMapping.level2Field,
+          );
+          _.forEach(groupedDataLevel2, (level2Data, level2) => {
+            const level2inLevel1 = _.find(data.nodes, {
+              name: level2,
+              level: 1,
+            });
+            data.nodes.push({
+              name: level2inLevel1 ? `${level2}1` : level2,
+              level: 2,
+              itemStyle: {
+                color: BudgetsSankeyFieldsMapping.nodeColors[2],
+              },
+            });
+            data.links.push({
+              source: level1,
+              target: level2inLevel1 ? `${level2}1` : level2,
+              value: _.sumBy(level2Data, BudgetsSankeyFieldsMapping.valueField),
+            });
+          });
+        });
+        data.nodes = _.uniqBy(data.nodes, 'name');
+        data.nodes = _.orderBy(
+          data.nodes,
+          node => {
+            const links = _.filter(data.links, {target: node.name});
+            return _.sumBy(links, 'value');
+          },
+          'desc',
+        );
+        data.links = _.orderBy(data.links, 'value', 'desc');
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/budgets/treemap')
+  @response(200)
+  async treemap() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      BudgetsTreemapFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return {
+          data: _.get(resp.data, BudgetsTreemapFieldsMapping.dataPath, []).map(
+            (item: any, index: number) => ({
+              name: _.get(item, BudgetsTreemapFieldsMapping.name, ''),
+              value: _.get(item, BudgetsTreemapFieldsMapping.value, 0),
+              itemStyle: {
+                color: _.get(
+                  BudgetsTreemapFieldsMapping.textbgcolors,
+                  `[${index}].color`,
+                  '',
+                ),
+              },
+              label: {
+                normal: {
+                  color: _.get(
+                    BudgetsTreemapFieldsMapping.textbgcolors,
+                    `[${index}].textcolor`,
+                    '',
+                  ),
+                },
+              },
+            }),
+          ),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/budgets/table')
+  @response(200)
+  async table() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      BudgetsTableFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          BudgetsTableFieldsMapping.dataPath,
+          [],
+        );
+        const groupedByParent = _.groupBy(
+          rawData,
+          BudgetsTableFieldsMapping.parentField,
+        );
+
+        const data: {
+          name: string;
+          grants: number;
+          amount: number;
+          _children: {
+            name: string;
+            grants: number;
+            amount: number;
+          }[];
+        }[] = [];
+
+        _.forEach(groupedByParent, (parentData, parent) => {
+          const children = parentData.map((child: any) => {
+            return {
+              name: _.get(child, BudgetsTableFieldsMapping.childrenField, ''),
+              grants: _.get(child, BudgetsTableFieldsMapping.countField, 0),
+              amount: _.get(child, BudgetsTableFieldsMapping.valueField, 0),
+            };
+          });
+          data.push({
+            name: parent,
+            grants: _.sumBy(children, 'grants'),
+            amount: _.sumBy(children, 'amount'),
+            _children: children,
+          });
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/budgets/cycles')
+  @response(200)
+  async cycles() {
+    const url = `${urls.FINANCIAL_INDICATORS}${BudgetsCyclesMapping.urlParams}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return _.get(resp.data, BudgetsCyclesMapping.dataPath, []).map(
+          (item: any) =>
+            `${_.get(item, BudgetsCyclesMapping.from, '')}-${_.get(
+              item,
+              BudgetsCyclesMapping.to,
+              '',
+            )}`,
+        );
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/budgets/breakdown/{cycle}')
+  @response(200)
+  async breakdown(@param.path.string('cycle') cycle: string) {
+    const years = cycle.split('-');
+    const filterString = filterFinancialIndicators(
+      {
+        ...this.req.query,
+        years: years[0],
+        yearsTo: years[1],
+      },
+      BudgetsBreakdownFieldsMapping.urlParams,
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(
+          resp.data,
+          BudgetsBreakdownFieldsMapping.dataPath,
+          [],
+        );
+        const total = _.sumBy(raw, BudgetsBreakdownFieldsMapping.value);
+        const data = raw.map((item: any) => ({
+          name: _.get(item, BudgetsRadialFieldsMapping.name, ''),
+          value:
+            (_.get(item, BudgetsRadialFieldsMapping.value, 0) / total) * 100,
+          color: '',
+        }));
+        return {
+          data: _.orderBy(data, 'value', 'desc').map((item, index) => {
+            item.color = _.get(BudgetsBreakdownFieldsMapping.colors, index, '');
+            return item;
+          }),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/budgets/utilization')
+  @response(200)
+  async utilization() {
+    // (disbursement + cash balance) / budget
+    const filterString1 = filterFinancialIndicators(
+      this.req.query,
+      BudgetsMetricsFieldsMapping.urlParams,
+    );
+    const filterString2 = filterFinancialIndicators(
+      this.req.query,
+      BudgetsMetricsFieldsMapping.urlParamsOrganisations,
+    );
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+
+    return axios
+      .all([axios.get(url1), axios.get(url2)])
+      .then(
+        axios.spread((...responses) => {
+          const raw1 = _.get(
+            responses[0].data,
+            BudgetsMetricsFieldsMapping.dataPath,
+            [],
+          );
+          const raw2 = _.get(
+            responses[1].data,
+            BudgetsMetricsFieldsMapping.dataPath,
+            [],
+          );
+          const disbursement = _.find(raw1, {
+            [BudgetsMetricsFieldsMapping.indicatorNameField]:
+              BudgetsMetricsFieldsMapping.disbursementIndicatorName,
+          });
+          const cashBalance = _.find(raw1, {
+            [BudgetsMetricsFieldsMapping.indicatorNameField]:
+              BudgetsMetricsFieldsMapping.cashBalanceIndicatorName,
+          });
+          const budget = _.find(raw1, {
+            [BudgetsMetricsFieldsMapping.indicatorNameField]:
+              BudgetsMetricsFieldsMapping.budgetIndicatorName,
+          });
+          const disbursementValue = _.get(
+            disbursement,
+            BudgetsMetricsFieldsMapping.disbursementValue,
+            0,
+          );
+          const cashBalanceValue = _.get(
+            cashBalance,
+            BudgetsMetricsFieldsMapping.cashBalanceValue,
+            0,
+          );
+          const budgetValue = _.get(
+            budget,
+            BudgetsMetricsFieldsMapping.budgetValue,
+            0,
+          );
+          const totalValue = disbursementValue + cashBalanceValue;
+          const utilization = (totalValue / budgetValue) * 100;
+
+          const groupedByOrganisationType = _.groupBy(
+            raw2,
+            BudgetsMetricsFieldsMapping.organisationType,
+          );
+          const items = _.map(groupedByOrganisationType, (value, key) => {
+            const disbursement = _.filter(
+              value,
+              (item: any) =>
+                item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                BudgetsMetricsFieldsMapping.disbursementIndicatorName,
+            );
+            const cashBalance = _.filter(
+              value,
+              (item: any) =>
+                item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                BudgetsMetricsFieldsMapping.cashBalanceIndicatorName,
+            );
+            const budget = _.filter(
+              value,
+              (item: any) =>
+                item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                BudgetsMetricsFieldsMapping.budgetIndicatorName,
+            );
+            const disbursementValue = _.sumBy(
+              disbursement,
+              BudgetsMetricsFieldsMapping.disbursementValue,
+            );
+            const cashBalanceValue = _.sumBy(
+              cashBalance,
+              BudgetsMetricsFieldsMapping.cashBalanceValue,
+            );
+            const budgetValue = _.sumBy(
+              budget,
+              BudgetsMetricsFieldsMapping.budgetValue,
+            );
+            const totalValue = disbursementValue + cashBalanceValue;
+            const utilization = (totalValue / budgetValue) * 100;
+            const groupedByOrganisations = _.groupBy(
+              value,
+              BudgetsMetricsFieldsMapping.organisationName,
+            );
+            return {
+              level: 0,
+              name: key,
+              value: utilization,
+              color: '#013E77',
+              items: _.orderBy(
+                _.map(groupedByOrganisations, (value2, key2) => {
+                  const disbursement = _.filter(
+                    value2,
+                    (item: any) =>
+                      item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                      BudgetsMetricsFieldsMapping.disbursementIndicatorName,
+                  );
+                  const cashBalance = _.filter(
+                    value2,
+                    (item: any) =>
+                      item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                      BudgetsMetricsFieldsMapping.cashBalanceIndicatorName,
+                  );
+                  const budget = _.filter(
+                    value2,
+                    (item: any) =>
+                      item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                      BudgetsMetricsFieldsMapping.budgetIndicatorName,
+                  );
+                  const disbursementValue = _.sumBy(
+                    disbursement,
+                    BudgetsMetricsFieldsMapping.disbursementValue,
+                  );
+                  const cashBalanceValue = _.sumBy(
+                    cashBalance,
+                    BudgetsMetricsFieldsMapping.cashBalanceValue,
+                  );
+                  const budgetValue = _.sumBy(
+                    budget,
+                    BudgetsMetricsFieldsMapping.budgetValue,
+                  );
+                  const totalValue = disbursementValue + cashBalanceValue;
+                  const utilization = (totalValue / budgetValue) * 100;
+                  return {
+                    level: 1,
+                    name: key2,
+                    value: utilization,
+                    color: '#013E77',
+                    items: [],
+                  };
+                }),
+                'name',
+                'asc',
+              ),
+            };
+          });
+
+          return {
+            data: [
+              {
+                value: utilization,
+                items: _.orderBy(items, 'name', 'asc'),
+              },
+            ],
+          };
+        }),
+      )
+      .catch(handleDataApiError);
+  }
+
+  @get('/budgets/absorption')
+  @response(200)
+  async absorption() {
+    // expenditure / budget
+    const filterString1 = filterFinancialIndicators(
+      this.req.query,
+      BudgetsMetricsFieldsMapping.urlParams,
+    );
+    const filterString2 = filterFinancialIndicators(
+      this.req.query,
+      BudgetsMetricsFieldsMapping.urlParamsOrganisations,
+    );
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+
+    return axios
+      .all([axios.get(url1), axios.get(url2)])
+      .then(
+        axios.spread((...responses) => {
+          const raw1 = _.get(
+            responses[0].data,
+            BudgetsMetricsFieldsMapping.dataPath,
+            [],
+          );
+          const raw2 = _.get(
+            responses[1].data,
+            BudgetsMetricsFieldsMapping.dataPath,
+            [],
+          );
+          const expenditure = _.find(raw1, {
+            [BudgetsMetricsFieldsMapping.indicatorNameField]:
+              BudgetsMetricsFieldsMapping.expenditureIndicatorName,
+          });
+          const budget = _.find(raw1, {
+            [BudgetsMetricsFieldsMapping.indicatorNameField]:
+              BudgetsMetricsFieldsMapping.budgetIndicatorName,
+          });
+          const expenditureValue = _.get(
+            expenditure,
+            BudgetsMetricsFieldsMapping.expenditureValue,
+            0,
+          );
+          const budgetValue = _.get(
+            budget,
+            BudgetsMetricsFieldsMapping.budgetValue,
+            0,
+          );
+          const absorption = (expenditureValue / budgetValue) * 100;
+
+          const groupedByOrganisationType = _.groupBy(
+            raw2,
+            BudgetsMetricsFieldsMapping.organisationType,
+          );
+          const items = _.map(groupedByOrganisationType, (value, key) => {
+            const expenditure = _.filter(
+              value,
+              (item: any) =>
+                item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                BudgetsMetricsFieldsMapping.expenditureIndicatorName,
+            );
+            const budget = _.filter(
+              value,
+              (item: any) =>
+                item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                BudgetsMetricsFieldsMapping.budgetIndicatorName,
+            );
+            const expenditureValue = _.sumBy(
+              expenditure,
+              BudgetsMetricsFieldsMapping.expenditureValue,
+            );
+            const budgetValue = _.sumBy(
+              budget,
+              BudgetsMetricsFieldsMapping.budgetValue,
+            );
+            const absorption = (expenditureValue / budgetValue) * 100;
+            const groupedByOrganisations = _.groupBy(
+              value,
+              BudgetsMetricsFieldsMapping.organisationName,
+            );
+            return {
+              level: 0,
+              name: key,
+              value: absorption,
+              color: '#00B5AE',
+              items: _.orderBy(
+                _.map(groupedByOrganisations, (value2, key2) => {
+                  const expenditure = _.filter(
+                    value2,
+                    (item: any) =>
+                      item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                      BudgetsMetricsFieldsMapping.expenditureIndicatorName,
+                  );
+                  const budget = _.filter(
+                    value2,
+                    (item: any) =>
+                      item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                      BudgetsMetricsFieldsMapping.budgetIndicatorName,
+                  );
+                  const expenditureValue = _.sumBy(
+                    expenditure,
+                    BudgetsMetricsFieldsMapping.expenditureValue,
+                  );
+                  const budgetValue = _.sumBy(
+                    budget,
+                    BudgetsMetricsFieldsMapping.budgetValue,
+                  );
+                  const absorption = (expenditureValue / budgetValue) * 100;
+                  return {
+                    level: 1,
+                    name: key2,
+                    value: absorption,
+                    color: '#00B5AE',
+                    items: [],
+                  };
+                }),
+                'name',
+                'asc',
+              ),
+            };
+          });
+
+          return {
+            data: [
+              {
+                value: absorption,
+                items: _.orderBy(items, 'name', 'asc'),
+              },
+            ],
+          };
+        }),
+      )
+      .catch(handleDataApiError);
+  }
+
+  @get('/disbursements/utilization')
+  @response(200)
+  async disbursementsUtilization() {
+    // expenditure / disbursement
+    const filterString1 = filterFinancialIndicators(
+      this.req.query,
+      BudgetsMetricsFieldsMapping.urlParams,
+    );
+    const filterString2 = filterFinancialIndicators(
+      this.req.query,
+      BudgetsMetricsFieldsMapping.urlParamsOrganisations,
+    );
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+
+    return axios
+      .all([axios.get(url1), axios.get(url2)])
+      .then(
+        axios.spread((...responses) => {
+          const raw1 = _.get(
+            responses[0].data,
+            BudgetsMetricsFieldsMapping.dataPath,
+            [],
+          );
+          const raw2 = _.get(
+            responses[1].data,
+            BudgetsMetricsFieldsMapping.dataPath,
+            [],
+          );
+          const expenditure = _.find(raw1, {
+            [BudgetsMetricsFieldsMapping.indicatorNameField]:
+              BudgetsMetricsFieldsMapping.expenditureIndicatorName,
+          });
+          const disbursement = _.find(raw1, {
+            [BudgetsMetricsFieldsMapping.indicatorNameField]:
+              BudgetsMetricsFieldsMapping.disbursementIndicatorName,
+          });
+          const expenditureValue = _.get(
+            expenditure,
+            BudgetsMetricsFieldsMapping.expenditureValue,
+            0,
+          );
+          const disbursementValue = _.get(
+            disbursement,
+            BudgetsMetricsFieldsMapping.disbursementValue,
+            0,
+          );
+          const utilization = (expenditureValue / disbursementValue) * 100;
+
+          const groupedByOrganisationType = _.groupBy(
+            raw2,
+            BudgetsMetricsFieldsMapping.organisationType,
+          );
+          const items = _.map(groupedByOrganisationType, (value, key) => {
+            const expenditure = _.filter(
+              value,
+              (item: any) =>
+                item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                BudgetsMetricsFieldsMapping.expenditureIndicatorName,
+            );
+            const disbursement = _.filter(
+              value,
+              (item: any) =>
+                item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                BudgetsMetricsFieldsMapping.disbursementIndicatorName,
+            );
+            const expenditureValue = _.sumBy(
+              expenditure,
+              BudgetsMetricsFieldsMapping.expenditureValue,
+            );
+            const disbursementValue = _.sumBy(
+              disbursement,
+              BudgetsMetricsFieldsMapping.disbursementValue,
+            );
+            const utilization = (expenditureValue / disbursementValue) * 100;
+            const groupedByOrganisations = _.groupBy(
+              value,
+              BudgetsMetricsFieldsMapping.organisationName,
+            );
+            return {
+              level: 0,
+              name: key,
+              value: utilization,
+              color: '#0A2840',
+              items: _.orderBy(
+                _.map(groupedByOrganisations, (value2, key2) => {
+                  const expenditure = _.filter(
+                    value2,
+                    (item: any) =>
+                      item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                      BudgetsMetricsFieldsMapping.expenditureIndicatorName,
+                  );
+                  const disbursement = _.filter(
+                    value2,
+                    (item: any) =>
+                      item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
+                      BudgetsMetricsFieldsMapping.disbursementIndicatorName,
+                  );
+                  const expenditureValue = _.sumBy(
+                    expenditure,
+                    BudgetsMetricsFieldsMapping.expenditureValue,
+                  );
+                  const disbursementValue = _.sumBy(
+                    disbursement,
+                    BudgetsMetricsFieldsMapping.disbursementValue,
+                  );
+                  const utilization =
+                    (expenditureValue / disbursementValue) * 100;
+                  return {
+                    level: 1,
+                    name: key2,
+                    value: utilization,
+                    color: '#0A2840',
+                    items: [],
+                  };
+                }),
+                'name',
+                'asc',
+              ),
+            };
+          });
+
+          return {
+            data: [
+              {
+                value: utilization,
+                items: _.orderBy(items, 'name', 'asc'),
+              },
+            ],
+          };
+        }),
+      )
+      .catch(handleDataApiError);
+  }
+
+  // v2
 
   @get('/budgets/flow')
   @response(200, BUDGETS_FLOW_RESPONSE)
