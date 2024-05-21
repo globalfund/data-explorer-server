@@ -25,6 +25,7 @@ import grantPeriodsMap from '../config/mapping/grants/grantPeriods.json';
 import GrantsRadialMapping from '../config/mapping/grants/grantsRadial.json';
 import grantsMap from '../config/mapping/grants/index.json';
 import GrantsListMapping from '../config/mapping/grants/list.json';
+import GrantTargetsResultsMapping from '../config/mapping/grants/targetsResults.json';
 import grantsUtils from '../config/mapping/grants/utils.json';
 import urls from '../config/urls/index.json';
 import {
@@ -582,6 +583,131 @@ export class GrantsController {
           });
         });
         return {data: [data]};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/grant/{id}/{ip}/targets-results')
+  @response(200)
+  async grantTargetsResults(
+    @param.path.string('id') id: string,
+    @param.path.string('ip') ip: number,
+  ) {
+    const type = _.get(this.req.query, 'type', 'Impact indicator') as string;
+    const url = `${
+      urls.PROGRAMMATIC_INDICATORS
+    }/${GrantTargetsResultsMapping.urlParams
+      .replace('<grantIP>', `${id}P0${ip}`)
+      .replace('<type>', type)}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = _.get(resp.data, GrantTargetsResultsMapping.dataPath, []);
+
+        const groupedByModule = _.groupBy(
+          raw,
+          GrantTargetsResultsMapping.module,
+        );
+
+        const data: any[] = [];
+
+        let years: string[] = [];
+
+        _.map(groupedByModule, (moduleItems, key) => {
+          const item: any = {
+            name: key,
+            _children: [],
+          };
+
+          const groupedByName = _.groupBy(
+            moduleItems,
+            GrantTargetsResultsMapping.name,
+          );
+
+          _.map(groupedByName, (nameItems, key2) => {
+            const subItem: any = {
+              name: key2,
+              _children: [],
+            };
+
+            _.map(nameItems, item => {
+              const groupedByYear = _.groupBy(
+                nameItems,
+                GrantTargetsResultsMapping.year,
+              );
+              years = [...years, ...Object.keys(groupedByYear)];
+              let itempush = {
+                reversed:
+                  _.get(item, GrantTargetsResultsMapping.reversed, false) ===
+                  true
+                    ? 'Yes'
+                    : 'No',
+                geoCoverage: _.get(
+                  item,
+                  GrantTargetsResultsMapping.geoCoverage,
+                  '',
+                ),
+                cumulation: _.get(
+                  item,
+                  GrantTargetsResultsMapping.cumulation,
+                  '',
+                ),
+                baselineValue: _.get(
+                  item,
+                  GrantTargetsResultsMapping.baselineValue,
+                  '',
+                ),
+                baselineYear: _.get(
+                  item,
+                  GrantTargetsResultsMapping.baselineYear,
+                  '',
+                ),
+                baselineSource: _.get(
+                  item,
+                  GrantTargetsResultsMapping.baselineSource,
+                  '',
+                ),
+              };
+              _.forEach(groupedByYear, (yearItems, key3) => {
+                itempush = {
+                  ...itempush,
+                  [key3]: yearItems.map((yearItem: any) => {
+                    const target = _.get(
+                      yearItem,
+                      GrantTargetsResultsMapping.target,
+                      '',
+                    );
+                    const result = _.get(
+                      yearItem,
+                      GrantTargetsResultsMapping.result,
+                      '',
+                    );
+                    const achievement = _.get(
+                      yearItem,
+                      GrantTargetsResultsMapping.achievement,
+                      '',
+                    );
+                    return {
+                      target: target ? `T:${target}%` : '',
+                      result: result ? `T:${result}%` : '',
+                      achievement: achievement ? `${achievement}%` : '',
+                    };
+                  }),
+                };
+              });
+              subItem._children.push(itempush);
+            });
+
+            item._children.push(subItem);
+          });
+
+          data.push(item);
+        });
+
+        years = _.uniq(years);
+
+        return {data, years};
       })
       .catch(handleDataApiError);
   }
