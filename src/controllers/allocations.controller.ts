@@ -13,6 +13,7 @@ import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
+import AllocationCumulativeByCyclesFieldsMapping from '../config/mapping/allocations/cumulative-by-cycles.json';
 import AllocationCyclesFieldsMapping from '../config/mapping/allocations/cycles.json';
 import AllocationsDrilldownFieldsMapping from '../config/mapping/allocations/drilldown.json';
 import AllocationsGeomapFieldsMapping from '../config/mapping/allocations/geomap.json';
@@ -99,7 +100,7 @@ export class AllocationsController {
   async cumulativeByCycles() {
     let filterString = filterFinancialIndicators(
       this.req.query,
-      AllocationCyclesFieldsMapping.urlParams,
+      AllocationCumulativeByCyclesFieldsMapping.urlParams,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -108,7 +109,7 @@ export class AllocationsController {
       .then((resp: AxiosResponse) => {
         const raw = _.get(
           resp.data,
-          AllocationCyclesFieldsMapping.dataPath,
+          AllocationCumulativeByCyclesFieldsMapping.dataPath,
           [],
         );
 
@@ -122,24 +123,28 @@ export class AllocationsController {
 
         const groupedByCycle = _.groupBy(
           raw,
-          AllocationCyclesFieldsMapping.cycle,
+          AllocationCumulativeByCyclesFieldsMapping.cycle,
         );
 
         const cycles = Object.keys(groupedByCycle);
 
         const groupedByComponent = _.groupBy(
           raw,
-          AllocationCyclesFieldsMapping.component,
+          AllocationCumulativeByCyclesFieldsMapping.component,
         );
 
         _.forEach(groupedByComponent, (component, componentKey) => {
           const values: number[] = [];
           _.forEach(cycles, cycle => {
             const cycleData = _.find(component, {
-              [AllocationCyclesFieldsMapping.cycle]: cycle,
+              [AllocationCumulativeByCyclesFieldsMapping.cycle]: cycle,
             });
             values.push(
-              _.get(cycleData, AllocationCyclesFieldsMapping.value, 0),
+              _.get(
+                cycleData,
+                AllocationCumulativeByCyclesFieldsMapping.value,
+                0,
+              ),
             );
           });
 
@@ -148,7 +153,7 @@ export class AllocationsController {
             values,
             itemStyle: {
               color: _.get(
-                AllocationCyclesFieldsMapping.colors,
+                AllocationCumulativeByCyclesFieldsMapping.colors,
                 data.length + 1,
               ),
             },
@@ -161,7 +166,7 @@ export class AllocationsController {
             _.sumBy(data, `values[${index}]`),
           ),
           itemStyle: {
-            color: _.get(AllocationCyclesFieldsMapping.colors, 0),
+            color: _.get(AllocationCumulativeByCyclesFieldsMapping.colors, 0),
           },
         });
 
@@ -434,6 +439,41 @@ export class AllocationsController {
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
     return getAllocationsData(url);
+  }
+
+  @get('/allocations/cycles')
+  @response(200)
+  async cycles() {
+    return axios
+      .get(
+        `${urls.FINANCIAL_INDICATORS}${AllocationCyclesFieldsMapping.urlParams}`,
+      )
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          AllocationCyclesFieldsMapping.dataPath,
+          [],
+        );
+
+        const data = _.map(rawData, (item, index) => {
+          const from = _.get(item, AllocationCyclesFieldsMapping.cycleFrom, '');
+          const to = _.get(item, AllocationCyclesFieldsMapping.cycleTo, '');
+
+          let value = from;
+
+          if (from && to) {
+            value = `${from} - ${to}`;
+          }
+
+          return {
+            name: `Cycle ${index + 1}`,
+            value,
+          };
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
   }
 
   // v2

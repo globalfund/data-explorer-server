@@ -3,6 +3,7 @@ import {get, param, Request, response, RestBindings} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import ExpendituresBarChartMapping from '../config/mapping/expenditures/bar.json';
+import ExpendituresCyclesMapping from '../config/mapping/expenditures/cycles.json';
 import ExpendituresHeatmapMapping from '../config/mapping/expenditures/heatmap.json';
 import ExpendituresTableMapping from '../config/mapping/expenditures/table.json';
 import urls from '../config/urls/index.json';
@@ -305,6 +306,39 @@ export class ExpendituresController {
                 ExpendituresTableMapping.periodExpenditureValue,
               ),
             })),
+          };
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/expenditures/cycles')
+  @response(200)
+  async cycles() {
+    return axios
+      .get(`${urls.FINANCIAL_INDICATORS}${ExpendituresCyclesMapping.urlParams}`)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          ExpendituresCyclesMapping.dataPath,
+          [],
+        );
+
+        const data = _.map(rawData, (item, index) => {
+          const from = _.get(item, ExpendituresCyclesMapping.cycleFrom, '');
+          const to = _.get(item, ExpendituresCyclesMapping.cycleTo, '');
+
+          let value = from;
+
+          if (from && to) {
+            value = `${from} - ${to}`;
+          }
+
+          return {
+            name: `Cycle ${index + 1}`,
+            value,
           };
         });
 

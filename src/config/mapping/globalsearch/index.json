@@ -25,6 +25,35 @@
       "options": []
     },
     {
+      "name": "Grant(s)",
+      "type": "Grant",
+      "link": "/grant/<code>",
+      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$select=code,status&$expand=status(select=statusName)&$filter=(<filterStr>)&$orderby=status/statusName asc",
+      "itemname": "<code>",
+      "filterFields": [
+        "geography/code",
+        "geography/name",
+        "activityArea/parent/parent/name",
+        "title",
+        "code",
+        "principalRecipient/name",
+        "principalRecipient/shortName",
+        "status/statusName"
+      ],
+      "filterTemplate": "contains(<field>,<value>)",
+      "order": ["asc", "asc"],
+      "mappings": [
+        "value[]",
+        {
+          "code": "code",
+          "type": "status/statusName",
+          "order": "status/statusName",
+          "order1": "code"
+        }
+      ],
+      "options": []
+    },
+    {
       "name": "Partner(s)",
       "type": "Partner",
       "link": "",
@@ -64,35 +93,6 @@
         {
           "name": "label",
           "code": "value"
-        }
-      ],
-      "options": []
-    },
-    {
-      "name": "Grant(s)",
-      "type": "Grant",
-      "link": "/grant/<code>",
-      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$select=code,status&$expand=status(select=statusName)&$filter=(<filterStr>)&$orderby=status/statusName asc",
-      "itemname": "<code>",
-      "filterFields": [
-        "geography/code",
-        "geography/name",
-        "activityArea/parent/parent/name",
-        "title",
-        "code",
-        "principalRecipient/name",
-        "principalRecipient/shortName",
-        "status/statusName"
-      ],
-      "filterTemplate": "contains(<field>,<value>)",
-      "order": ["asc", "asc"],
-      "mappings": [
-        "value[]",
-        {
-          "code": "code",
-          "type": "status/statusName",
-          "order": "status/statusName",
-          "order1": "code"
         }
       ],
       "options": []

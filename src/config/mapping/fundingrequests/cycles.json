@@ -1,0 +1,6 @@
+{
+  "dataPath": "value",
+  "cycleFrom": "implementationPeriod.periodFrom",
+  "cycleTo": "implementationPeriod.periodTo",
+  "urlParams": "?$apply=groupby((implementationPeriod/periodFrom,implementationPeriod/periodTo))&$orderby=implementationPeriod/periodFrom asc"
+}

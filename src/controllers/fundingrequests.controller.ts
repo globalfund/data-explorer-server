@@ -6,6 +6,7 @@ import {mapTransform} from 'map-transform';
 import moment from 'moment';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
+import CyclesMapping from '../config/mapping/fundingrequests/cycles.json';
 import Table2FieldsMapping from '../config/mapping/fundingrequests/table-2.json';
 import TableFieldsMapping from '../config/mapping/fundingrequests/table.json';
 import urls from '../config/urls/index.json';
@@ -86,6 +87,35 @@ export class FundingRequestsController {
     return axios
       .get(`http://localhost:4200/funding-requests?geographies=${countryCode}`)
       .then((resp: AxiosResponse) => resp.data)
+      .catch(handleDataApiError);
+  }
+
+  @get('/funding-requests/cycles')
+  @response(200)
+  async cycles() {
+    return axios
+      .get(`${urls.FINANCIAL_INDICATORS}${CyclesMapping.urlParams}`)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(resp.data, CyclesMapping.dataPath, []);
+
+        const data = _.map(rawData, (item, index) => {
+          const from = _.get(item, CyclesMapping.cycleFrom, '');
+          const to = _.get(item, CyclesMapping.cycleTo, '');
+
+          let value = from;
+
+          if (from && to) {
+            value = `${from} - ${to}`;
+          }
+
+          return {
+            name: `Cycle ${index + 1}`,
+            value,
+          };
+        });
+
+        return {data};
+      })
       .catch(handleDataApiError);
   }
 

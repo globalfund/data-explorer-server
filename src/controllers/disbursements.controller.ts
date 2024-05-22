@@ -14,6 +14,7 @@ import querystring from 'querystring';
 import filteringGrants from '../config/filtering/grants.json';
 import filtering from '../config/filtering/index.json';
 import BarChartFieldsMapping from '../config/mapping/disbursements/barChart.json';
+import DisbursementsCyclesMapping from '../config/mapping/disbursements/cycles.json';
 import GeomapFieldsMapping from '../config/mapping/disbursements/geomap.json';
 import GrantCommittedTimeCycleFieldsMapping from '../config/mapping/disbursements/grantCommittedTimeCycle.json';
 import GrantDetailTimeCycleFieldsMapping from '../config/mapping/disbursements/grantDetailTimeCycle.json';
@@ -270,7 +271,19 @@ export class DisbursementsController {
       this.req.query,
       LineChartFieldsMapping.urlParams,
     );
+    const filterString2 = filterFinancialIndicators(
+      this.req.query,
+      LineChartFieldsMapping.activitiesCountUrlParams,
+    );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+
+    const activitiesCount = await axios
+      .get(url2)
+      .then((resp: AxiosResponse) =>
+        _.get(resp.data, LineChartFieldsMapping.count, 0),
+      )
+      .catch(() => 0);
 
     return axios
       .get(url)
@@ -296,6 +309,7 @@ export class DisbursementsController {
             },
           })),
           xAxisKeys: Object.keys(years),
+          activitiesCount,
         };
       })
       .catch(handleDataApiError);
@@ -349,6 +363,48 @@ export class DisbursementsController {
             };
           }),
         };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/disbursements/cycles')
+  @response(200)
+  async cycles() {
+    return axios
+      .get(
+        `${urls.FINANCIAL_INDICATORS}${DisbursementsCyclesMapping.urlParams}`,
+      )
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          DisbursementsCyclesMapping.dataPath,
+          [],
+        );
+
+        const data = _.map(
+          _.filter(
+            rawData,
+            item =>
+              _.get(item, DisbursementsCyclesMapping.cycleFrom, null) !== null,
+          ),
+          (item, index) => {
+            const from = _.get(item, DisbursementsCyclesMapping.cycleFrom, '');
+            const to = _.get(item, DisbursementsCyclesMapping.cycleTo, '');
+
+            let value = from;
+
+            if (from && to) {
+              value = `${from} - ${to}`;
+            }
+
+            return {
+              name: `Cycle ${index + 1}`,
+              value,
+            };
+          },
+        );
+
+        return {data};
       })
       .catch(handleDataApiError);
   }

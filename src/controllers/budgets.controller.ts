@@ -304,19 +304,34 @@ export class BudgetsController {
   @get('/budgets/cycles')
   @response(200)
   async cycles() {
-    const url = `${urls.FINANCIAL_INDICATORS}${BudgetsCyclesMapping.urlParams}`;
-
     return axios
-      .get(url)
+      .get(`${urls.FINANCIAL_INDICATORS}${BudgetsCyclesMapping.urlParams}`)
       .then((resp: AxiosResponse) => {
-        return _.get(resp.data, BudgetsCyclesMapping.dataPath, []).map(
-          (item: any) =>
-            `${_.get(item, BudgetsCyclesMapping.from, '')}-${_.get(
-              item,
-              BudgetsCyclesMapping.to,
-              '',
-            )}`,
+        const rawData = _.get(resp.data, BudgetsCyclesMapping.dataPath, []);
+
+        const data = _.map(
+          _.filter(
+            rawData,
+            item => _.get(item, BudgetsCyclesMapping.cycleFrom, null) !== null,
+          ),
+          (item, index) => {
+            const from = _.get(item, BudgetsCyclesMapping.cycleFrom, '');
+            const to = _.get(item, BudgetsCyclesMapping.cycleTo, '');
+
+            let value = from;
+
+            if (from && to) {
+              value = `${from} - ${to}`;
+            }
+
+            return {
+              name: `Cycle ${index + 1}`,
+              value,
+            };
+          },
         );
+
+        return {data};
       })
       .catch(handleDataApiError);
   }

@@ -10,6 +10,7 @@ import {
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
+import ResultsCyclesMappingFields from '../config/mapping/results/cycles.json';
 import resultsMap from '../config/mapping/results/index.json';
 import ResultsTableLocationMappingFields from '../config/mapping/results/location-table.json';
 import ResultsPolylineMappingFields from '../config/mapping/results/polyline.json';
@@ -257,6 +258,41 @@ export class ResultsController {
             ),
           })),
         };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/results/cycles')
+  @response(200)
+  async cycles() {
+    return axios
+      .get(
+        `${urls.PROGRAMMATIC_INDICATORS}${ResultsCyclesMappingFields.urlParams}`,
+      )
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          ResultsCyclesMappingFields.dataPath,
+          [],
+        );
+
+        const data = _.map(rawData, (item, index) => {
+          const from = _.get(item, ResultsCyclesMappingFields.cycleFrom, '');
+          const to = _.get(item, ResultsCyclesMappingFields.cycleTo, '');
+
+          let value = from;
+
+          if (from && to) {
+            value = `${from} - ${to}`;
+          }
+
+          return {
+            name: value,
+            value,
+          };
+        });
+
+        return {data};
       })
       .catch(handleDataApiError);
   }

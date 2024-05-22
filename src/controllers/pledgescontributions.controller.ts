@@ -12,6 +12,7 @@ import _, {orderBy} from 'lodash';
 import querystring from 'querystring';
 import filtering from '../config/filtering/index.json';
 import PledgesContributionsBarFieldsMapping from '../config/mapping/pledgescontributions/bar.json';
+import PledgesContributionsCyclesFieldsMapping from '../config/mapping/pledgescontributions/cycles.json';
 import PledgesContributionsGeoFieldsMapping from '../config/mapping/pledgescontributions/geo.json';
 import PledgesContributionsStatsFieldsMapping from '../config/mapping/pledgescontributions/stats.json';
 import PledgesContributionsSunburstFieldsMapping from '../config/mapping/pledgescontributions/sunburst.json';
@@ -429,6 +430,49 @@ export class PledgescontributionsController {
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
 
     return getBarData([url1, url2]);
+  }
+
+  @get('/pledges-contributions/cycles')
+  @response(200)
+  async cycles() {
+    return axios
+      .get(
+        `${urls.FINANCIAL_INDICATORS}${PledgesContributionsCyclesFieldsMapping.urlParams}`,
+      )
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          PledgesContributionsCyclesFieldsMapping.dataPath,
+          [],
+        );
+
+        const data = _.map(rawData, (item, index) => {
+          const from = _.get(
+            item,
+            PledgesContributionsCyclesFieldsMapping.cycleFrom,
+            '',
+          );
+          const to = _.get(
+            item,
+            PledgesContributionsCyclesFieldsMapping.cycleTo,
+            '',
+          );
+
+          let value = from;
+
+          if (from && to) {
+            value = `${from} - ${to}`;
+          }
+
+          return {
+            name: `Cycle ${index + 1}`,
+            value,
+          };
+        });
+
+        return {data};
+      })
+      .catch(handleDataApiError);
   }
 
   // v2
