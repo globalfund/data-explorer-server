@@ -123,12 +123,15 @@ export class BudgetsController {
       .catch(handleDataApiError);
   }
 
-  @get('/budgets/sankey')
+  @get('/budgets/sankey/{componentField}')
   @response(200)
-  async sankey() {
+  async sankey(@param.path.string('componentField') componentField: string) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      BudgetsSankeyFieldsMapping.urlParams,
+      BudgetsSankeyFieldsMapping.urlParams.replace(
+        /<componentField>/g,
+        componentField,
+      ),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -154,7 +157,10 @@ export class BudgetsController {
         };
         const groupedDataLevel1 = _.groupBy(
           rawData,
-          BudgetsSankeyFieldsMapping.level1Field,
+          BudgetsSankeyFieldsMapping.level1Field.replace(
+            '<componentField>',
+            componentField,
+          ),
         );
         _.forEach(groupedDataLevel1, (level1Data, level1) => {
           data.nodes.push({
@@ -171,7 +177,10 @@ export class BudgetsController {
           });
           const groupedDataLevel2 = _.groupBy(
             level1Data,
-            BudgetsSankeyFieldsMapping.level2Field,
+            BudgetsSankeyFieldsMapping.level2Field.replace(
+              '<componentField>',
+              componentField,
+            ),
           );
           _.forEach(groupedDataLevel2, (level2Data, level2) => {
             const level2inLevel1 = _.find(data.nodes, {
@@ -207,12 +216,15 @@ export class BudgetsController {
       .catch(handleDataApiError);
   }
 
-  @get('/budgets/treemap')
+  @get('/budgets/treemap/{componentField}')
   @response(200)
-  async treemap() {
+  async treemap(@param.path.string('componentField') componentField: string) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      BudgetsTreemapFieldsMapping.urlParams,
+      BudgetsTreemapFieldsMapping.urlParams.replace(
+        '<componentField>',
+        componentField,
+      ),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -222,7 +234,14 @@ export class BudgetsController {
         return {
           data: _.get(resp.data, BudgetsTreemapFieldsMapping.dataPath, []).map(
             (item: any, index: number) => ({
-              name: _.get(item, BudgetsTreemapFieldsMapping.name, ''),
+              name: _.get(
+                item,
+                BudgetsTreemapFieldsMapping.name.replace(
+                  '<componentField>',
+                  componentField,
+                ),
+                '',
+              ),
               value: _.get(item, BudgetsTreemapFieldsMapping.value, 0),
               itemStyle: {
                 color: _.get(
@@ -247,12 +266,15 @@ export class BudgetsController {
       .catch(handleDataApiError);
   }
 
-  @get('/budgets/table')
+  @get('/budgets/table/{componentField}')
   @response(200)
-  async table() {
+  async table(@param.path.string('componentField') componentField: string) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      BudgetsTableFieldsMapping.urlParams,
+      BudgetsTableFieldsMapping.urlParams.replace(
+        /<componentField>/g,
+        componentField,
+      ),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -266,7 +288,10 @@ export class BudgetsController {
         );
         const groupedByParent = _.groupBy(
           rawData,
-          BudgetsTableFieldsMapping.parentField,
+          BudgetsTableFieldsMapping.parentField.replace(
+            '<componentField>',
+            componentField,
+          ),
         );
 
         const data: {
@@ -283,7 +308,14 @@ export class BudgetsController {
         _.forEach(groupedByParent, (parentData, parent) => {
           const children = parentData.map((child: any) => {
             return {
-              name: _.get(child, BudgetsTableFieldsMapping.childrenField, ''),
+              name: _.get(
+                child,
+                BudgetsTableFieldsMapping.childrenField.replace(
+                  '<componentField>',
+                  componentField,
+                ),
+                '',
+              ),
               grants: _.get(child, BudgetsTableFieldsMapping.countField, 0),
               amount: _.get(child, BudgetsTableFieldsMapping.valueField, 0),
             };
@@ -336,9 +368,12 @@ export class BudgetsController {
       .catch(handleDataApiError);
   }
 
-  @get('/budgets/breakdown/{cycle}')
+  @get('/budgets/breakdown/{cycle}/{componentField}')
   @response(200)
-  async breakdown(@param.path.string('cycle') cycle: string) {
+  async breakdown(
+    @param.path.string('cycle') cycle: string,
+    @param.path.string('componentField') componentField: string,
+  ) {
     const years = cycle.split('-');
     const filterString = filterFinancialIndicators(
       {
@@ -346,7 +381,10 @@ export class BudgetsController {
         years: years[0],
         yearsTo: years[1],
       },
-      BudgetsBreakdownFieldsMapping.urlParams,
+      BudgetsBreakdownFieldsMapping.urlParams.replace(
+        /<componentField>/g,
+        componentField,
+      ),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -360,9 +398,16 @@ export class BudgetsController {
         );
         const total = _.sumBy(raw, BudgetsBreakdownFieldsMapping.value);
         const data = raw.map((item: any) => ({
-          name: _.get(item, BudgetsRadialFieldsMapping.name, ''),
+          name: _.get(
+            item,
+            BudgetsBreakdownFieldsMapping.name.replace(
+              '<componentField>',
+              componentField,
+            ),
+            '',
+          ),
           value:
-            (_.get(item, BudgetsRadialFieldsMapping.value, 0) / total) * 100,
+            (_.get(item, BudgetsBreakdownFieldsMapping.value, 0) / total) * 100,
           color: '',
         }));
         return {

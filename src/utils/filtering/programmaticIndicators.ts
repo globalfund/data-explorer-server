@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
+import {getGeographyValues} from './geographies';
 
 const MAPPING = {
-  geography: 'geography/code',
+  geography: ['geography/name', 'geography/code'],
   component: 'activityArea/name',
   year: 'resultValueYear',
   search:
@@ -15,14 +16,23 @@ export function filterProgrammaticIndicators(
 ): string {
   let str = '';
 
-  const geographies = _.filter(
+  const geos = _.filter(
     _.get(params, 'geographies', '').split(','),
     (o: string) => o.length > 0,
-  ).map((geography: string) => `'${geography}'`);
-  if (geographies.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.geography}${
-      filtering.in
-    }(${geographies.join(filtering.multi_param_separator)})`;
+  );
+  const geographies = geos.map((geography: string) => `'${geography}'`);
+  if (geos.length > 0) {
+    const values: string[] = [...geographies, ...getGeographyValues(geos)];
+    if (MAPPING.geography instanceof Array) {
+      str += `${str.length > 0 ? ' AND ' : ''}(${MAPPING.geography
+        .map(
+          m =>
+            `${m}${filtering.in}(${values.join(
+              filtering.multi_param_separator,
+            )})`,
+        )
+        .join(' OR ')})`;
+    }
   }
 
   const components = _.filter(
@@ -54,6 +64,7 @@ export function filterProgrammaticIndicators(
   }
 
   if (str.length > 0) {
+    str = str.replace(/&/g, '%26');
     if (urlParams) {
       str = urlParams.replace('<filterString>', ` AND ${str}`);
     }

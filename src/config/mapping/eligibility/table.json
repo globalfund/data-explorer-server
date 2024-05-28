@@ -11,5 +11,5 @@
     "notEligible": "Not Eligible",
     "transitionFunding": "Transition Funding"
   },
-  "urlParams": "?$apply=<filterString>/groupby((geography/name,eligibilityYear,activityArea/name,isEligible,incomeLevel,diseaseBurden))&$orderby=geography/name,activityArea/name"
+  "urlParams": "?$apply=filter(<filterString>)/groupby((geography/name,eligibilityYear,activityArea/name,isEligible,incomeLevel,diseaseBurden))&$orderby=geography/name,activityArea/name"
 }

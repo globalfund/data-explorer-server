@@ -26,7 +26,7 @@ export function getDatasetFilterOptions(dataset: any): FilterGroup[] {
         name,
         options: _.orderBy(
           _.uniq(options).map((o: string) => ({
-            label: o,
+            name: o,
             value: o,
           })),
           'label',

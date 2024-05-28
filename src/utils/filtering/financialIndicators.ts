@@ -1,15 +1,24 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
+import {getGeographyValues} from './geographies';
 
 const MAPPING = {
-  geography: ['geography/code', 'implementationPeriod/grant/geography/code'],
+  geography: [
+    'geography/code',
+    'geography/name',
+    'implementationPeriod/grant/geography/code',
+    'implementationPeriod/grant/geography/name',
+  ],
   donor: 'donor/name',
   donorType: 'donor/type/name',
+  principalRecipient: 'implementationPeriod/grant/principalRecipient/name',
+  principalRecipientType:
+    'implementationPeriod/grant/principalRecipient/type/name',
   period: 'periodCovered',
-  donorGeography: 'donor/geography/code',
   year: 'implementationPeriod/periodFrom',
   yearTo: 'implementationPeriod/periodTo',
   grantIP: 'implementationPeriod/code',
+  status: 'implementationPeriod/status/statusName',
   search: `(contains(donor/type/name,<value>) OR contains(donor/name,<value>) OR contains(periodCovered,<value>))`,
 };
 
@@ -19,16 +28,18 @@ export function filterFinancialIndicators(
 ): string {
   let str = '';
 
-  const geographies = _.filter(
+  const geos = _.filter(
     _.get(params, 'geographies', '').split(','),
     (o: string) => o.length > 0,
-  ).map((geography: string) => `'${geography}'`);
-  if (geographies.length > 0) {
+  );
+  const geographies = geos.map((geography: string) => `'${geography}'`);
+  if (geos.length > 0) {
+    const values: string[] = [...geographies, ...getGeographyValues(geos)];
     if (MAPPING.geography instanceof Array) {
       str += `${str.length > 0 ? ' AND ' : ''}(${MAPPING.geography
         .map(
           m =>
-            `${m}${filtering.in}(${geographies.join(
+            `${m}${filtering.in}(${values.join(
               filtering.multi_param_separator,
             )})`,
         )
@@ -53,17 +64,27 @@ export function filterFinancialIndicators(
   if (donorTypes.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.donorType}${
       filtering.in
-    }(${donors.join(filtering.multi_param_separator)})`;
+    }(${donorTypes.join(filtering.multi_param_separator)})`;
   }
 
-  const donorGeographies = _.filter(
-    _.get(params, 'donorGeographies', '').split(','),
+  const principalRecipients = _.filter(
+    _.get(params, 'principalRecipients', '').split(','),
     (o: string) => o.length > 0,
-  ).map((donorGeography: string) => `'${donorGeography}'`);
-  if (donorGeographies.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.donorGeography}${
+  ).map((principalRecipient: string) => `'${principalRecipient}'`);
+  if (principalRecipients.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.principalRecipient}${
       filtering.in
-    }(${donorGeographies.join(filtering.multi_param_separator)})`;
+    }(${principalRecipients.join(filtering.multi_param_separator)})`;
+  }
+
+  const principalRecipientTypes = _.filter(
+    _.get(params, 'principalRecipientTypes', '').split(','),
+    (o: string) => o.length > 0,
+  ).map((principalRecipientType: string) => `'${principalRecipientType}'`);
+  if (principalRecipientTypes.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.principalRecipientType}${
+      filtering.in
+    }(${principalRecipientTypes.join(filtering.multi_param_separator)})`;
   }
 
   const periods = _.filter(
@@ -109,6 +130,16 @@ export function filterFinancialIndicators(
     }(${grantIPs.join(filtering.multi_param_separator)})`;
   }
 
+  const statuses = _.filter(
+    _.get(params, 'status', '').split(','),
+    (o: string) => o.length > 0,
+  ).map((status: string) => `'${status}'`);
+  if (statuses.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.status}${
+      filtering.in
+    }(${statuses.join(filtering.multi_param_separator)})`;
+  }
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.search.replace(
@@ -117,13 +148,21 @@ export function filterFinancialIndicators(
     )}`;
   }
 
+  let res = urlParams;
+
   if (str.length > 0) {
+    str = str.replace(/&/g, '%26');
     if (urlParams) {
-      str = urlParams.replace('<filterString>', ` AND ${str}`);
+      res = res.replace('filter(<filterString>)', `filter(${str})`);
+      res = res.replace('<filterString>', ` AND ${str}`);
+      res = res.replace('= AND ', '=');
     }
   } else if (urlParams) {
-    str = urlParams.replace('<filterString>', '');
+    res = res.replace('$filter=<filterString>&', '');
+    res = res.replace('filter(<filterString>)/', '');
+    res = res.replace('<filterString>/', '');
+    res = res.replace('<filterString>', '');
   }
 
-  return str;
+  return res;
 }

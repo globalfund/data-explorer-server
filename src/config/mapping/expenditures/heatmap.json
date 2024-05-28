@@ -7,6 +7,6 @@
   "fields": {
     "principalRecipient": "implementationPeriod/grant/principalRecipient/name",
     "principalRecipientType": "implementationPeriod/grant/principalRecipient/type/name",
-    "component": "implementationPeriod/grant/activityArea/name"
+    "component": "<componentField>/parent/parent/name"
   }
 }

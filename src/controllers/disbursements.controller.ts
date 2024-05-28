@@ -1,6 +1,7 @@
 import {inject} from '@loopback/core';
 import {
   get,
+  param,
   Request,
   response,
   ResponseObject,
@@ -234,12 +235,15 @@ export class DisbursementsController {
       .catch(handleDataApiError);
   }
 
-  @get('/disbursements/bar-chart')
+  @get('/disbursements/bar-chart/{componentField}')
   @response(200)
-  async barChart() {
+  async barChart(@param.path.string('componentField') componentField: string) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      BarChartFieldsMapping.urlParams,
+      BarChartFieldsMapping.urlParams.replace(
+        '<componentField>',
+        componentField,
+      ),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -250,7 +254,14 @@ export class DisbursementsController {
 
         return {
           data: raw.map((item: any, index: number) => ({
-            name: _.get(item, BarChartFieldsMapping.name, ''),
+            name: _.get(
+              item,
+              BarChartFieldsMapping.name.replace(
+                '<componentField>',
+                componentField,
+              ),
+              '',
+            ),
             value: _.get(item, BarChartFieldsMapping.value, 0),
             itemStyle: {
               color:
@@ -264,12 +275,15 @@ export class DisbursementsController {
       .catch(handleDataApiError);
   }
 
-  @get('/disbursements/line-chart')
+  @get('/disbursements/line-chart/{componentField}')
   @response(200)
-  async lineChart() {
+  async lineChart(@param.path.string('componentField') componentField: string) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      LineChartFieldsMapping.urlParams,
+      LineChartFieldsMapping.urlParams.replace(
+        '<componentField>',
+        componentField,
+      ),
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
@@ -289,7 +303,13 @@ export class DisbursementsController {
       .get(url)
       .then((resp: AxiosResponse) => {
         const raw = _.get(resp.data, LineChartFieldsMapping.dataPath, []);
-        const groupedByLine = _.groupBy(raw, LineChartFieldsMapping.line);
+        const groupedByLine = _.groupBy(
+          raw,
+          LineChartFieldsMapping.line.replace(
+            '<componentField>',
+            componentField,
+          ),
+        );
         const lines = Object.keys(groupedByLine);
         const years = _.groupBy(raw, LineChartFieldsMapping.cycle);
         return {
@@ -315,12 +335,12 @@ export class DisbursementsController {
       .catch(handleDataApiError);
   }
 
-  @get('/disbursements/table')
+  @get('/disbursements/table/{componentField}')
   @response(200)
-  async table() {
+  async table(@param.path.string('componentField') componentField: string) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      TableFieldsMapping.urlParams,
+      TableFieldsMapping.urlParams.replace('<componentField>', componentField),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -329,7 +349,13 @@ export class DisbursementsController {
       .then((resp: AxiosResponse) => {
         const raw = _.get(resp.data, TableFieldsMapping.dataPath, []);
 
-        const groupedByComponent = _.groupBy(raw, TableFieldsMapping.component);
+        const groupedByComponent = _.groupBy(
+          raw,
+          TableFieldsMapping.component.replace(
+            '<componentField>',
+            componentField,
+          ),
+        );
 
         return {
           data: _.map(groupedByComponent, (items, component) => {

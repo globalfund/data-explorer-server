@@ -166,7 +166,7 @@ export class PledgescontributionsController {
           })),
         };
 
-        return data;
+        return {data};
       })
       .catch(handleDataApiError);
   }
@@ -677,8 +677,8 @@ export class PledgescontributionsController {
                     });
                     let subType = '';
                     donorFilterOptions.forEach((option: FilterGroupOption) => {
-                      if (_.find(option.subOptions, {label: donor})) {
-                        subType = option.label;
+                      if (_.find(option.options, {label: donor})) {
+                        subType = option.name;
                       }
                     });
                     const multiCoordinates =

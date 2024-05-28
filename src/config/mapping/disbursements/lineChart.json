@@ -3,8 +3,8 @@
   "count": "@odata.count",
   "cycle": "periodFrom",
   "value": "value",
-  "line": "activityArea.name",
-  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((periodFrom,activityArea/name),aggregate(actualAmount with sum as value))",
+  "line": "<componentField>.name",
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((periodFrom,<componentField>/name),aggregate(actualAmount with sum as value))",
   "activitiesCountUrlParams": "?$count=true&$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/code))",
   "colors": ["#0A2840", "#013E77", "#00B5AE", "#C3EDFD"]
 }

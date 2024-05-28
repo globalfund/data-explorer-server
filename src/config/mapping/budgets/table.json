@@ -1,9 +1,9 @@
 {
   "dataPath": "value",
-  "parentField": "activityAreaGroup.parent.name",
-  "childrenField": "activityAreaGroup.name",
+  "parentField": "<componentField>.parent.name",
+  "childrenField": "<componentField>.name",
   "valueField": "value",
   "cycle": "periodFrom",
   "countField": "count",
-  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((activityAreaGroup/parent/name,activityAreaGroup/name),aggregate(plannedAmount with sum as value,implementationPeriod/grantId with countdistinct as count))"
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((<componentField>/parent/name,<componentField>/name),aggregate(plannedAmount with sum as value,implementationPeriod/grantId with countdistinct as count))"
 }

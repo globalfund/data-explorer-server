@@ -1,7 +1,7 @@
 export interface FilterGroupOption {
-  label: string;
+  name: string;
   value: string;
-  subOptions?: FilterGroupOption[];
+  options?: FilterGroupOption[];
   extraInfo?: {
     [key: string]: any;
   };

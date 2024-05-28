@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
+import {getGeographyValues} from './geographies';
 
 const MAPPING = {
-  geography: 'geography/code',
+  geography: ['geography/name', 'geography/code'],
   component: 'activityArea/name',
   period: 'periodFrom',
   trpWindow: 'window',
@@ -15,14 +16,23 @@ export function filterFundingRequests(
 ): string {
   let str = '';
 
-  const geographies = _.filter(
+  const geos = _.filter(
     _.get(params, 'geographies', '').split(','),
     (o: string) => o.length > 0,
-  ).map((geography: string) => `'${geography}'`);
-  if (geographies.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.geography}${
-      filtering.in
-    }(${geographies.join(filtering.multi_param_separator)})`;
+  );
+  const geographies = geos.map((geography: string) => `'${geography}'`);
+  if (geos.length > 0) {
+    const values: string[] = [...geographies, ...getGeographyValues(geos)];
+    if (MAPPING.geography instanceof Array) {
+      str += `${str.length > 0 ? ' AND ' : ''}(${MAPPING.geography
+        .map(
+          m =>
+            `${m}${filtering.in}(${values.join(
+              filtering.multi_param_separator,
+            )})`,
+        )
+        .join(' OR ')})`;
+    }
   }
 
   const components = _.filter(
@@ -74,14 +84,21 @@ export function filterFundingRequests(
   //   )}`;
   // }
 
+  let res = urlParams;
+
   if (str.length > 0) {
+    str = str.replace(/&/g, '%26');
     if (urlParams) {
-      str = urlParams.replace('<filterString>', ` AND ${str}`);
-      str = str.replace('= AND ', '=');
+      res = res.replace('filter(<filterString>)', `filter(${str})`);
+      res = res.replace('<filterString>', ` AND ${str}`);
+      res = res.replace('= AND ', '=');
     }
   } else if (urlParams) {
-    str = urlParams.replace('<filterString>', '').replace('$filter=&', '');
+    res = res.replace('$filter=<filterString>&', '');
+    res = res.replace('filter(<filterString>)/', '');
+    res = res.replace('<filterString>/', '');
+    res = res.replace('<filterString>', '');
   }
 
-  return str;
+  return res;
 }

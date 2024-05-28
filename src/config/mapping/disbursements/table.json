@@ -4,8 +4,8 @@
   "signedIndicator": "Total Signed Amount - Reference Rate",
   "commitmentIndicator": "Total Commitment Amount - Reference Rate",
   "disbursementIndicator": "Total Disbursed Amount - Reference Rate",
-  "component": "activityArea.name",
+  "component": "<componentField>.name",
   "grants": "count",
   "valueField": "value",
-  "urlParams": "?$apply=filter(indicatorName in ('Total Signed Amount - Reference Rate','Total Commitment Amount - Reference Rate','Total Disbursed Amount - Reference Rate')<filterString>)/groupby((activityArea/name,indicatorName),aggregate(actualAmount with sum as value,implementationPeriod/grantId with countdistinct as count))&$orderby=value desc"
+  "urlParams": "?$apply=filter(indicatorName in ('Total Signed Amount - Reference Rate','Total Commitment Amount - Reference Rate','Total Disbursed Amount - Reference Rate')<filterString>)/groupby((<componentField>/name,indicatorName),aggregate(actualAmount with sum as value,implementationPeriod/grantId with countdistinct as count))&$orderby=value desc"
 }

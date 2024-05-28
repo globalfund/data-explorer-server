@@ -13,11 +13,12 @@ import {filterFinancialIndicators} from '../utils/filtering/financialIndicators'
 export class ExpendituresController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
-  @get('/expenditures/heatmap/{row}/{column}')
+  @get('/expenditures/heatmap/{row}/{column}/{componentField}')
   @response(200)
   async heatmap(
     @param.path.string('row') row: string,
     @param.path.string('column') column: string,
+    @param.path.string('componentField') componentField: string,
   ) {
     let filterString = ExpendituresHeatmapMapping.urlParams;
     let rowField = '';
@@ -58,7 +59,7 @@ export class ExpendituresController {
         ExpendituresHeatmapMapping,
         `fields["${column}"]`,
         ExpendituresHeatmapMapping.fields.component,
-      );
+      ).replace(/<componentField>/g, componentField);
     }
     filterString = filterString.replace(
       '<rowField>',
@@ -228,12 +229,17 @@ export class ExpendituresController {
       .catch(handleDataApiError);
   }
 
-  @get('/expenditures/expandable-bar')
+  @get('/expenditures/expandable-bar/{componentField}')
   @response(200)
-  async expandableBar() {
+  async expandableBar(
+    @param.path.string('componentField') componentField: string,
+  ) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      ExpendituresBarChartMapping.urlParams,
+      ExpendituresBarChartMapping.urlParams.replace(
+        /<componentField>/g,
+        componentField,
+      ),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -242,12 +248,21 @@ export class ExpendituresController {
       .then((resp: AxiosResponse) => {
         const raw = _.get(resp.data, ExpendituresBarChartMapping.dataPath, []);
 
-        const groupedByName = _.groupBy(raw, ExpendituresBarChartMapping.name);
+        const groupedByName = _.groupBy(
+          raw,
+          ExpendituresBarChartMapping.name.replace(
+            /<componentField>/g,
+            componentField,
+          ),
+        );
 
         const data = _.map(groupedByName, (value, key) => {
           const groupedByItem = _.groupBy(
             value,
-            ExpendituresBarChartMapping.itemName,
+            ExpendituresBarChartMapping.itemName.replace(
+              /<componentField>/g,
+              componentField,
+            ),
           );
           return {
             name: key,
@@ -264,12 +279,15 @@ export class ExpendituresController {
       .catch(handleDataApiError);
   }
 
-  @get('/expenditures/table')
+  @get('/expenditures/table/{componentField}')
   @response(200)
-  async table() {
+  async table(@param.path.string('componentField') componentField: string) {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      ExpendituresTableMapping.urlParams,
+      ExpendituresTableMapping.urlParams.replace(
+        /<componentField>/g,
+        componentField,
+      ),
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -278,12 +296,21 @@ export class ExpendituresController {
       .then((resp: AxiosResponse) => {
         const raw = _.get(resp.data, ExpendituresTableMapping.dataPath, []);
 
-        const groupedByName = _.groupBy(raw, ExpendituresTableMapping.name);
+        const groupedByName = _.groupBy(
+          raw,
+          ExpendituresTableMapping.name.replace(
+            /<componentField>/g,
+            componentField,
+          ),
+        );
 
         const data = _.map(groupedByName, (value, key) => {
           const groupedByItem = _.groupBy(
             value,
-            ExpendituresTableMapping.itemName,
+            ExpendituresTableMapping.itemName.replace(
+              /<componentField>/g,
+              componentField,
+            ),
           );
           return {
             name: key,

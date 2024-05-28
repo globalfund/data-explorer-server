@@ -1,5 +1,7 @@
 {
   "dataPath": "value",
-  "label": "name",
-  "value": "name"
+  "label": "principalRecipient.name",
+  "value": "principalRecipient.name",
+  "type": "principalRecipient.type.name",
+  "typeCode": "principalRecipient.type.code"
 }

@@ -11,6 +11,6 @@
   "budgetValue": "plannedCumulative",
   "disbursementValue": "actualCumulative",
   "cashBalanceValue": "actual",
-  "urlParams": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount')/groupby((indicatorName),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))",
-  "urlParamsOrganisations": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount')/groupby((indicatorName,implementationPeriod/grant/principalRecipient/type/name,implementationPeriod/grant/principalRecipient/name),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))"
+  "urlParams": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount'<filterString>)/groupby((indicatorName),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))",
+  "urlParamsOrganisations": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount'<filterString>)/groupby((indicatorName,implementationPeriod/grant/principalRecipient/type/name,implementationPeriod/grant/principalRecipient/name),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))"
 }

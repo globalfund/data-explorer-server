@@ -52,13 +52,19 @@ export function filterDonors(
     )}`;
   }
 
+  let res = urlParams;
+
   if (str.length > 0) {
+    str = str.replace(/&/g, '%26');
     if (urlParams) {
       str = urlParams.replace('<filterString>', ` AND ${str}`);
     }
   } else if (urlParams) {
-    str = urlParams.replace('<filterString>', '');
+    res = res.replace('$filter=<filterString>&', '');
+    res = res.replace('filter(<filterString>)/', '');
+    res = res.replace('<filterString>/', '');
+    res = res.replace('<filterString>', '');
   }
 
-  return str;
+  return res;
 }
