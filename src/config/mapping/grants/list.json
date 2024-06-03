@@ -17,5 +17,5 @@
     }
   ],
   "count": "@odata.count",
-  "urlParams": "?$filter=<filterString>&$count=true&$expand=status($select=statusName),geography($select=name),activityArea($select=name),principalRecipient($select=name),narratives($select=narrativeType,narrativeLanguage,narrativeText)&$select=code,status,geography,activityArea,principalRecipient,periodStartDate,periodEndDate,narratives,totalSignedAmount_ReferenceRate,totalCommitmentAmount_ReferenceRate,totalDisbursedAmount_ReferenceRate&$orderby=status/statusName asc,periodStartDate desc"
+  "urlParams": "?$filter=<filterString>&$count=true&$expand=status($select=statusName),geography($select=name),activityArea($select=name),principalRecipient($select=name),narratives($select=narrativeType,narrativeLanguage,narrativeText)&$select=code,status,geography,activityArea,principalRecipient,periodStartDate,periodEndDate,narratives,totalSignedAmount_ReferenceRate,totalCommitmentAmount_ReferenceRate,totalDisbursedAmount_ReferenceRate&$orderby=status/statusName asc,geography/name asc,code asc"
 }
