@@ -99,6 +99,27 @@ export class EligibilityController {
 
   // v3
 
+  @get('/eligibility/years')
+  @response(200, ELIGIBILITY_RESPONSE)
+  eligibilityYears(): object {
+    const url = `${urls.ELIGIBILITY}/?${EligibilityYearsFieldsMapping.aggregation}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return {
+          data: _.get(
+            resp.data,
+            EligibilityYearsFieldsMapping.dataPath,
+            [],
+          ).map((item: any) =>
+            _.get(item, EligibilityYearsFieldsMapping.year, ''),
+          ),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
   @get('/eligibility/stats/{year}')
   @response(200)
   async eligibilityStats(@param.path.string('year') year: string) {
@@ -400,7 +421,7 @@ export class EligibilityController {
 
   @get('/eligibility/years')
   @response(200, ELIGIBILITY_RESPONSE)
-  eligibilityYears(): object {
+  eligibilityYearsV2(): object {
     const url = `${urls.eligibility}/?${EligibilityYearsFieldsMapping.aggregation}`;
 
     return axios
