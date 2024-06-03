@@ -77,11 +77,14 @@ export class GlobalSearchController {
         message: '"q" param is required.',
       };
     }
-    const keywords = keyword.split(' ');
-    const calls = _.filter(
+    const categories = _.filter(
       globalSearchMapping.categories,
-      (category: any) => category.url.length > 0,
-    ).map((category: any) => {
+      (category: any) =>
+        category.type === 'Country' || category.type === 'Grant',
+      // (category: any) => category.url.length > 0,
+    );
+    const keywords = keyword.split(' ');
+    const calls = categories.map((category: any) => {
       const call = category.url
         .replace(
           '<filterStr>',
@@ -99,7 +102,7 @@ export class GlobalSearchController {
       .then(
         axios.spread((...responses) => {
           const results: SearchResultsTabModel[] = [];
-          globalSearchMapping.categories.forEach((cat: any, index: number) => {
+          categories.forEach((cat: any, index: number) => {
             const mapper = mapTransform(cat.mappings);
             const categoryResults =
               cat.url.length > 0
