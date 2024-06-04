@@ -80,20 +80,33 @@ export class DocumentsController {
         );
 
         return {
-          data: _.map(groupedByLocation, (value, key) => {
-            const groupedByType = _.groupBy(value, DocumentsListMapping.type);
+          data: _.map(groupedByLocation, (locationObj, location) => {
+            const groupedByType = _.groupBy(
+              locationObj,
+              DocumentsListMapping.type,
+            );
 
             return {
-              name: key,
-              documents: Object.keys(value).length,
-              _children: _.map(groupedByType, (value1, key) => ({
-                name: key,
-                documents: Object.keys(value1).length,
-                _children: _.map(value1, value2 => ({
-                  name: _.get(value2, DocumentsListMapping.title, ''),
-                  documents: _.get(value2, DocumentsListMapping.url, ''),
-                })),
-              })),
+              name: location,
+              documents: Object.keys(locationObj).length,
+              _children: _.map(groupedByType, (typeObj, type) => {
+                const groupedBySubType = _.groupBy(
+                  typeObj,
+                  DocumentsListMapping.subType,
+                );
+                return {
+                  name: type,
+                  documents: Object.keys(typeObj).length,
+                  _children: _.map(groupedBySubType, (subTypeObj, subType) => ({
+                    name: subType,
+                    documents: Object.keys(subTypeObj).length,
+                    _children: _.map(subTypeObj, doc => ({
+                      name: _.get(doc, DocumentsListMapping.title, ''),
+                      documents: _.get(doc, DocumentsListMapping.url, ''),
+                    })),
+                  })),
+                };
+              }),
             };
           }),
         };
