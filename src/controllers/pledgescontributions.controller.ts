@@ -189,11 +189,6 @@ export class PledgescontributionsController {
           [],
         );
 
-        const groupedByIndicator = _.groupBy(
-          rawData,
-          PledgesContributionsBarFieldsMapping.donorBarType,
-        );
-
         const data: {
           name: string;
           value: number;
@@ -205,45 +200,93 @@ export class PledgescontributionsController {
           }[];
         }[] = [];
 
-        _.forEach(groupedByIndicator, (value, key) => {
-          const groupedByDonor = _.groupBy(
-            value,
-            PledgesContributionsBarFieldsMapping.donorBarDonor,
-          );
-          data.push({
-            name: key,
-            value: _.sumBy(
-              _.filter(value, {
-                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                  PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
-              }),
-              PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+        const formatted: any[] = [];
+
+        rawData.forEach((item: any) => {
+          const obj = {
+            indicatorName: _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorField,
+              '',
             ),
-            value1: _.sumBy(
-              _.filter(value, {
-                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                  PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
-              }),
+            actualAmount: _.get(
+              item,
               PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
+              0,
             ),
-            items: _.map(groupedByDonor, (donorValue, donorKey) => ({
-              name: donorKey,
-              value: _.sumBy(
-                _.filter(donorValue, {
-                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                    PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
-                }),
-                PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
-              ),
-              value1: _.sumBy(
-                _.filter(donorValue, {
-                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                    PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
-                }),
-                PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
-              ),
-            })),
-          });
+            plannedAmount: _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+              0,
+            ),
+            donorType: '',
+            donorSubType: '',
+            donor: _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarDonor,
+              '',
+            ),
+          };
+          if (
+            _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType2,
+              null,
+            ) !== null
+          ) {
+            obj.donorType = _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType2,
+              '',
+            );
+            obj.donorSubType = _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType,
+              '',
+            );
+          } else {
+            obj.donorType = _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType,
+              '',
+            );
+          }
+          formatted.push(obj);
+        });
+
+        const groupedByDonorType = _.groupBy(formatted, 'donorType');
+
+        _.forEach(groupedByDonorType, (value, key) => {
+          const groupedByDonorSubType = _.groupBy(value, 'donorSubType');
+          const obj = {
+            name: key,
+            value: _.sumBy(value, 'actualAmount'),
+            value1: _.sumBy(value, 'plannedAmount'),
+            items: _.map(
+              groupedByDonorSubType,
+              (donorSubTypeValue, donorSubTypeKey) => {
+                const groupedByDonor = _.groupBy(donorSubTypeValue, 'donor');
+                return {
+                  name: donorSubTypeKey,
+                  value: _.sumBy(donorSubTypeValue, 'actualAmount'),
+                  value1: _.sumBy(donorSubTypeValue, 'plannedAmount'),
+                  items: _.map(groupedByDonor, (donorValue, donorKey) => ({
+                    name: donorKey,
+                    value: _.sumBy(donorValue, 'actualAmount'),
+                    value1: _.sumBy(donorValue, 'plannedAmount'),
+                  })),
+                };
+              },
+            ),
+          };
+          const nullObj = _.find(obj.items, {name: ''});
+          if (nullObj) {
+            nullObj.items.forEach((item: any) => {
+              obj.items.push(item);
+            });
+            obj.items = _.filter(obj.items, item => item.name !== '');
+          }
+          data.push(obj);
         });
 
         return {data};
@@ -270,11 +313,6 @@ export class PledgescontributionsController {
           [],
         );
 
-        const groupedByDonorType = _.groupBy(
-          rawData,
-          PledgesContributionsSunburstFieldsMapping.type,
-        );
-
         const data: {
           name: string;
           value: number;
@@ -284,25 +322,80 @@ export class PledgescontributionsController {
           }[];
         }[] = [];
 
-        _.forEach(groupedByDonorType, (value, key) => {
-          const groupedByDonor = _.groupBy(
-            value,
-            PledgesContributionsSunburstFieldsMapping.donor,
-          );
-          data.push({
-            name: key,
-            value: _.sumBy(
-              value,
+        const formatted: any[] = [];
+
+        rawData.forEach((item: any) => {
+          const obj = {
+            value: _.get(
+              item,
               PledgesContributionsSunburstFieldsMapping.amount,
+              0,
             ),
-            children: _.map(groupedByDonor, (donorValue, donorKey) => ({
-              name: donorKey,
-              value: _.sumBy(
-                donorValue,
-                PledgesContributionsSunburstFieldsMapping.amount,
-              ),
-            })),
-          });
+            donorType: '',
+            donorSubType: '',
+            donor: _.get(
+              item,
+              PledgesContributionsSunburstFieldsMapping.donor,
+              '',
+            ),
+          };
+          if (
+            _.get(
+              item,
+              PledgesContributionsSunburstFieldsMapping.type2,
+              null,
+            ) !== null
+          ) {
+            obj.donorType = _.get(
+              item,
+              PledgesContributionsSunburstFieldsMapping.type2,
+              '',
+            );
+            obj.donorSubType = _.get(
+              item,
+              PledgesContributionsSunburstFieldsMapping.type,
+              '',
+            );
+          } else {
+            obj.donorType = _.get(
+              item,
+              PledgesContributionsSunburstFieldsMapping.type,
+              '',
+            );
+          }
+          formatted.push(obj);
+        });
+
+        const groupedByDonorType = _.groupBy(formatted, 'donorType');
+
+        _.forEach(groupedByDonorType, (value, key) => {
+          const groupedByDonorSubType = _.groupBy(value, 'donorSubType');
+          const obj = {
+            name: key,
+            value: _.sumBy(value, 'value'),
+            children: _.map(
+              groupedByDonorSubType,
+              (donorSubTypeValue, donorSubTypeKey) => {
+                const groupedByDonor = _.groupBy(donorSubTypeValue, 'donor');
+                return {
+                  name: donorSubTypeKey,
+                  value: _.sumBy(donorSubTypeValue, 'value'),
+                  children: _.map(groupedByDonor, (donorValue, donorKey) => ({
+                    name: donorKey,
+                    value: _.sumBy(donorValue, 'value'),
+                  })),
+                };
+              },
+            ),
+          };
+          const nullObj = _.find(obj.children, {name: ''});
+          if (nullObj) {
+            nullObj.children.forEach((item: any) => {
+              obj.children.push(item);
+            });
+            obj.children = _.filter(obj.children, item => item.name !== '');
+          }
+          data.push(obj);
         });
 
         return {data};
@@ -328,11 +421,6 @@ export class PledgescontributionsController {
           [],
         );
 
-        const groupedByIndicator = _.groupBy(
-          rawData,
-          PledgesContributionsBarFieldsMapping.donorBarType,
-        );
-
         const data: {
           name: string;
           pledge: number;
@@ -344,45 +432,93 @@ export class PledgescontributionsController {
           }[];
         }[] = [];
 
-        _.forEach(groupedByIndicator, (value, key) => {
-          const groupedByDonor = _.groupBy(
-            value,
-            PledgesContributionsBarFieldsMapping.donorBarDonor,
-          );
-          data.push({
-            name: key,
-            pledge: _.sumBy(
-              _.filter(value, {
-                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                  PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
-              }),
-              PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+        const formatted: any[] = [];
+
+        rawData.forEach((item: any) => {
+          const obj = {
+            indicatorName: _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorField,
+              '',
             ),
-            contribution: _.sumBy(
-              _.filter(value, {
-                [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                  PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
-              }),
+            actualAmount: _.get(
+              item,
               PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
+              0,
             ),
-            _children: _.map(groupedByDonor, (donorValue, donorKey) => ({
-              name: donorKey,
-              pledge: _.sumBy(
-                _.filter(donorValue, {
-                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                    PledgesContributionsBarFieldsMapping.donorBarIndicatorPledge,
-                }),
-                PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
-              ),
-              contribution: _.sumBy(
-                _.filter(donorValue, {
-                  [PledgesContributionsBarFieldsMapping.donorBarIndicatorField]:
-                    PledgesContributionsBarFieldsMapping.donorBarIndicatorContribution,
-                }),
-                PledgesContributionsBarFieldsMapping.donorBarIndicatorContributionAmount,
-              ),
-            })),
-          });
+            plannedAmount: _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarIndicatorPledgeAmount,
+              0,
+            ),
+            donorType: '',
+            donorSubType: '',
+            donor: _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarDonor,
+              '',
+            ),
+          };
+          if (
+            _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType2,
+              null,
+            ) !== null
+          ) {
+            obj.donorType = _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType2,
+              '',
+            );
+            obj.donorSubType = _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType,
+              '',
+            );
+          } else {
+            obj.donorType = _.get(
+              item,
+              PledgesContributionsBarFieldsMapping.donorBarType,
+              '',
+            );
+          }
+          formatted.push(obj);
+        });
+
+        const groupedByDonorType = _.groupBy(formatted, 'donorType');
+
+        _.forEach(groupedByDonorType, (value, key) => {
+          const groupedByDonorSubType = _.groupBy(value, 'donorSubType');
+          const obj = {
+            name: key,
+            pledge: _.sumBy(value, 'actualAmount'),
+            contribution: _.sumBy(value, 'plannedAmount'),
+            _children: _.map(
+              groupedByDonorSubType,
+              (donorSubTypeValue, donorSubTypeKey) => {
+                const groupedByDonor = _.groupBy(donorSubTypeValue, 'donor');
+                return {
+                  name: donorSubTypeKey,
+                  pledge: _.sumBy(donorSubTypeValue, 'actualAmount'),
+                  contribution: _.sumBy(donorSubTypeValue, 'plannedAmount'),
+                  _children: _.map(groupedByDonor, (donorValue, donorKey) => ({
+                    name: donorKey,
+                    pledge: _.sumBy(donorValue, 'actualAmount'),
+                    contribution: _.sumBy(donorValue, 'plannedAmount'),
+                  })),
+                };
+              },
+            ),
+          };
+          const nullObj = _.find(obj._children, {name: ''});
+          if (nullObj) {
+            nullObj._children.forEach((item: any) => {
+              obj._children.push(item);
+            });
+            obj._children = _.filter(obj._children, item => item.name !== '');
+          }
+          data.push(obj);
         });
 
         return {data};

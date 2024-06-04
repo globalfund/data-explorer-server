@@ -8,10 +8,11 @@
   "contributionsUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Contribution - Reference Rate'<filterString>)/groupby((periodCovered),aggregate(actualAmount with sum as value))&$orderby=periodCovered asc",
   "donorBarType": "donor.type.name",
   "donorBarDonor": "donor.name",
+  "donorBarType2": "donor.type.parent.name",
   "donorBarIndicatorField": "indicatorName",
   "donorBarIndicatorPledge": "Pledge - Reference Rate",
   "donorBarIndicatorContribution": "Contribution - Reference Rate",
   "donorBarIndicatorPledgeAmount": "plannedAmount",
   "donorBarIndicatorContributionAmount": "actualAmount",
-  "donorBarUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions'<filterString>)/groupby((donor/name,donor/type/name,indicatorName),aggregate(plannedAmount with sum as plannedAmount,actualAmount with sum as actualAmount))"
+  "donorBarUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions'<filterString>)/groupby((donor/name,donor/type/name,donor/type/parent/name,indicatorName),aggregate(plannedAmount with sum as plannedAmount,actualAmount with sum as actualAmount))"
 }
