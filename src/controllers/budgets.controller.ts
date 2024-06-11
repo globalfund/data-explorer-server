@@ -123,15 +123,12 @@ export class BudgetsController {
       .catch(handleDataApiError);
   }
 
-  @get('/budgets/sankey/{componentField}')
+  @get('/budgets/sankey')
   @response(200)
-  async sankey(@param.path.string('componentField') componentField: string) {
+  async sankey() {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      BudgetsSankeyFieldsMapping.urlParams.replace(
-        /<componentField>/g,
-        componentField,
-      ),
+      BudgetsSankeyFieldsMapping.urlParams,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -157,10 +154,7 @@ export class BudgetsController {
         };
         const groupedDataLevel1 = _.groupBy(
           rawData,
-          BudgetsSankeyFieldsMapping.level1Field.replace(
-            '<componentField>',
-            componentField,
-          ),
+          BudgetsSankeyFieldsMapping.level1Field,
         );
         _.forEach(groupedDataLevel1, (level1Data, level1) => {
           data.nodes.push({
@@ -175,12 +169,10 @@ export class BudgetsController {
             target: level1,
             value: _.sumBy(level1Data, BudgetsSankeyFieldsMapping.valueField),
           });
+
           const groupedDataLevel2 = _.groupBy(
             level1Data,
-            BudgetsSankeyFieldsMapping.level2Field.replace(
-              '<componentField>',
-              componentField,
-            ),
+            BudgetsSankeyFieldsMapping.level2Field,
           );
           _.forEach(groupedDataLevel2, (level2Data, level2) => {
             const level2inLevel1 = _.find(data.nodes, {
@@ -198,6 +190,32 @@ export class BudgetsController {
               source: level1,
               target: level2inLevel1 ? `${level2}1` : level2,
               value: _.sumBy(level2Data, BudgetsSankeyFieldsMapping.valueField),
+            });
+
+            const groupedDataLevel3 = _.groupBy(
+              level2Data,
+              BudgetsSankeyFieldsMapping.level3Field,
+            );
+            _.forEach(groupedDataLevel3, (level3Data, level3) => {
+              const level3inLevel2 = _.find(data.nodes, {
+                name: level3,
+                level: 2,
+              });
+              data.nodes.push({
+                name: level3inLevel2 ? `${level3}1` : level3,
+                level: 3,
+                itemStyle: {
+                  color: BudgetsSankeyFieldsMapping.nodeColors[2],
+                },
+              });
+              data.links.push({
+                source: level2,
+                target: level3inLevel2 ? `${level3}1` : level3,
+                value: _.sumBy(
+                  level3Data,
+                  BudgetsSankeyFieldsMapping.valueField,
+                ),
+              });
             });
           });
         });
@@ -266,15 +284,12 @@ export class BudgetsController {
       .catch(handleDataApiError);
   }
 
-  @get('/budgets/table/{componentField}')
+  @get('/budgets/table')
   @response(200)
-  async table(@param.path.string('componentField') componentField: string) {
+  async table() {
     const filterString = filterFinancialIndicators(
       this.req.query,
-      BudgetsTableFieldsMapping.urlParams.replace(
-        /<componentField>/g,
-        componentField,
-      ),
+      BudgetsTableFieldsMapping.urlParams,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -286,45 +301,64 @@ export class BudgetsController {
           BudgetsTableFieldsMapping.dataPath,
           [],
         );
-        const groupedByParent = _.groupBy(
+        const groupedByLevel1 = _.groupBy(
           rawData,
-          BudgetsTableFieldsMapping.parentField.replace(
-            '<componentField>',
-            componentField,
-          ),
+          BudgetsTableFieldsMapping.level1Field,
         );
 
         const data: {
           name: string;
-          grants: number;
           amount: number;
           _children: {
             name: string;
-            grants: number;
             amount: number;
+            _children: {
+              name: string;
+              amount: number;
+            }[];
           }[];
         }[] = [];
 
-        _.forEach(groupedByParent, (parentData, parent) => {
-          const children = parentData.map((child: any) => {
-            return {
-              name: _.get(
-                child,
-                BudgetsTableFieldsMapping.childrenField.replace(
-                  '<componentField>',
-                  componentField,
-                ),
-                '',
-              ),
-              grants: _.get(child, BudgetsTableFieldsMapping.countField, 0),
-              amount: _.get(child, BudgetsTableFieldsMapping.valueField, 0),
-            };
-          });
+        _.forEach(groupedByLevel1, (level1Data, level1) => {
+          const grouepdByLevel2 = _.groupBy(
+            level1Data,
+            BudgetsTableFieldsMapping.level2Field,
+          );
+          const level1Amount = _.sumBy(
+            level1Data,
+            BudgetsTableFieldsMapping.valueField,
+          );
+          const level1Children = _.map(
+            grouepdByLevel2,
+            (level2Data, level2) => {
+              const groupedByLevel3 = _.groupBy(
+                level2Data,
+                BudgetsTableFieldsMapping.level3Field,
+              );
+              const level2Amount = _.sumBy(
+                level2Data,
+                BudgetsTableFieldsMapping.valueField,
+              );
+              return {
+                name: level2,
+                amount: level2Amount,
+                _children: _.map(groupedByLevel3, (level3Data, level3) => {
+                  const level3Amount = _.sumBy(
+                    level3Data,
+                    BudgetsTableFieldsMapping.valueField,
+                  );
+                  return {
+                    name: level3,
+                    amount: level3Amount,
+                  };
+                }),
+              };
+            },
+          );
           data.push({
-            name: parent,
-            grants: _.sumBy(children, 'grants'),
-            amount: _.sumBy(children, 'amount'),
-            _children: children,
+            name: level1,
+            amount: level1Amount,
+            _children: level1Children,
           });
         });
 

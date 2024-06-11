@@ -6,6 +6,7 @@
   "urlParams": "?$apply=filter(financialDataSet eq 'Expenditure_Intervention_ReferenceRate' AND isLatestReported eq true<filterString>)/groupby((<rowField>,<columnField>),aggregate(actualAmountCumulative with sum as value1,plannedAmountCumulative with sum as value2))",
   "fields": {
     "principalRecipient": "implementationPeriod/grant/principalRecipient/name",
+    "principalRecipientSubType": "implementationPeriod/grant/principalRecipient/parent/name",
     "principalRecipientType": "implementationPeriod/grant/principalRecipient/type/name",
     "component": "<componentField>/parent/parent/name"
   }

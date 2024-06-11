@@ -23,6 +23,7 @@ export class ExpendituresController {
     let filterString = ExpendituresHeatmapMapping.urlParams;
     let rowField = '';
     let subRowField = '';
+    let subSubRowField = '';
     let columnField = '';
     let subColumnField = '';
     if (row.split(',').length > 1) {
@@ -36,6 +37,13 @@ export class ExpendituresController {
         `fields["${row.split(',')[1]}"]`,
         ExpendituresHeatmapMapping.fields.principalRecipient,
       );
+      if (row.split(',').length > 2) {
+        subSubRowField = _.get(
+          ExpendituresHeatmapMapping,
+          `fields["${row.split(',')[2]}"]`,
+          ExpendituresHeatmapMapping.fields.principalRecipient,
+        );
+      }
     } else {
       rowField = _.get(
         ExpendituresHeatmapMapping,
@@ -61,9 +69,12 @@ export class ExpendituresController {
         ExpendituresHeatmapMapping.fields.component,
       ).replace(/<componentField>/g, componentField);
     }
+    const rowFieldArray = [rowField, subRowField, subSubRowField].filter(
+      item => item.length > 0,
+    );
     filterString = filterString.replace(
       '<rowField>',
-      [rowField, subRowField].join(',').replace(/(^,)|(,$)/g, ''),
+      rowFieldArray.join(',').replace(/(^,)|(,$)/g, ''),
     );
     filterString = filterString.replace(
       '<columnField>',
@@ -75,6 +86,7 @@ export class ExpendituresController {
 
     rowField = rowField.replace(/\//g, '.');
     subRowField = subRowField.replace(/\//g, '.');
+    subSubRowField = subSubRowField.replace(/\//g, '.');
     columnField = columnField.replace(/\//g, '.');
     subColumnField = subColumnField.replace(/\//g, '.');
 

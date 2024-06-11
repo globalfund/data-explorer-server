@@ -417,28 +417,16 @@ export class AllocationsController {
   async allocationsRadialChartInLocation(
     @param.path.string('countryCode') countryCode: string,
   ) {
-    let filterString = AllocationRadialFieldsMapping.urlParams;
-    if (this.req.query.cycle && countryCode) {
-      filterString = filterString.replace(
-        '<filterString>',
-        ` AND ${AllocationRadialFieldsMapping.cycle} eq '${this.req.query.cycle}' AND ${AllocationRadialFieldsMapping.countryCode} eq '${countryCode}'`,
-      );
-    } else if (this.req.query.cycle && !countryCode) {
-      filterString = filterString.replace(
-        '<filterString>',
-        ` AND ${AllocationRadialFieldsMapping.cycle} eq '${this.req.query.cycle}'`,
-      );
-    } else if (!this.req.query.cycle && countryCode) {
-      filterString = filterString.replace(
-        '<filterString>',
-        ` AND ${AllocationRadialFieldsMapping.countryCode} eq '${countryCode}'`,
-      );
-    } else {
-      filterString = filterString.replace('<filterString>', '');
-    }
+    let filterString = filterFinancialIndicators(
+      {...this.req.query, geographies: countryCode},
+      AllocationRadialFieldsMapping.urlParams,
+    );
+
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
-    return getAllocationsData(url);
+    const data = await getAllocationsData(url);
+
+    return {data};
   }
 
   @get('/allocations/cycles')
