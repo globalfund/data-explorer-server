@@ -94,147 +94,100 @@ export class ExpendituresController {
       .get(url)
       .then((resp: AxiosResponse) => {
         const raw = _.get(resp.data, ExpendituresHeatmapMapping.dataPath, []);
-        const data = _.filter(
-          raw.map((item: any) => {
-            const budget = _.get(item, ExpendituresHeatmapMapping.budget, 0);
-            const expenditure = _.get(
-              item,
-              ExpendituresHeatmapMapping.expenditure,
-              0,
-            );
-            return {
-              row: subRowField
-                ? _.get(item, subRowField, '')
-                : _.get(item, rowField),
-              parentRow: subRowField ? _.get(item, rowField) : undefined,
-              column: subColumnField
-                ? _.get(item, subColumnField, '')
-                : _.get(item, columnField),
-              parentColumn: subColumnField
-                ? _.get(item, columnField)
-                : undefined,
-              value: expenditure,
-              budget,
-              percentage:
-                budget && budget > 0
-                  ? Math.round((expenditure / budget) * 100)
-                  : 120,
-            };
-          }),
-          (item: any) => item.row && item.column,
-        );
 
-        const rows = _.uniq(data.map((item: any) => item.row));
-        const columns = _.uniq(data.map((item: any) => item.column));
-        const parentRows = _.uniq(
-          _.filter(
-            data.map((item: any) => item.parentRow),
-            (item: any) => item,
-          ),
-        );
-        const parentColumns = _.uniq(
-          _.filter(
-            data.map((item: any) => item.parentColumn),
-            (item: any) => item,
-          ),
-        );
+        let data: {
+          row: string;
+          column: string;
+          budget: number;
+          value: number;
+          percentage: number;
+          parentRow?: string;
+          parentColumn?: string;
+        }[] = [];
 
-        if (parentRows.length > 0) {
-          parentRows.forEach((parentRow: any) => {
-            columns.forEach((column: any) => {
-              const expenditure = _.sumBy(
-                data.filter(
-                  (item: any) =>
-                    item.parentRow === parentRow && item.column === column,
-                ),
-                'value',
+        const columnDimensionArray = [columnField, subColumnField].filter(
+          item => item.length > 0,
+        );
+        const rowDimensionArray = [
+          rowField,
+          subRowField,
+          subSubRowField,
+        ].filter(item => item.length > 0);
+
+        rowDimensionArray.forEach((rowDimensionValue, rowIndex) => {
+          columnDimensionArray.forEach((columnDimensionValue, columnIndex) => {
+            raw.forEach((item: any) => {
+              const row = _.get(item, rowDimensionValue, '');
+              const column = _.get(item, columnDimensionValue, '');
+              const expenditureAmount = _.get(
+                item,
+                ExpendituresHeatmapMapping.expenditure,
+                0,
               );
-              const budget = _.sumBy(
-                data.filter(
-                  (item: any) =>
-                    item.parentRow === parentRow && item.column === column,
-                ),
-                'budget',
+              const budgetAmount = _.get(
+                item,
+                ExpendituresHeatmapMapping.budget,
+                0,
               );
-              data.push({
-                row: parentRow,
-                column,
-                value: expenditure,
-                budget,
-                percentage:
-                  budget && budget > 0
-                    ? Math.round((expenditure / budget) * 100)
-                    : 120,
-              });
+
+              const fItemIndex = _.findIndex(
+                data,
+                dataItem => dataItem.row === row && dataItem.column === column,
+              );
+
+              if (fItemIndex > -1) {
+                data[fItemIndex].budget += budgetAmount;
+                data[fItemIndex].value += expenditureAmount;
+                data[fItemIndex].percentage =
+                  data[fItemIndex].budget > 0
+                    ? (data[fItemIndex].value / data[fItemIndex].budget) * 100
+                    : 120;
+                data[fItemIndex].percentage = Math.round(
+                  data[fItemIndex].percentage,
+                );
+                if (data[fItemIndex].percentage > 120) {
+                  data[fItemIndex].percentage = 120;
+                }
+              } else if (row && column) {
+                let parentRow =
+                  rowIndex > 0
+                    ? _.get(item, rowDimensionArray[rowIndex - 1])
+                    : undefined;
+                if (
+                  (parentRow === 'null' || parentRow === null) &&
+                  rowIndex > 0
+                ) {
+                  parentRow = _.get(item, rowDimensionArray[rowIndex - 2]);
+                }
+                if (parentRow === 'null' || parentRow === null) {
+                  parentRow = undefined;
+                }
+                let parentColumn =
+                  columnIndex > 0
+                    ? _.get(item, columnDimensionArray[columnIndex - 1])
+                    : undefined;
+                if (parentColumn === 'null' || parentColumn === null) {
+                  parentColumn = undefined;
+                }
+                data.push({
+                  row,
+                  parentRow,
+                  column,
+                  parentColumn,
+                  budget: budgetAmount,
+                  value: expenditureAmount,
+                  percentage:
+                    budgetAmount && budgetAmount > 0
+                      ? Math.round((expenditureAmount / budgetAmount) * 100)
+                      : 120,
+                });
+                if (data[data.length - 1].percentage > 120) {
+                  data[data.length - 1].percentage = 120;
+                }
+              }
             });
           });
-        }
-
-        if (parentColumns.length > 0) {
-          console.log(1.1, parentColumns.length);
-          parentColumns.forEach((parentColumn: any) => {
-            rows.forEach((row: any) => {
-              const expenditure = _.sumBy(
-                data.filter(
-                  (item: any) =>
-                    item.parentColumn === parentColumn && item.row === row,
-                ),
-                'value',
-              );
-              const budget = _.sumBy(
-                data.filter(
-                  (item: any) =>
-                    item.parentColumn === parentColumn && item.row === row,
-                ),
-                'budget',
-              );
-              data.push({
-                row,
-                column: parentColumn,
-                value: expenditure,
-                budget,
-                percentage:
-                  budget && budget > 0
-                    ? Math.round((expenditure / budget) * 100)
-                    : 120,
-              });
-            });
-          });
-        }
-
-        if (parentRows.length > 0 && parentColumns.length > 0) {
-          console.log(1.2, parentRows.length, parentColumns.length);
-          parentRows.forEach((parentRow: any) => {
-            parentColumns.forEach((parentColumn: any) => {
-              const expenditure = _.sumBy(
-                data.filter(
-                  (item: any) =>
-                    item.parentRow === parentRow &&
-                    item.parentColumn === parentColumn,
-                ),
-                'value',
-              );
-              const budget = _.sumBy(
-                data.filter(
-                  (item: any) =>
-                    item.parentRow === parentRow &&
-                    item.parentColumn === parentColumn,
-                ),
-                'budget',
-              );
-              data.push({
-                row: parentRow,
-                column: parentColumn,
-                value: expenditure,
-                budget,
-                percentage:
-                  budget && budget > 0
-                    ? Math.round((expenditure / budget) * 100)
-                    : 120,
-              });
-            });
-          });
-        }
+        });
 
         return {data};
       })
