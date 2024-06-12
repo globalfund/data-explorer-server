@@ -81,6 +81,9 @@ async function getAllocationsData(url: string) {
             items: groupedByName[name].map((item: any) => ({
               name: _.get(item, AllocationRadialFieldsMapping.tooltipItem, ''),
               value: _.get(item, AllocationRadialFieldsMapping.value, 0),
+              percentage:
+                (_.get(item, AllocationRadialFieldsMapping.value, 0) / value) *
+                100,
             })),
           },
         });
@@ -419,7 +422,7 @@ export class AllocationsController {
   ) {
     let filterString = filterFinancialIndicators(
       {...this.req.query, geographies: countryCode},
-      AllocationRadialFieldsMapping.urlParams,
+      AllocationRadialFieldsMapping.urlParamsLocation,
     );
 
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
