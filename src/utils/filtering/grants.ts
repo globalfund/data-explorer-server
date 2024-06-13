@@ -39,7 +39,7 @@ export function filterGrants(
   }
 
   const statuses = _.filter(
-    _.get(params, 'statuses', '').split(','),
+    _.get(params, 'status', '').split(','),
     (o: string) => o.length > 0,
   ).map((status: string) => `'${status}'`);
   if (statuses.length > 0) {
