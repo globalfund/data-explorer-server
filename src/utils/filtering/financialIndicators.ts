@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
-import {getGeographyValues} from './geographies';
 
 const MAPPING = {
   geography: [
@@ -8,6 +7,12 @@ const MAPPING = {
     'geography/name',
     'implementationPeriod/grant/geography/code',
     'implementationPeriod/grant/geography/name',
+  ],
+  component: [
+    'activityArea/name',
+    'activityAreaGroup/name',
+    'activityArea/parent/parent/name',
+    'activityAreaGroup/parent/parent/name',
   ],
   donor: 'donor/name',
   donorType: 'donor/type/name',
@@ -25,26 +30,29 @@ const MAPPING = {
 export function filterFinancialIndicators(
   params: Record<string, any>,
   urlParams: string,
+  geographyMapping: string,
+  componentMapping: string,
 ): string {
   let str = '';
 
-  const geos = _.filter(
+  const geographies = _.filter(
     _.get(params, 'geographies', '').split(','),
     (o: string) => o.length > 0,
-  );
-  const geographies = geos.map((geography: string) => `'${geography}'`);
-  if (geos.length > 0) {
-    const values: string[] = [...geographies, ...getGeographyValues(geos)];
-    if (MAPPING.geography instanceof Array) {
-      str += `${str.length > 0 ? ' AND ' : ''}(${MAPPING.geography
-        .map(
-          m =>
-            `${m}${filtering.in}(${values.join(
-              filtering.multi_param_separator,
-            )})`,
-        )
-        .join(' OR ')})`;
-    }
+  ).map((geography: string) => `'${geography}'`);
+  if (geographies.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${geographyMapping}${
+      filtering.in
+    }(${geographies.join(filtering.multi_param_separator)})`;
+  }
+
+  const components = _.filter(
+    _.get(params, 'components', '').split(','),
+    (o: string) => o.length > 0,
+  ).map((component: string) => `'${component}'`);
+  if (components.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${componentMapping}${
+      filtering.in
+    }(${components.join(filtering.multi_param_separator)})`;
   }
 
   const donors = _.filter(

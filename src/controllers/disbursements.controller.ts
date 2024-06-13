@@ -190,6 +190,8 @@ export class DisbursementsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       FinancialInsightsStatsMapping.urlParams,
+      'implementationPeriod/grant/geography/name',
+      'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -244,6 +246,8 @@ export class DisbursementsController {
         '<componentField>',
         componentField,
       ),
+      'implementationPeriod/grant/geography/name',
+      `${componentField}/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -284,10 +288,14 @@ export class DisbursementsController {
         '<componentField>',
         componentField,
       ),
+      'implementationPeriod/grant/geography/name',
+      `${componentField}/name`,
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
       LineChartFieldsMapping.activitiesCountUrlParams,
+      'implementationPeriod/grant/geography/name',
+      `${componentField}/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -341,6 +349,8 @@ export class DisbursementsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       TableFieldsMapping.urlParams.replace('<componentField>', componentField),
+      'implementationPeriod/grant/geography/name',
+      `${componentField}/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

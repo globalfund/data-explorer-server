@@ -80,7 +80,12 @@ export class ExpendituresController {
       '<columnField>',
       [columnField, subColumnField].join(',').replace(/(^,)|(,$)/g, ''),
     );
-    filterString = filterFinancialIndicators(this.req.query, filterString);
+    filterString = filterFinancialIndicators(
+      this.req.query,
+      filterString,
+      'implementationPeriod/grant/geography/name',
+      `${componentField}/parent/parent/name`,
+    );
 
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -205,6 +210,8 @@ export class ExpendituresController {
         /<componentField>/g,
         componentField,
       ),
+      'implementationPeriod/grant/geography/name',
+      `${componentField}/parent/parent/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -253,6 +260,8 @@ export class ExpendituresController {
         /<componentField>/g,
         componentField,
       ),
+      'implementationPeriod/grant/geography/name',
+      `${componentField}/parent/parent/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

@@ -104,6 +104,8 @@ export class AllocationsController {
     let filterString = filterFinancialIndicators(
       this.req.query,
       AllocationCumulativeByCyclesFieldsMapping.urlParams,
+      'geography/name',
+      'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -187,6 +189,8 @@ export class AllocationsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       AllocationSunburstFieldsMapping.urlParams,
+      'geography/name',
+      'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -229,7 +233,12 @@ export class AllocationsController {
         urlParams = AllocationTreemapFieldsMapping.urlParams[1];
       }
     }
-    const filterString = filterFinancialIndicators(this.req.query, urlParams);
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      urlParams,
+      'geography/name',
+      'activityArea/name',
+    );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
     return axios
@@ -301,6 +310,8 @@ export class AllocationsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       AllocationTableFieldsMapping.urlParams,
+      'geography/name',
+      'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -395,10 +406,14 @@ export class AllocationsController {
     let filterString = filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.urlParams,
+      'geography/name',
+      'activityArea/name',
     );
     let filterString2 = filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.countriesCountUrlParams,
+      'geography/name',
+      'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -423,6 +438,8 @@ export class AllocationsController {
     let filterString = filterFinancialIndicators(
       {...this.req.query, geographies: countryCode},
       AllocationRadialFieldsMapping.urlParamsLocation,
+      'geography/name',
+      'activityArea/name',
     );
 
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
