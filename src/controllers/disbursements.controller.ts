@@ -288,7 +288,10 @@ export class DisbursementsController {
         '<componentField>',
         componentField,
       ),
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       `${componentField}/name`,
     );
     const filterString2 = filterFinancialIndicators(

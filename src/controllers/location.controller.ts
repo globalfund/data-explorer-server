@@ -47,8 +47,8 @@ export class LocationController {
     filterString1 = filterString1.replace('<filterString>', '');
     filterString2 = filterString2.replace('<filterString>', '');
     filterString3 = filterString3.replace('<filterString>', '');
-    const url1 = `${urls.GRANTS}/${filterString1}`;
-    const url2 = `${urls.GRANTS}/${filterString2}`;
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     const url3 = `${urls.FINANCIAL_INDICATORS}/${filterString3}`;
 
     return axios
@@ -75,6 +75,7 @@ export class LocationController {
           const dataPie1 = rawPie1.map((item: any, index: number) => ({
             name: _.get(item, PieChartsMapping.pie1Field, ''),
             value: (_.get(item, PieChartsMapping.count, 0) * 100) / totalPie1,
+            amount: _.get(item, PieChartsMapping.count, 0),
             itemStyle: {
               color:
                 PieChartsMapping.colors[index % PieChartsMapping.colors.length],
@@ -85,6 +86,7 @@ export class LocationController {
           const dataPie2 = rawPie2.map((item: any, index: number) => ({
             name: _.get(item, PieChartsMapping.pie2Field, ''),
             value: (_.get(item, PieChartsMapping.count, 0) * 100) / totalPie2,
+            amount: _.get(item, PieChartsMapping.count, 0),
             itemStyle: {
               color:
                 PieChartsMapping.colors[index % PieChartsMapping.colors.length],
@@ -93,8 +95,12 @@ export class LocationController {
 
           const totalPie3 = _.sumBy(rawPie3, PieChartsMapping.count);
           const dataPie3 = rawPie3.map((item: any, index: number) => ({
-            name: _.get(item, PieChartsMapping.pie3Field, ''),
+            name: _.get(item, PieChartsMapping.pie3Field, '').replace(
+              '_ReferenceRate',
+              '',
+            ),
             value: (_.get(item, PieChartsMapping.count, 0) * 100) / totalPie3,
+            amount: _.get(item, PieChartsMapping.count, 0),
             itemStyle: {
               color:
                 PieChartsMapping.colors[index % PieChartsMapping.colors.length],

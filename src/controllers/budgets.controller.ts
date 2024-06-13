@@ -131,7 +131,10 @@ export class BudgetsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       BudgetsSankeyFieldsMapping.urlParams,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'implementationPeriod/grant/activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
