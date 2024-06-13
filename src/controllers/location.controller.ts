@@ -316,7 +316,7 @@ export class LocationController {
 
         data = _.orderBy(data, ['name'], ['asc']);
 
-        data = [world, ...data];
+        data = [...data, world];
 
         return {data};
       })
