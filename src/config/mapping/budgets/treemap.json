@@ -1,9 +1,12 @@
 {
   "dataPath": "value",
   "cycle": "periodFrom",
-  "name": "<componentField>.parent.parent.name",
+  "name": "implementationPeriod.grant.<componentField>.name",
   "value": "value",
-  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((<componentField>/parent/parent/name),aggregate(plannedAmount with sum as value))",
+  "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/name),aggregate(plannedAmount with sum as value))",
+  "urlParams2": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/parent/name),aggregate(plannedAmount with sum as value))",
+  "url1Items": ["Malaria", "Tuberculosis"],
+  "url2Items": ["HIV/AIDS", "Other"],
   "textbgcolors": [
     {
       "color": "#0A2840",

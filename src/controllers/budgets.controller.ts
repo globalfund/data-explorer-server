@@ -244,52 +244,134 @@ export class BudgetsController {
   @get('/budgets/treemap/{componentField}')
   @response(200)
   async treemap(@param.path.string('componentField') componentField: string) {
-    const filterString = filterFinancialIndicators(
+    const filterString1 = filterFinancialIndicators(
       this.req.query,
-      BudgetsTreemapFieldsMapping.urlParams.replace(
+      BudgetsTreemapFieldsMapping.urlParams1.replace(
         '<componentField>',
         componentField,
       ),
       'implementationPeriod/grant/geography/name',
-      `${componentField}/parent/parent/name`,
+      `implementationPeriod/grant/${componentField}/name`,
     );
-    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const nameField1 = BudgetsTreemapFieldsMapping.name.replace(
+      '<componentField>',
+      componentField,
+    );
+
+    let filterString2 = '';
+    let url2 = '';
+    const nameField2 = BudgetsTreemapFieldsMapping.name.replace(
+      '<componentField>',
+      `${componentField}.parent`,
+    );
+
+    if (componentField === 'activityAreaGroup') {
+      filterString2 = filterFinancialIndicators(
+        this.req.query,
+        BudgetsTreemapFieldsMapping.urlParams2.replace(
+          '<componentField>',
+          componentField,
+        ),
+        'implementationPeriod/grant/geography/name',
+        `implementationPeriod/grant/${componentField}/parent/name`,
+      );
+      url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+    }
 
     return axios
-      .get(url)
-      .then((resp: AxiosResponse) => {
-        return {
-          data: _.get(resp.data, BudgetsTreemapFieldsMapping.dataPath, []).map(
-            (item: any, index: number) => ({
-              name: _.get(
-                item,
-                BudgetsTreemapFieldsMapping.name.replace(
-                  '<componentField>',
-                  componentField,
-                ),
-                '',
-              ),
+      .all(
+        _.filter([url1, url2], url => url !== '').map((url: string) =>
+          axios.get(url),
+        ),
+      )
+      .then(
+        axios.spread((...responses) => {
+          const rawData1 = _.get(
+            responses[0],
+            `data.${BudgetsTreemapFieldsMapping.dataPath}`,
+            [],
+          );
+          const rawData2 = _.get(
+            responses[1],
+            `data.${BudgetsTreemapFieldsMapping.dataPath}`,
+            [],
+          );
+
+          const data: {
+            name: string;
+            value: number;
+            itemStyle: {
+              color: string;
+            };
+            label: {
+              normal: {
+                color: string;
+              };
+            };
+          }[] = [];
+
+          (componentField === 'activityAreaGroup'
+            ? _.filter(
+                rawData1,
+                item =>
+                  BudgetsTreemapFieldsMapping.url1Items.indexOf(
+                    _.get(item, nameField1, ''),
+                  ) !== -1,
+              )
+            : rawData1
+          ).forEach((item: any) => {
+            data.push({
+              name: _.get(item, nameField1, ''),
               value: _.get(item, BudgetsTreemapFieldsMapping.value, 0),
               itemStyle: {
-                color: _.get(
-                  BudgetsTreemapFieldsMapping.textbgcolors,
-                  `[${index}].color`,
-                  '',
-                ),
+                color: '',
               },
               label: {
                 normal: {
-                  color: _.get(
-                    BudgetsTreemapFieldsMapping.textbgcolors,
-                    `[${index}].textcolor`,
-                    '',
-                  ),
+                  color: '',
                 },
               },
-            }),
-          ),
-        };
-      })
+            });
+          });
+
+          _.filter(
+            rawData2,
+            item =>
+              BudgetsTreemapFieldsMapping.url2Items.indexOf(
+                _.get(item, nameField2, ''),
+              ) !== -1,
+          ).forEach(item => {
+            data.push({
+              name: _.get(item, nameField2, ''),
+              value: _.get(item, BudgetsTreemapFieldsMapping.value, 0),
+              itemStyle: {
+                color: '',
+              },
+              label: {
+                normal: {
+                  color: '',
+                },
+              },
+            });
+          });
+
+          _.orderBy(data, 'value', 'desc').forEach((item, index) => {
+            item.itemStyle.color = _.get(
+              BudgetsTreemapFieldsMapping.textbgcolors,
+              `[${index}].color`,
+              '',
+            );
+            item.label.normal.color = _.get(
+              BudgetsTreemapFieldsMapping.textbgcolors,
+              `[${index}].textcolor`,
+              '',
+            );
+          });
+
+          return {data};
+        }),
+      )
       .catch(handleDataApiError);
   }
 
@@ -425,50 +507,124 @@ export class BudgetsController {
     @param.path.string('componentField') componentField: string,
   ) {
     const years = cycle.split('-');
-    const filterString = filterFinancialIndicators(
+
+    const filterString1 = filterFinancialIndicators(
       {
         ...this.req.query,
         years: years[0],
         yearsTo: years[1],
       },
-      BudgetsBreakdownFieldsMapping.urlParams.replace(
-        /<componentField>/g,
+      BudgetsBreakdownFieldsMapping.urlParams1.replace(
+        '<componentField>',
         componentField,
       ),
       'implementationPeriod/grant/geography/name',
-      `${componentField}/parent/parent/name`,
+      `implementationPeriod/grant/${componentField}/name`,
     );
-    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+    const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
+    const nameField1 = BudgetsBreakdownFieldsMapping.name.replace(
+      '<componentField>',
+      componentField,
+    );
+
+    let filterString2 = '';
+    let url2 = '';
+    const nameField2 = BudgetsBreakdownFieldsMapping.name.replace(
+      '<componentField>',
+      `${componentField}.parent`,
+    );
+
+    if (componentField === 'activityAreaGroup') {
+      filterString2 = filterFinancialIndicators(
+        {
+          ...this.req.query,
+          years: years[0],
+          yearsTo: years[1],
+        },
+        BudgetsBreakdownFieldsMapping.urlParams2.replace(
+          '<componentField>',
+          componentField,
+        ),
+        'implementationPeriod/grant/geography/name',
+        `implementationPeriod/grant/${componentField}/parent/name`,
+      );
+      url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
+    }
 
     return axios
-      .get(url)
-      .then((resp: AxiosResponse) => {
-        const raw = _.get(
-          resp.data,
-          BudgetsBreakdownFieldsMapping.dataPath,
-          [],
-        );
-        const total = _.sumBy(raw, BudgetsBreakdownFieldsMapping.value);
-        const data = raw.map((item: any) => ({
-          name: _.get(
-            item,
-            BudgetsBreakdownFieldsMapping.name.replace(
-              '<componentField>',
-              componentField,
-            ),
-            '',
-          ),
-          value:
-            (_.get(item, BudgetsBreakdownFieldsMapping.value, 0) / total) * 100,
-          color: '',
-        }));
-        return {
-          data: _.orderBy(data, 'value', 'desc').map((item, index) => {
-            item.color = _.get(BudgetsBreakdownFieldsMapping.colors, index, '');
-            return item;
-          }),
-        };
-      })
+      .all(
+        _.filter([url1, url2], url => url !== '').map((url: string) =>
+          axios.get(url),
+        ),
+      )
+      .then(
+        axios.spread((...responses) => {
+          const rawData1 = _.get(
+            responses[0],
+            `data.${BudgetsTreemapFieldsMapping.dataPath}`,
+            [],
+          );
+          const rawData2 = _.get(
+            responses[1],
+            `data.${BudgetsTreemapFieldsMapping.dataPath}`,
+            [],
+          );
+
+          const data: {
+            name: string;
+            value: number;
+            color: string;
+          }[] = [];
+
+          (componentField === 'activityAreaGroup'
+            ? _.filter(
+                rawData1,
+                item =>
+                  BudgetsTreemapFieldsMapping.url1Items.indexOf(
+                    _.get(item, nameField1, ''),
+                  ) !== -1,
+              )
+            : rawData1
+          ).forEach((item: any) => {
+            data.push({
+              name: _.get(item, nameField1, ''),
+              value: _.get(item, BudgetsTreemapFieldsMapping.value, 0),
+              color: '',
+            });
+          });
+
+          _.filter(
+            rawData2,
+            item =>
+              BudgetsTreemapFieldsMapping.url2Items.indexOf(
+                _.get(item, nameField2, ''),
+              ) !== -1,
+          ).forEach(item => {
+            data.push({
+              name: _.get(item, nameField2, ''),
+              value: _.get(item, BudgetsTreemapFieldsMapping.value, 0),
+              color: '',
+            });
+          });
+
+          const total = _.sumBy(data, 'value');
+
+          data.forEach((item, index) => {
+            item.value = (item.value / total) * 100;
+          });
+
+          return {
+            data: _.orderBy(data, 'value', 'desc').map((item, index) => {
+              item.color = _.get(
+                BudgetsBreakdownFieldsMapping.colors,
+                index,
+                '',
+              );
+              return item;
+            }),
+          };
+        }),
+      )
       .catch(handleDataApiError);
   }
 

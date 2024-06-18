@@ -1,7 +1,8 @@
 {
   "dataPath": "value",
-  "name": "<componentField>.parent.parent.name",
+  "name": "implementationPeriod.grant.<componentField>.name",
   "value": "value",
-  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((<componentField>/parent/parent/name),aggregate(plannedAmount with sum as value))",
-  "colors": ["#0A2840", "#013E77", "#00B5AE", "#C3EDFD", "#F3F5F4"]
+  "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/name),aggregate(plannedAmount with sum as value))",
+  "urlParams2": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/parent/name),aggregate(plannedAmount with sum as value))",
+  "colors": ["#0A2840", "#013E77", "#00B5AE", "#10708F", "#C3EDFD", "#F3F5F4"]
 }

@@ -20,6 +20,39 @@ export class ExpendituresController {
     @param.path.string('column') column: string,
     @param.path.string('componentField') componentField: string,
   ) {
+    const ungrouped = await this.heatmaplocal(row, column, 'activityArea');
+    if (componentField === 'activityAreaGroup') {
+      const grouped = await this.heatmaplocal(
+        row,
+        column,
+        'activityAreaGroup/parent',
+      );
+      return {
+        data: [
+          ..._.filter(
+            ungrouped.data,
+            item =>
+              ExpendituresHeatmapMapping.url1Items.indexOf(item.column) > -1,
+          ),
+          ..._.filter(
+            grouped.data,
+            item =>
+              ExpendituresHeatmapMapping.url2Items.indexOf(item.column) > -1,
+          ),
+        ],
+      };
+    } else {
+      return ungrouped;
+    }
+  }
+
+  @get('/expenditures/heatmap/{row}/{column}/{componentField}/local')
+  @response(200)
+  async heatmaplocal(
+    @param.path.string('row') row: string,
+    @param.path.string('column') column: string,
+    @param.path.string('componentField') componentField: string,
+  ) {
     let filterString = ExpendituresHeatmapMapping.urlParams;
     let rowField = '';
     let subRowField = '';
@@ -83,8 +116,11 @@ export class ExpendituresController {
     filterString = filterFinancialIndicators(
       this.req.query,
       filterString,
-      'implementationPeriod/grant/geography/name',
-      `${componentField}/parent/parent/name`,
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
+      `implementationPeriod/grant/${componentField}/name`,
     );
 
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
