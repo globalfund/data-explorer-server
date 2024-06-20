@@ -7,7 +7,8 @@
     "lang": "narrativeLanguage"
   },
   "implementationPeriodArray": "implementationPeriods",
-  "implementationPeriodFrom": "implementationPeriodFrom",
+  "implementationPeriodFrom": "periodFrom",
+  "implementationPeriodTo": "periodTo",
   "implementationPeriodTitle": "title",
   "countryCode": "geography.code",
   "countryName": "geography.name",

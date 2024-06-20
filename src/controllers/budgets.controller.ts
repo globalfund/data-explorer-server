@@ -463,8 +463,16 @@ export class BudgetsController {
   @get('/budgets/cycles')
   @response(200)
   async cycles() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      BudgetsCyclesMapping.urlParams,
+      'implementationPeriod/grant/geography/code',
+      'implementationPeriod/grant/activityArea/name',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
     return axios
-      .get(`${urls.FINANCIAL_INDICATORS}${BudgetsCyclesMapping.urlParams}`)
+      .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(resp.data, BudgetsCyclesMapping.dataPath, []);
 
@@ -492,7 +500,7 @@ export class BudgetsController {
             },
           ),
           item => parseInt(item.value.toString().split(' - ')[0], 10),
-          'desc',
+          'asc',
         );
 
         return {data};

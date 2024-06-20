@@ -2,6 +2,8 @@
   "dataPath": "value",
   "label": "principalRecipient.name",
   "value": "principalRecipient.name",
-  "type": "principalRecipient.type.name",
-  "typeCode": "principalRecipient.type.code"
+  "subType": "principalRecipient.type.name",
+  "subTypeCode": "principalRecipient.type.code",
+  "type": "principalRecipient.type.parent.name",
+  "typeCode": "principalRecipient.type.parent.code"
 }

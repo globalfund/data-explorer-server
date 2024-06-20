@@ -2,5 +2,5 @@
   "dataPath": "value",
   "cycleFrom": "periodCovered",
   "cycleTo": "",
-  "urlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions')/groupby((periodCovered))&$orderby=periodCovered asc"
+  "urlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions'<filterString>)/groupby((periodCovered))&$orderby=periodCovered asc"
 }

@@ -85,7 +85,9 @@ export class FundingRequestsController {
     @param.path.string('countryCode') countryCode: string,
   ) {
     return axios
-      .get(`http://localhost:4200/funding-requests?geographies=${countryCode}`)
+      .get(
+        `http://localhost:4200/funding-requests?geographies=${countryCode}&periods=${this.req.query.periods}`,
+      )
       .then((resp: AxiosResponse) => resp.data)
       .catch(handleDataApiError);
   }
@@ -93,8 +95,14 @@ export class FundingRequestsController {
   @get('/funding-requests/cycles')
   @response(200)
   async cycles() {
+    const filterString = filterFundingRequests(
+      this.req.query,
+      CyclesMapping.urlParams,
+    );
+    const url = `${urls.FUNDING_REQUESTS}/${filterString}`;
+
     return axios
-      .get(`${urls.FINANCIAL_INDICATORS}${CyclesMapping.urlParams}`)
+      .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(resp.data, CyclesMapping.dataPath, []);
 

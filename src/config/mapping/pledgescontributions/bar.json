@@ -14,5 +14,5 @@
   "donorBarIndicatorContribution": "Contribution - Reference Rate",
   "donorBarIndicatorPledgeAmount": "plannedAmount",
   "donorBarIndicatorContributionAmount": "actualAmount",
-  "donorBarUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions'<filterString>)/groupby((donor/name,donor/type/name,donor/type/parent/name,indicatorName),aggregate(plannedAmount with sum as plannedAmount,actualAmount with sum as actualAmount))"
+  "donorBarUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions' AND indicatorName in ('Pledge - Reference Rate','Contribution - Reference Rate')<filterString>)/groupby((donor/name,donor/type/name,donor/type/parent/name,indicatorName),aggregate(plannedAmount with sum as plannedAmount,actualAmount with sum as actualAmount))"
 }

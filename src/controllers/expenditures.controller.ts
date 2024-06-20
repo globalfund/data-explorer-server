@@ -354,8 +354,16 @@ export class ExpendituresController {
   @get('/expenditures/cycles')
   @response(200)
   async cycles() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      ExpendituresCyclesMapping.urlParams,
+      'implementationPeriod/grant/geography/code',
+      'implementationPeriod/grant/activityArea/name',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
     return axios
-      .get(`${urls.FINANCIAL_INDICATORS}${ExpendituresCyclesMapping.urlParams}`)
+      .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(
           resp.data,

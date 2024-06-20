@@ -2,5 +2,5 @@
   "dataPath": "value",
   "cycleFrom": "resultValueYear",
   "cycleTo": "",
-  "urlParams": "?$apply=filter(programmaticDataset eq 'Annual_Results')/groupby((resultValueYear))&$orderby=resultValueYear asc"
+  "urlParams": "?$apply=filter(programmaticDataset eq 'Annual_Results'<filterString>)/groupby((resultValueYear))&$orderby=resultValueYear asc"
 }

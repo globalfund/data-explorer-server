@@ -18,8 +18,10 @@ const MAPPING = {
   donor: 'donor/name',
   donorType: 'donor/type/name',
   principalRecipient: 'implementationPeriod/grant/principalRecipient/name',
-  principalRecipientType:
+  principalRecipientSubType:
     'implementationPeriod/grant/principalRecipient/type/name',
+  principalRecipientType:
+    'implementationPeriod/grant/principalRecipient/type/parent/name',
   period: 'periodCovered',
   year: 'implementationPeriod/periodFrom',
   yearTo: 'implementationPeriod/periodTo',
@@ -108,7 +110,7 @@ export function filterFinancialIndicators(
   const periods = _.filter(
     _.get(params, 'periods', '').split(','),
     (o: string) => o.length > 0,
-  ).map((period: string) => `'${period}'`);
+  ).map((period: string) => `'${period.replace(/ /g, '')}'`);
   if (periods.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.period}${
       filtering.in

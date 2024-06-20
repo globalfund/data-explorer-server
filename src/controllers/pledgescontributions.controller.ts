@@ -592,10 +592,16 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/cycles')
   @response(200)
   async cycles() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      PledgesContributionsCyclesFieldsMapping.urlParams,
+      ['donor/geography/name', 'donor/geography/code'],
+      'activityArea/name',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
     return axios
-      .get(
-        `${urls.FINANCIAL_INDICATORS}${PledgesContributionsCyclesFieldsMapping.urlParams}`,
-      )
+      .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(
           resp.data,

@@ -8,8 +8,8 @@
   "url2Items": ["HIV/AIDS", "Other"],
   "fields": {
     "principalRecipient": "implementationPeriod/grant/principalRecipient/name",
-    "principalRecipientSubType": "implementationPeriod/grant/principalRecipient/parent/name",
-    "principalRecipientType": "implementationPeriod/grant/principalRecipient/type/name",
+    "principalRecipientSubType": "implementationPeriod/grant/principalRecipient/type/name",
+    "principalRecipientType": "implementationPeriod/grant/principalRecipient/type/parent/name",
     "component": "implementationPeriod/grant/<componentField>/name"
   }
 }

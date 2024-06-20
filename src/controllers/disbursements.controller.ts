@@ -644,10 +644,19 @@ export class DisbursementsController {
   @get('/disbursements/cycles')
   @response(200)
   async cycles() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      DisbursementsCyclesMapping.urlParams,
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
+      'activityArea/name',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
     return axios
-      .get(
-        `${urls.FINANCIAL_INDICATORS}${DisbursementsCyclesMapping.urlParams}`,
-      )
+      .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(
           resp.data,

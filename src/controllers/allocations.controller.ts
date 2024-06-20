@@ -452,10 +452,16 @@ export class AllocationsController {
   @get('/allocations/cycles')
   @response(200)
   async cycles() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      AllocationCyclesFieldsMapping.urlParams,
+      'geography/code',
+      'activityArea/name',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
     return axios
-      .get(
-        `${urls.FINANCIAL_INDICATORS}${AllocationCyclesFieldsMapping.urlParams}`,
-      )
+      .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(
           resp.data,

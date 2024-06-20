@@ -265,10 +265,14 @@ export class ResultsController {
   @get('/results/cycles')
   @response(200)
   async cycles() {
+    const filterString = filterProgrammaticIndicators(
+      this.req.query,
+      ResultsCyclesMappingFields.urlParams,
+    );
+    const url = `${urls.PROGRAMMATIC_INDICATORS}/${filterString}`;
+
     return axios
-      .get(
-        `${urls.PROGRAMMATIC_INDICATORS}${ResultsCyclesMappingFields.urlParams}`,
-      )
+      .get(url)
       .then((resp: AxiosResponse) => {
         const rawData = _.get(
           resp.data,

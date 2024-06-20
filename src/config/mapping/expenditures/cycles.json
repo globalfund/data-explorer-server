@@ -2,5 +2,5 @@
   "dataPath": "value",
   "cycleFrom": "implementationPeriod.periodFrom",
   "cycleTo": "implementationPeriod.periodTo",
-  "urlParams": "?$apply=filter(indicatorName eq 'Expenditure: Module-Intervention - Reference Rate' AND isLatestReported eq true)/groupby((implementationPeriod/periodFrom,implementationPeriod/periodTo))&$orderby=implementationPeriod/periodFrom asc"
+  "urlParams": "?$apply=filter(indicatorName eq 'Expenditure: Module-Intervention - Reference Rate' AND isLatestReported eq true<filterString>)/groupby((implementationPeriod/periodFrom,implementationPeriod/periodTo))&$orderby=implementationPeriod/periodFrom asc"
 }

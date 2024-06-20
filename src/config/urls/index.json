@@ -36,7 +36,7 @@
   "FILTER_OPTIONS_COMPONENTS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/ActivityAreasGrouped?$filter=type eq 'Component'",
   "FILTER_OPTIONS_REPLENISHMENT_PERIODS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/allFinancialIndicators?$apply=filter(financialDataSet eq 'Pledges_Contributions')/groupby((periodCovered))&$orderby=periodCovered asc",
   "FILTER_OPTIONS_DONORS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Donors?$apply=groupby((id,name,type/name))",
-  "FILTER_OPTIONS_PRINCIPAL_RECIPIENTS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$apply=groupby((principalRecipient/type/name,principalRecipient/type/code,principalRecipient/name))",
+  "FILTER_OPTIONS_PRINCIPAL_RECIPIENTS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$apply=groupby((principalRecipient/type/parent/name,principalRecipient/type/parent/code,principalRecipient/type/name,principalRecipient/type/code,principalRecipient/name))",
   "FILTER_OPTIONS_RESULTS_COMPONENTS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/allProgrammaticIndicators?$apply=filter(programmaticDataset eq 'Annual_Results')/groupby((indicatorName,activityArea/name))",
   "FILTER_OPTIONS_STATUS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Statuses",
   "FINANCIAL_INDICATORS": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/allFinancialIndicators",

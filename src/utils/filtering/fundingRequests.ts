@@ -49,7 +49,7 @@ export function filterFundingRequests(
   const periods = _.filter(
     _.get(params, 'periods', '').split(','),
     (o: string) => o.length > 0,
-  ).map((period: string) => period);
+  ).map((period: string) => `'${period}'`);
   if (periods.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.period}${
       filtering.in

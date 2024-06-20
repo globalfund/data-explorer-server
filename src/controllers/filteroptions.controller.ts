@@ -343,21 +343,50 @@ export class FilteroptionsController {
 
         const options: FilterGroupOption[] = [];
 
-        _.map(
-          _.groupBy(rawData, PrincipalRecipientMapping.type),
-          (prs, type) => {
+        const groupedByType = _.groupBy(
+          rawData,
+          PrincipalRecipientMapping.type,
+        );
+
+        _.forEach(groupedByType, (values, type) => {
+          if (type !== 'null') {
             const typeOptions: FilterGroupOption = {
               name: type,
-              value: _.get(prs[0], PrincipalRecipientMapping.typeCode, ''),
-              options: prs.map((pr: any) => ({
-                name: _.get(pr, PrincipalRecipientMapping.label, ''),
-                value: _.get(pr, PrincipalRecipientMapping.value, ''),
-              })),
+              value: _.get(values[0], PrincipalRecipientMapping.typeCode, ''),
+              options: [],
             };
 
+            const groupedBySubType = _.groupBy(
+              values,
+              PrincipalRecipientMapping.subType,
+            );
+
+            _.forEach(groupedBySubType, (subValues, subType) => {
+              const subTypeOptions: FilterGroupOption = {
+                name: subType,
+                value: _.get(
+                  subValues[0],
+                  PrincipalRecipientMapping.subTypeCode,
+                  '',
+                ),
+                options: _.orderBy(
+                  subValues.map((subValue: any) => ({
+                    name: _.get(subValue, PrincipalRecipientMapping.label, ''),
+                    value: _.get(subValue, PrincipalRecipientMapping.value, ''),
+                  })),
+                  'name',
+                  'asc',
+                ),
+              };
+
+              typeOptions.options?.push(subTypeOptions);
+            });
+
+            typeOptions.options = _.orderBy(typeOptions.options, 'name', 'asc');
+
             options.push(typeOptions);
-          },
-        );
+          }
+        });
 
         return {
           data: {

@@ -2,5 +2,5 @@
   "dataPath": "value",
   "cycleFrom": "implementationPeriod.periodFrom",
   "cycleTo": "implementationPeriod.periodTo",
-  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate')/groupby((implementationPeriod/periodFrom,implementationPeriod/periodTo))&$orderby=implementationPeriod/periodFrom asc"
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((implementationPeriod/periodFrom,implementationPeriod/periodTo))&$orderby=implementationPeriod/periodFrom asc"
 }
