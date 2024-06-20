@@ -6,6 +6,7 @@ const MAPPING = {
   geography: ['geography/name', 'geography/code'],
   component: 'activityArea/name',
   year: 'eligibilityYear',
+  cycle: 'fundingStream',
 };
 
 export function filterEligibility(
@@ -51,6 +52,16 @@ export function filterEligibility(
     str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.year}${
       filtering.in
     }(${years.join(filtering.multi_param_separator)})`;
+  }
+
+  const cycles = _.filter(
+    _.get(params, 'cycles', '').split(','),
+    (o: string) => o.length > 0,
+  ).map((cycle: string) => `'${cycle}'`);
+  if (cycles.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.cycle}${
+      filtering.in
+    }(${cycles.join(filtering.multi_param_separator)})`;
   }
 
   // const search = _.get(params, 'q', '');
