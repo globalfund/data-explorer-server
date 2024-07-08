@@ -392,6 +392,7 @@ export class LocationController {
                 name: _.get(raw, LocationInfoMapping.name, ''),
                 region: _.get(raw, LocationInfoMapping.regionName, ''),
                 description: _.get(description, 'summary', ''),
+                isDonor: _.get(raw, LocationInfoMapping.isDonor, false),
                 FPMName: [
                   _.get(rawFPM, LocationInfoMapping.FPMSalutation, ''),
                   _.get(rawFPM, LocationInfoMapping.FPMFirstName, ''),
