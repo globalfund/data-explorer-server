@@ -78,13 +78,21 @@ async function getAllocationsData(url: string) {
             ),
           },
           tooltip: {
-            items: groupedByName[name].map((item: any) => ({
-              name: _.get(item, AllocationRadialFieldsMapping.tooltipItem, ''),
-              value: _.get(item, AllocationRadialFieldsMapping.value, 0),
-              percentage:
-                (_.get(item, AllocationRadialFieldsMapping.value, 0) / value) *
-                100,
-            })),
+            items: _.filter(
+              groupedByName[name].map((item: any) => ({
+                name: _.get(
+                  item,
+                  AllocationRadialFieldsMapping.tooltipItem,
+                  '',
+                ),
+                value: _.get(item, AllocationRadialFieldsMapping.value, 0),
+                percentage:
+                  (_.get(item, AllocationRadialFieldsMapping.value, 0) /
+                    value) *
+                  100,
+              })),
+              item => item.name !== 'GLOBAL_FUND_HIERARCHY',
+            ),
           },
         });
       });

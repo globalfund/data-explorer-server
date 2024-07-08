@@ -296,14 +296,14 @@ export class ResultsController {
           };
         });
 
-        return {data};
+        return {data: _.orderBy(data, 'value', 'desc')};
       })
       .catch(handleDataApiError);
   }
 
   // v2
 
-  @get('/results')
+  @get('/v2/results')
   @response(200, RESULTS_RESPONSE)
   results(): object {
     const mapper = mapTransform(resultsMap);
@@ -347,7 +347,7 @@ export class ResultsController {
       .catch(handleDataApiError);
   }
 
-  @get('/results/years')
+  @get('/v2/results/years')
   @response(200, RESULTS_RESPONSE)
   resultYears(): object {
     const url = `${urls.results}/?${ResultsYearsMappingFields.aggregation}`;
@@ -364,7 +364,7 @@ export class ResultsController {
       .catch(handleDataApiError);
   }
 
-  @get('/results-stats')
+  @get('/v2/results-stats')
   @response(200, RESULT_STATS_RESPONSE)
   resultStats(): object {
     const filterString = getFilterStringForStats(

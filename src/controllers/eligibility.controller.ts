@@ -341,7 +341,7 @@ export class EligibilityController {
 
   // v2
 
-  @get('/eligibility')
+  @get('/v2/eligibility')
   @response(200, ELIGIBILITY_RESPONSE)
   eligibility(): object {
     const aggregateByField =
@@ -419,7 +419,7 @@ export class EligibilityController {
       .catch(handleDataApiError);
   }
 
-  @get('/eligibility/years')
+  @get('/v2/eligibility/years')
   @response(200, ELIGIBILITY_RESPONSE)
   eligibilityYearsV2(): object {
     const url = `${urls.eligibility}/?${EligibilityYearsFieldsMapping.aggregation}`;
@@ -440,7 +440,7 @@ export class EligibilityController {
       .catch(handleDataApiError);
   }
 
-  @get('/eligibility/country')
+  @get('/v2/eligibility/country')
   @response(200, ELIGIBILITY_COUNTRY_RESPONSE)
   eligibilityCountry(): object {
     if (_.get(this.req.query, 'locations', '').length === 0) {
@@ -835,7 +835,7 @@ export class EligibilityController {
       .catch(handleDataApiError);
   }
 
-  @get('/eligibility/status/codelist')
+  @get('/v2/eligibility/status/codelist')
   @response(200)
   eligibilityStatusCodelist(): object {
     const keys = Object.keys(ScatterplotFieldsMapping.statusValues);
@@ -848,7 +848,7 @@ export class EligibilityController {
     };
   }
 
-  @get('/eligibility/disease-burden/codelist')
+  @get('/v2/eligibility/disease-burden/codelist')
   @response(200)
   eligibilityDiseaseBurdenCodelist(): object {
     return {
