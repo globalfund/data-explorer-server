@@ -266,20 +266,20 @@ export class PledgescontributionsController {
           const groupedByDonorSubType = _.groupBy(value, 'donorSubType');
           const obj = {
             name: key,
-            value: _.sumBy(value, 'actualAmount'),
-            value1: _.sumBy(value, 'plannedAmount'),
+            value: _.sumBy(value, 'plannedAmount'),
+            value1: _.sumBy(value, 'actualAmount'),
             items: _.map(
               groupedByDonorSubType,
               (donorSubTypeValue, donorSubTypeKey) => {
                 const groupedByDonor = _.groupBy(donorSubTypeValue, 'donor');
                 return {
                   name: donorSubTypeKey,
-                  value: _.sumBy(donorSubTypeValue, 'actualAmount'),
-                  value1: _.sumBy(donorSubTypeValue, 'plannedAmount'),
+                  value: _.sumBy(donorSubTypeValue, 'plannedAmount'),
+                  value1: _.sumBy(donorSubTypeValue, 'actualAmount'),
                   items: _.map(groupedByDonor, (donorValue, donorKey) => ({
                     name: donorKey,
-                    value: _.sumBy(donorValue, 'actualAmount'),
-                    value1: _.sumBy(donorValue, 'plannedAmount'),
+                    value: _.sumBy(donorValue, 'plannedAmount'),
+                    value1: _.sumBy(donorValue, 'actualAmount'),
                   })),
                 };
               },
@@ -505,20 +505,20 @@ export class PledgescontributionsController {
           const groupedByDonorSubType = _.groupBy(value, 'donorSubType');
           const obj = {
             name: key,
-            pledge: _.sumBy(value, 'actualAmount'),
-            contribution: _.sumBy(value, 'plannedAmount'),
+            pledge: _.sumBy(value, 'plannedAmount'),
+            contribution: _.sumBy(value, 'actualAmount'),
             _children: _.map(
               groupedByDonorSubType,
               (donorSubTypeValue, donorSubTypeKey) => {
                 const groupedByDonor = _.groupBy(donorSubTypeValue, 'donor');
                 return {
                   name: donorSubTypeKey,
-                  pledge: _.sumBy(donorSubTypeValue, 'actualAmount'),
-                  contribution: _.sumBy(donorSubTypeValue, 'plannedAmount'),
+                  pledge: _.sumBy(donorSubTypeValue, 'plannedAmount'),
+                  contribution: _.sumBy(donorSubTypeValue, 'actualAmount'),
                   _children: _.map(groupedByDonor, (donorValue, donorKey) => ({
                     name: donorKey,
-                    pledge: _.sumBy(donorValue, 'actualAmount'),
-                    contribution: _.sumBy(donorValue, 'plannedAmount'),
+                    pledge: _.sumBy(donorValue, 'plannedAmount'),
+                    contribution: _.sumBy(donorValue, 'actualAmount'),
                   })),
                 };
               },
