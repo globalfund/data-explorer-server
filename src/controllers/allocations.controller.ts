@@ -104,7 +104,7 @@ export class AllocationsController {
     let filterString = filterFinancialIndicators(
       this.req.query,
       AllocationCumulativeByCyclesFieldsMapping.urlParams,
-      'geography/name',
+      ['geography/name', 'geography/code'],
       'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -189,7 +189,7 @@ export class AllocationsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       AllocationSunburstFieldsMapping.urlParams,
-      'geography/name',
+      ['geography/name', 'geography/code'],
       'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -236,7 +236,7 @@ export class AllocationsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       urlParams,
-      'geography/name',
+      ['geography/name', 'geography/code'],
       'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -310,7 +310,7 @@ export class AllocationsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       AllocationTableFieldsMapping.urlParams,
-      'geography/name',
+      ['geography/name', 'geography/code'],
       'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -406,13 +406,13 @@ export class AllocationsController {
     let filterString = filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.urlParams,
-      'geography/name',
+      ['geography/name', 'geography/code'],
       'activityArea/name',
     );
     let filterString2 = filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.countriesCountUrlParams,
-      'geography/name',
+      ['geography/name', 'geography/code'],
       'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
