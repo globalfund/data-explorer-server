@@ -43,22 +43,28 @@ export class FundingRequestsController {
               _children: items.map((item: any) => {
                 return {
                   components: item.components,
-                  submissionDate: moment(item.submissionDate).format(
-                    'D MMMM YYYY',
-                  ),
+                  submissionDate: item.submissionDate
+                    ? moment(item.submissionDate).format('D MMMM YYYY')
+                    : '--',
                   approach: item.approach,
                   trpWindow: item.trpWindow,
                   trpOutcome: item.trpOutcome,
                   portfolioCategorization: item.portfolioCategorization,
                   _children: item.items.map((subitem: any) => {
                     return {
-                      boardApproval: subitem.boardApproval,
-                      gacMeeting: moment(item.gacMeeting).format('MMMM YYYY'),
-                      grant: subitem.grant.code,
-                      startingDate: moment(subitem.startDate).format(
-                        'DD-MM-YYYY',
-                      ),
-                      endingDate: moment(subitem.endDate).format('DD-MM-YYYY'),
+                      boardApproval: subitem.boardApproval
+                        ? moment(subitem.boardApproval).format('MMMM YYYY')
+                        : '--',
+                      gacMeeting: item.gacMeeting
+                        ? moment(item.gacMeeting).format('MMMM YYYY')
+                        : '--',
+                      grant: subitem.grant,
+                      startingDate: subitem.startDate
+                        ? moment(subitem.startDate).format('DD-MM-YYYY')
+                        : '--',
+                      endingDate: subitem.endDate
+                        ? moment(subitem.endDate).format('DD-MM-YYYY')
+                        : '--',
                       principalRecipient: subitem.principalRecipient,
                     };
                   }),
