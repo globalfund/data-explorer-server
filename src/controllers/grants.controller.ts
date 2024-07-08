@@ -207,7 +207,9 @@ export class GrantsController {
           [GrantOverviewMapping.implementationPeriodFrom],
           ['asc'],
         );
-        const period = periods[ip - 1];
+        const period = _.find(periods, {
+          [GrantOverviewMapping.implementationPeriod.code]: `${id}P0${ip}`,
+        });
         const data: {
           status: string;
           goals: string[];

@@ -16,6 +16,7 @@
         {"label": "Signed", "value": "Total Signed Amount - Reference Rate"}
       ]
     },
+    "code": "code",
     "status": "status.statusName",
     "narratives": "narratives",
     "narrative": {
