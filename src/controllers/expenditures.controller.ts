@@ -246,7 +246,10 @@ export class ExpendituresController {
         /<componentField>/g,
         componentField,
       ),
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       `${componentField}/parent/parent/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -296,7 +299,10 @@ export class ExpendituresController {
         /<componentField>/g,
         componentField,
       ),
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       `${componentField}/parent/parent/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;

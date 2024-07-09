@@ -190,7 +190,10 @@ export class DisbursementsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       FinancialInsightsStatsMapping.urlParams,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;

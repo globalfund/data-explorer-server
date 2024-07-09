@@ -250,7 +250,10 @@ export class BudgetsController {
         '<componentField>',
         componentField,
       ),
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       `implementationPeriod/grant/${componentField}/name`,
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
@@ -381,7 +384,10 @@ export class BudgetsController {
     const filterString = filterFinancialIndicators(
       this.req.query,
       BudgetsTableFieldsMapping.urlParams,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'implementationPeriod/grant/activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -526,7 +532,10 @@ export class BudgetsController {
         '<componentField>',
         componentField,
       ),
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       `implementationPeriod/grant/${componentField}/name`,
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
@@ -643,7 +652,10 @@ export class BudgetsController {
     const filterString1 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParams,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'implementationPeriod/grant/activityArea/name',
     );
     const filterString2 = filterFinancialIndicators(
@@ -867,13 +879,19 @@ export class BudgetsController {
     const filterString1 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParams,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'implementationPeriod/grant/activityArea/name',
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParamsOrganisations,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'implementationPeriod/grant/activityArea/name',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
@@ -1047,13 +1065,19 @@ export class BudgetsController {
     const filterString1 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParams,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'implementationPeriod/grant/activityArea/name',
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParamsOrganisations,
-      'implementationPeriod/grant/geography/name',
+      [
+        'implementationPeriod/grant/geography/name',
+        'implementationPeriod/grant/geography/code',
+      ],
       'implementationPeriod/grant/activityArea/name',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
