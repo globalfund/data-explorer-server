@@ -6,11 +6,12 @@
   "disbursementIndicatorName": "Total Disbursement to Last Expenditure Reporting Period - Reference Rate",
   "cashBalanceIndicatorName": "Opening Cash Balance - Reference Rate",
   "organisationName": "implementationPeriod.grant.principalRecipient.name",
-  "organisationType": "implementationPeriod.grant.principalRecipient.type.name",
+  "organisationSubType": "implementationPeriod.grant.principalRecipient.type.name",
+  "organisationType": "implementationPeriod.grant.principalRecipient.type.parent.name",
   "expenditureValue": "actualCumulative",
   "budgetValue": "plannedCumulative",
   "disbursementValue": "actualCumulative",
   "cashBalanceValue": "actual",
   "urlParams": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount'<filterString>)/groupby((indicatorName),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))",
-  "urlParamsOrganisations": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount'<filterString>)/groupby((indicatorName,implementationPeriod/grant/principalRecipient/type/name,implementationPeriod/grant/principalRecipient/name),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))"
+  "urlParamsOrganisations": "?$apply=filter(financialDataSet eq 'ImplementationPeriodFinancialMetricAmount'<filterString>)/groupby((indicatorName,implementationPeriod/grant/principalRecipient/type/parent/name,implementationPeriod/grant/principalRecipient/type/name,implementationPeriod/grant/principalRecipient/name),aggregate(actualAmount with sum as actual,actualAmountCumulative with sum as actualCumulative,plannedAmountCumulative with sum as plannedCumulative))"
 }

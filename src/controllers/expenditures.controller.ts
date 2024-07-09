@@ -282,7 +282,7 @@ export class ExpendituresController {
           };
         });
 
-        return {data};
+        return {data: _.filter(data, item => item.name !== 'null')};
       })
       .catch(handleDataApiError);
   }
