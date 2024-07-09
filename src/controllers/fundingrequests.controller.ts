@@ -36,7 +36,11 @@ export class FundingRequestsController {
 
         const groupedByGeo = _.groupBy(data, Table2FieldsMapping.groupby);
 
-        return {
+        let result: {
+          data: any;
+          signedCount?: any;
+          submittedCount?: any;
+        } = {
           data: _.map(groupedByGeo, (items, key) => {
             return {
               components: key,
@@ -72,15 +76,24 @@ export class FundingRequestsController {
               }),
             };
           }),
-          submittedCount: _.map(groupedByGeo, (items, key) => ({
-            name: key,
-            count: items.length,
-          })),
-          signedCount: _.map(groupedByGeo, (items, key) => ({
-            name: key,
-            count: _.filter(items, (item: any) => item.items.length > 0).length,
-          })),
         };
+
+        if (this.req.query.withCounts) {
+          result = {
+            ...result,
+            submittedCount: _.map(groupedByGeo, (items, key) => ({
+              name: key,
+              count: items.length,
+            })),
+            signedCount: _.map(groupedByGeo, (items, key) => ({
+              name: key,
+              count: _.filter(items, (item: any) => item.items.length > 0)
+                .length,
+            })),
+          };
+        }
+
+        return result;
       })
       .catch(handleDataApiError);
   }
@@ -92,7 +105,7 @@ export class FundingRequestsController {
   ) {
     return axios
       .get(
-        `http://localhost:4200/funding-requests?geographies=${countryCode}&periods=${this.req.query.periods}`,
+        `http://localhost:4200/funding-requests?withCounts=1&geographies=${countryCode}&periods=${this.req.query.periods}`,
       )
       .then((resp: AxiosResponse) => resp.data)
       .catch(handleDataApiError);

@@ -4,7 +4,7 @@ import {getGeographyValues} from './geographies';
 
 const MAPPING = {
   geography: ['geography/name', 'geography/code'],
-  component: 'activityArea/name',
+  component: 'activityAreas/any(tag:tag/name in (<value>))',
   period: 'periodFrom',
   trpWindow: 'window',
   portfolioCategory: 'differentiationCategory',
