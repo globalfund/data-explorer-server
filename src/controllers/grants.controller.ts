@@ -506,6 +506,9 @@ export class GrantsController {
           data.nodes.push({
             name: category1,
             level: 1,
+            itemStyle: {
+              color: '#252C34',
+            },
           });
           data.links.push({
             source: 'Total budget',
@@ -530,6 +533,9 @@ export class GrantsController {
             data.nodes.push({
               name,
               level: 2,
+              itemStyle: {
+                color: '#252C34',
+              },
             });
             data.links.push({
               source: category1,
@@ -564,6 +570,9 @@ export class GrantsController {
                   data.nodes.push({
                     name,
                     level: 3,
+                    itemStyle: {
+                      color: '#252C34',
+                    },
                   });
 
                   data.links.push({
@@ -620,6 +629,14 @@ export class GrantsController {
 
         let years: string[] = [];
 
+        if (type === 'Coverage / Output indicator') {
+          _.forEach(raw, (item: any) => {
+            item.targetValueYear = moment(
+              _.get(item, GrantTargetsResultsMapping.startDate, ''),
+            ).get('year');
+          });
+        }
+
         _.map(groupedByModule, (moduleItems, key) => {
           const item: any = {
             name: key,
@@ -643,6 +660,10 @@ export class GrantsController {
                 GrantTargetsResultsMapping.year,
               );
               years = [...years, ...Object.keys(groupedByYear)];
+              years = _.filter(
+                _.uniq(years),
+                year => year !== 'null' && year !== 'NaN',
+              );
               let itempush = {
                 reversed:
                   _.get(item, GrantTargetsResultsMapping.reversed, false) ===
@@ -711,9 +732,13 @@ export class GrantsController {
           data.push(item);
         });
 
-        years = _.uniq(years);
-
-        return {data, years};
+        return {
+          data:
+            type === 'Coverage / Output indicator'
+              ? data
+              : _.get(data, '[0]._children', []),
+          years,
+        };
       })
       .catch(handleDataApiError);
   }

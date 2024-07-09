@@ -8,9 +8,11 @@
   "baselineValue": "baselineValuePercentage",
   "baselineYear": "baselineValueYear",
   "baselineSource": "valueSource",
+  "startDate": "startDate",
+  "endDate": "endDate",
   "year": "targetValueYear",
   "target": "targetValuePercentage",
   "result": "resultValuePercentage",
   "achievement": "performance",
-  "urlParams": "?$filter=programmaticDataSet eq 'IMPLEMENTATION_PERIOD_TARGETS_RESULTS' AND implementationPeriod/code eq '<grantIP>' AND valueType eq '<type>'&$expand=activityArea($select=name)&$select=activityArea,indicatorName,isReversed,geographicCoverage,aggregationType,baselineValuePercentage,baselineValueYear,valueSource,targetValueYear,targetValuePercentage,resultValuePercentage,performance"
+  "urlParams": "?$filter=programmaticDataSet eq 'IMPLEMENTATION_PERIOD_TARGETS_RESULTS' AND implementationPeriod/code eq '<grantIP>' AND valueType eq '<type>'&$expand=activityArea($select=name)&$select=activityArea,indicatorName,isReversed,geographicCoverage,startDate,baselineValuePercentage,baselineValueYear,valueSource,targetValueYear,targetValuePercentage,resultValuePercentage,performance"
 }
