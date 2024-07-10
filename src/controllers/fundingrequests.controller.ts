@@ -57,10 +57,10 @@ export class FundingRequestsController {
                         ? moment(item.gacMeeting).format('MMMM YYYY')
                         : '--',
                       grant: subitem.grant,
-                      startingDate: subitem.startDate
+                      startingDate: subitem.startingDate
                         ? moment(subitem.startDate).format('DD-MM-YYYY')
                         : '--',
-                      endingDate: subitem.endDate
+                      endingDate: subitem.endingDate
                         ? moment(subitem.endDate).format('DD-MM-YYYY')
                         : '--',
                       principalRecipient: subitem.principalRecipient,
