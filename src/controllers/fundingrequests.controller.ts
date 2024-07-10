@@ -42,7 +42,7 @@ export class FundingRequestsController {
                 return {
                   components: item.components,
                   submissionDate: item.submissionDate
-                    ? moment(item.submissionDate).format('D MMMM YYYY')
+                    ? moment(item.submissionDate).format('DD MMM YYYY')
                     : '--',
                   approach: item.approach,
                   trpWindow: item.trpWindow,
@@ -51,17 +51,17 @@ export class FundingRequestsController {
                   _children: item.items.map((subitem: any) => {
                     return {
                       boardApproval: subitem.boardApproval
-                        ? moment(subitem.boardApproval).format('MMMM YYYY')
+                        ? moment(subitem.boardApproval).format('DD MMM YYYY')
                         : '--',
                       gacMeeting: item.gacMeeting
-                        ? moment(item.gacMeeting).format('MMMM YYYY')
+                        ? moment(item.gacMeeting).format('DD MMM YYYY')
                         : '--',
                       grant: subitem.grant,
                       startingDate: subitem.startingDate
-                        ? moment(subitem.startDate).format('DD-MM-YYYY')
+                        ? moment(subitem.startDate).format('DD MMM YYYY')
                         : '--',
                       endingDate: subitem.endingDate
-                        ? moment(subitem.endDate).format('DD-MM-YYYY')
+                        ? moment(subitem.endDate).format('DD MMM YYYY')
                         : '--',
                       principalRecipient: subitem.principalRecipient,
                     };

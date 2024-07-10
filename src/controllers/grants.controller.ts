@@ -246,7 +246,7 @@ export class GrantsController {
               GrantOverviewMapping.implementationPeriod.boardApprovedDate,
               '',
             ),
-          ).format('DD/MM/YYYY - hh:mm A');
+          ).format('DD MMM YYYY');
           data.dates = [
             moment(
               _.get(
@@ -254,14 +254,14 @@ export class GrantsController {
                 GrantOverviewMapping.implementationPeriod.startDate,
                 '',
               ),
-            ).format('DD/MM/YYYY hh:mm A'),
+            ).format('DD MMM YYYY'),
             moment(
               _.get(
                 period,
                 GrantOverviewMapping.implementationPeriod.endDate,
                 '',
               ),
-            ).format('DD/MM/YYYY hh:mm A'),
+            ).format('DD MMM YYYY'),
           ];
         }
         return {data: [data]};
