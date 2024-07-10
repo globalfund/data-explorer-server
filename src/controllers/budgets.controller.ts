@@ -300,9 +300,29 @@ export class BudgetsController {
   @get('/budgets/table')
   @response(200)
   async table() {
+    let urlParams = BudgetsTableFieldsMapping.urlParams;
+    let level1Field = BudgetsTableFieldsMapping.level1Field;
+    let level2Field = BudgetsTableFieldsMapping.level2Field;
+    let level3Field: string | null = BudgetsTableFieldsMapping.level3Field;
+    if (this.req.query.var2) {
+      const var2 = this.req.query.var2.toString();
+      urlParams = BudgetsTableFieldsMapping.urlParamsVar2.replace(
+        /<componentField>/g,
+        var2,
+      );
+      level1Field = BudgetsTableFieldsMapping.level1FieldVar2.replace(
+        '<componentField>',
+        var2,
+      );
+      level2Field = BudgetsTableFieldsMapping.level2FieldVar2.replace(
+        '<componentField>',
+        var2,
+      );
+      level3Field = null;
+    }
     const filterString = filterFinancialIndicators(
       this.req.query,
-      BudgetsTableFieldsMapping.urlParams,
+      urlParams,
       [
         'implementationPeriod/grant/geography/name',
         'implementationPeriod/grant/geography/code',
@@ -319,10 +339,7 @@ export class BudgetsController {
           BudgetsTableFieldsMapping.dataPath,
           [],
         );
-        const groupedByLevel1 = _.groupBy(
-          rawData,
-          BudgetsTableFieldsMapping.level1Field,
-        );
+        const groupedByLevel1 = _.groupBy(rawData, level1Field);
 
         const data: {
           name: string;
@@ -330,7 +347,7 @@ export class BudgetsController {
           _children: {
             name: string;
             amount: number;
-            _children: {
+            _children?: {
               name: string;
               amount: number;
             }[];
@@ -338,10 +355,7 @@ export class BudgetsController {
         }[] = [];
 
         _.forEach(groupedByLevel1, (level1Data, level1) => {
-          const grouepdByLevel2 = _.groupBy(
-            level1Data,
-            BudgetsTableFieldsMapping.level2Field,
-          );
+          const grouepdByLevel2 = _.groupBy(level1Data, level2Field);
           const level1Amount = _.sumBy(
             level1Data,
             BudgetsTableFieldsMapping.valueField,
@@ -349,10 +363,9 @@ export class BudgetsController {
           const level1Children = _.map(
             grouepdByLevel2,
             (level2Data, level2) => {
-              const groupedByLevel3 = _.groupBy(
-                level2Data,
-                BudgetsTableFieldsMapping.level3Field,
-              );
+              const groupedByLevel3 = level3Field
+                ? _.groupBy(level2Data, level3Field)
+                : {};
               const level2Amount = _.sumBy(
                 level2Data,
                 BudgetsTableFieldsMapping.valueField,
@@ -360,16 +373,18 @@ export class BudgetsController {
               return {
                 name: level2,
                 amount: level2Amount,
-                _children: _.map(groupedByLevel3, (level3Data, level3) => {
-                  const level3Amount = _.sumBy(
-                    level3Data,
-                    BudgetsTableFieldsMapping.valueField,
-                  );
-                  return {
-                    name: level3,
-                    amount: level3Amount,
-                  };
-                }),
+                _children: level3Field
+                  ? _.map(groupedByLevel3, (level3Data, level3) => {
+                      const level3Amount = _.sumBy(
+                        level3Data,
+                        BudgetsTableFieldsMapping.valueField,
+                      );
+                      return {
+                        name: level3,
+                        amount: level3Amount,
+                      };
+                    })
+                  : undefined,
               };
             },
           );

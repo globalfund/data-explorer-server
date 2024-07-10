@@ -5,5 +5,8 @@
   "level3Field": "financialCategory.name",
   "valueField": "value",
   "cycle": "periodFrom",
-  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((financialCategory/name,financialCategory/parent/name,financialCategory/parent/parent/name),aggregate(plannedAmount with sum as value))"
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((financialCategory/name,financialCategory/parent/name,financialCategory/parent/parent/name),aggregate(plannedAmount with sum as value))",
+  "level1FieldVar2": "<componentField>.parent.name",
+  "level2FieldVar2": "<componentField>.name",
+  "urlParamsVar2": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((<componentField>/name,<componentField>/parent/name,<componentField>/parent/parent/name),aggregate(plannedAmount with sum as value))"
 }
