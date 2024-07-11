@@ -80,6 +80,8 @@ export class EligibilityController {
           EligibilityTableMapping.geography,
         );
 
+        const years: string[] = [];
+
         const data: {
           [key: string]:
             | string
@@ -150,6 +152,7 @@ export class EligibilityController {
             );
 
             _.forEach(componentGroupedByYear, (value, key) => {
+              years.push(key);
               let isEligible = _.get(
                 value,
                 `[0]["${EligibilityTableMapping.isEligible}"]`,
@@ -184,7 +187,7 @@ export class EligibilityController {
           return item;
         });
 
-        return {data};
+        return {data, years: _.orderBy(_.uniq(years), [], ['desc'])};
       })
       .catch(handleDataApiError);
   }
