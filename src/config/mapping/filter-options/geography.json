@@ -1,5 +1,7 @@
 {
   "dataPath": "value[0].children",
+  "dataPathBoardConstituencyView": "value",
+  "dataPathPortfolioView": "value",
   "label": "name",
   "value": "code",
   "children": "children",

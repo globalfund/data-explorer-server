@@ -43,7 +43,9 @@ export function filterFinancialIndicators(
     _.get(params, 'geographies', '').split(','),
     (o: string) => o.length > 0,
   );
-  const geographies = geos.map((geography: string) => `'${geography}'`);
+  const geographies = geos.map(
+    (geography: string) => `'${geography.replace(/'/g, "''")}'`,
+  );
   if (geos.length > 0) {
     const values: string[] = [...geographies, ...getGeographyValues(geos)];
     const geoMapping =
@@ -71,7 +73,7 @@ export function filterFinancialIndicators(
   const donors = _.filter(
     _.get(params, 'donors', '').split(','),
     (o: string) => o.length > 0,
-  ).map((donor: string) => `'${donor}'`);
+  ).map((donor: string) => `'${donor.replace(/'/g, "''")}'`);
   if (donors.length > 0) {
     str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.donor}${
       filtering.in

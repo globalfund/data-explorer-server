@@ -1,5 +1,5 @@
 import {inject} from '@loopback/core';
-import {get, Request, response, RestBindings} from '@loopback/rest';
+import {get, param, Request, response, RestBindings} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import ComponentMapping from '../config/mapping/filter-options/components.json';
@@ -16,15 +16,23 @@ import {handleDataApiError} from '../utils/dataApiError';
 export class FilteroptionsController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
-  @get('/filter-options/geography')
+  @get('/filter-options/geography/{type}')
   @response(200)
-  async filterOptionsGeography() {
-    const url = urls.FILTER_OPTIONS_GEOGRAPHY;
+  async filterOptionsGeography(@param.path.string('type') type: string) {
+    let url = urls.FILTER_OPTIONS_GEOGRAPHIES;
+    let dataPath = GeographyMapping.dataPath;
+    if (type === 'Portfolio View') {
+      url = urls.FILTER_OPTIONS_GEOGRAPHIES_PORTFOLIO_VIEW;
+      dataPath = GeographyMapping.dataPathPortfolioView;
+    } else if (type === 'Board Constituency View') {
+      url = urls.FILTER_OPTIONS_GEOGRAPHIES_BOARD_CONSTITUENCY_VIEW;
+      dataPath = GeographyMapping.dataPathBoardConstituencyView;
+    }
 
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
-        const rawData = _.get(resp.data, GeographyMapping.dataPath, []);
+        const rawData = _.get(resp.data, dataPath, []);
         const data: FilterGroupOption[] = [];
 
         rawData.forEach((item1: any) => {
@@ -167,10 +175,13 @@ export class FilteroptionsController {
       .catch(handleDataApiError);
   }
 
-  @get('/filter-options/components')
+  @get('/filter-options/components/{type}')
   @response(200)
-  async filterOptionsComponents() {
-    const url = urls.FILTER_OPTIONS_COMPONENTS;
+  async filterOptionsComponents(@param.path.string('type') type: string) {
+    const url =
+      type === 'grouped'
+        ? urls.FILTER_OPTIONS_COMPONENTS_GROUPED
+        : urls.FILTER_OPTIONS_COMPONENTS_UNGROUPED;
 
     return axios
       .get(url)

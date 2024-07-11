@@ -13,19 +13,28 @@ import {filterFinancialIndicators} from '../utils/filtering/financialIndicators'
 export class ExpendituresController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
-  @get('/expenditures/heatmap/{row}/{column}/{componentField}')
+  @get(
+    '/expenditures/heatmap/{row}/{column}/{componentField}/{geographyGrouping}',
+  )
   @response(200)
   async heatmap(
     @param.path.string('row') row: string,
     @param.path.string('column') column: string,
     @param.path.string('componentField') componentField: string,
+    @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
-    const ungrouped = await this.heatmaplocal(row, column, 'activityArea');
+    const ungrouped = await this.heatmaplocal(
+      row,
+      column,
+      'activityArea',
+      geographyGrouping,
+    );
     if (componentField === 'activityAreaGroup') {
       const grouped = await this.heatmaplocal(
         row,
         column,
         'activityAreaGroup/parent',
+        geographyGrouping,
       );
       return {
         data: [
@@ -46,13 +55,31 @@ export class ExpendituresController {
     }
   }
 
-  @get('/expenditures/heatmap/{row}/{column}/{componentField}/local')
+  @get(
+    '/expenditures/heatmap/{row}/{column}/{componentField}/{geographyGrouping}/local',
+  )
   @response(200)
   async heatmaplocal(
     @param.path.string('row') row: string,
     @param.path.string('column') column: string,
     @param.path.string('componentField') componentField: string,
+    @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
+    let geographyMappings = [
+      'implementationPeriod/grant/geography/name',
+      'implementationPeriod/grant/geography/code',
+    ];
+    if (geographyGrouping === 'Portfolio View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_PortfolioView/name',
+        'implementationPeriod/grant/geography_PortfolioView/code',
+      ];
+    } else if (geographyGrouping === 'Board Constituency View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_BoardConstituencyView/name',
+        'implementationPeriod/grant/geography_BoardConstituencyView/code',
+      ];
+    }
     let filterString = ExpendituresHeatmapMapping.urlParams;
     let rowField = '';
     let subRowField = '';
@@ -116,10 +143,7 @@ export class ExpendituresController {
     filterString = filterFinancialIndicators(
       this.req.query,
       filterString,
-      [
-        'implementationPeriod/grant/geography/name',
-        'implementationPeriod/grant/geography/code',
-      ],
+      geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
     );
 
@@ -235,21 +259,34 @@ export class ExpendituresController {
       .catch(handleDataApiError);
   }
 
-  @get('/expenditures/expandable-bar/{componentField}')
+  @get('/expenditures/expandable-bar/{componentField}/{geographyGrouping}')
   @response(200)
   async expandableBar(
     @param.path.string('componentField') componentField: string,
+    @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
+    let geographyMappings = [
+      'implementationPeriod/grant/geography/name',
+      'implementationPeriod/grant/geography/code',
+    ];
+    if (geographyGrouping === 'Portfolio View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_PortfolioView/name',
+        'implementationPeriod/grant/geography_PortfolioView/code',
+      ];
+    } else if (geographyGrouping === 'Board Constituency View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_BoardConstituencyView/name',
+        'implementationPeriod/grant/geography_BoardConstituencyView/code',
+      ];
+    }
     const filterString = filterFinancialIndicators(
       this.req.query,
       ExpendituresBarChartMapping.urlParams.replace(
         /<componentField>/g,
         componentField,
       ),
-      [
-        'implementationPeriod/grant/geography/name',
-        'implementationPeriod/grant/geography/code',
-      ],
+      geographyMappings,
       `${componentField}/parent/parent/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -290,19 +327,34 @@ export class ExpendituresController {
       .catch(handleDataApiError);
   }
 
-  @get('/expenditures/table/{componentField}')
+  @get('/expenditures/table/{componentField}/{geographyGrouping}')
   @response(200)
-  async table(@param.path.string('componentField') componentField: string) {
+  async table(
+    @param.path.string('componentField') componentField: string,
+    @param.path.string('geographyGrouping') geographyGrouping: string,
+  ) {
+    let geographyMappings = [
+      'implementationPeriod/grant/geography/name',
+      'implementationPeriod/grant/geography/code',
+    ];
+    if (geographyGrouping === 'Portfolio View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_PortfolioView/name',
+        'implementationPeriod/grant/geography_PortfolioView/code',
+      ];
+    } else if (geographyGrouping === 'Board Constituency View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_BoardConstituencyView/name',
+        'implementationPeriod/grant/geography_BoardConstituencyView/code',
+      ];
+    }
     const filterString = filterFinancialIndicators(
       this.req.query,
       ExpendituresTableMapping.urlParams.replace(
         /<componentField>/g,
         componentField,
       ),
-      [
-        'implementationPeriod/grant/geography/name',
-        'implementationPeriod/grant/geography/code',
-      ],
+      geographyMappings,
       `${componentField}/parent/parent/name`,
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -360,10 +412,25 @@ export class ExpendituresController {
   @get('/expenditures/cycles')
   @response(200)
   async cycles() {
+    let geographyMappings = [
+      'implementationPeriod/grant/geography/name',
+      'implementationPeriod/grant/geography/code',
+    ];
+    if (this.req.query.geographyGrouping === 'Portfolio View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_PortfolioView/name',
+        'implementationPeriod/grant/geography_PortfolioView/code',
+      ];
+    } else if (this.req.query.geographyGrouping === 'Board Constituency View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_BoardConstituencyView/name',
+        'implementationPeriod/grant/geography_BoardConstituencyView/code',
+      ];
+    }
     const filterString = filterFinancialIndicators(
       this.req.query,
       ExpendituresCyclesMapping.urlParams,
-      'implementationPeriod/grant/geography/code',
+      geographyMappings,
       'implementationPeriod/grant/activityArea/name',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
