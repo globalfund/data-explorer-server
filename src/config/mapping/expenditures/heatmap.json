@@ -10,6 +10,11 @@
     "principalRecipient": "implementationPeriod/grant/principalRecipient/name",
     "principalRecipientSubType": "implementationPeriod/grant/principalRecipient/type/name",
     "principalRecipientType": "implementationPeriod/grant/principalRecipient/type/parent/name",
-    "component": "implementationPeriod/grant/<componentField>/name"
+    "component": "implementationPeriod/grant/<componentField>/name",
+    "module": "<componentField>/parent/name",
+    "intervention": "<componentField>/name",
+    "investmentLandscape1": "financialCategory/parent/parent/name",
+    "investmentLandscape2": "financialCategory/parent/name",
+    "costCategory": "financialCategory/name"
   }
 }

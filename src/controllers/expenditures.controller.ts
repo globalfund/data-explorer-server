@@ -2,6 +2,7 @@ import {inject} from '@loopback/core';
 import {get, param, Request, response, RestBindings} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
+import ExpendituresAvailabilityMapping from '../config/mapping/expenditures/availability.json';
 import ExpendituresBarChartMapping from '../config/mapping/expenditures/bar.json';
 import ExpendituresCyclesMapping from '../config/mapping/expenditures/cycles.json';
 import ExpendituresHeatmapMapping from '../config/mapping/expenditures/heatmap.json';
@@ -81,6 +82,12 @@ export class ExpendituresController {
       ];
     }
     let filterString = ExpendituresHeatmapMapping.urlParams;
+    if (row.indexOf('investmentLandscape1') > -1) {
+      filterString = filterString.replace(
+        'Expenditure_Intervention_ReferenceRate',
+        'Expenditure_InvestmentLandscape_ReferenceRate',
+      );
+    }
     let rowField = '';
     let subRowField = '';
     let subSubRowField = '';
@@ -129,6 +136,17 @@ export class ExpendituresController {
         ExpendituresHeatmapMapping.fields.component,
       ).replace(/<componentField>/g, componentField);
     }
+    rowField = rowField.replace(/<componentField>/g, componentField);
+    subRowField = subRowField.replace(/<componentField>/g, componentField);
+    subSubRowField = subSubRowField.replace(
+      /<componentField>/g,
+      componentField,
+    );
+    columnField = columnField.replace(/<componentField>/g, componentField);
+    subColumnField = subColumnField.replace(
+      /<componentField>/g,
+      componentField,
+    );
     const rowFieldArray = [rowField, subRowField, subSubRowField].filter(
       item => item.length > 0,
     );
@@ -461,6 +479,45 @@ export class ExpendituresController {
         });
 
         return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/has/expenditures')
+  @response(200)
+  async hasExpenditures() {
+    let geographyMappings = [
+      'implementationPeriod/grant/geography/name',
+      'implementationPeriod/grant/geography/code',
+    ];
+    if (this.req.query.geographyGrouping === 'Portfolio View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_PortfolioView/name',
+        'implementationPeriod/grant/geography_PortfolioView/code',
+      ];
+    } else if (this.req.query.geographyGrouping === 'Board Constituency View') {
+      geographyMappings = [
+        'implementationPeriod/grant/geography_BoardConstituencyView/name',
+        'implementationPeriod/grant/geography_BoardConstituencyView/code',
+      ];
+    }
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      ExpendituresAvailabilityMapping.urlParams,
+      geographyMappings,
+      'implementationPeriod/grant/activityArea/name',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        return {
+          data: {
+            hasExpenditures:
+              _.get(resp.data, ExpendituresAvailabilityMapping.dataPath, 0) > 0,
+          },
+        };
       })
       .catch(handleDataApiError);
   }
