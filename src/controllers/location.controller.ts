@@ -240,7 +240,7 @@ export class LocationController {
                               );
                             }
                             if (mcSubSubOptions && mcSubSubOptions.length > 0) {
-                              items.concat(
+                              items = items.concat(
                                 _.orderBy(
                                   mcSubSubOptions.map((mc: any) => ({
                                     name: _.get(
