@@ -1290,4 +1290,52 @@ export class BudgetsController {
       )
       .catch(handleDataApiError);
   }
+
+  @get('/financial-metrics/cycles')
+  @response(200)
+  async metricsCycles() {
+    const filterString = filterFinancialIndicators(
+      this.req.query,
+      BudgetsCyclesMapping.urlParamsMetrics,
+      'implementationPeriod/grant/geography/code',
+      'implementationPeriod/grant/activityArea/name',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(resp.data, BudgetsCyclesMapping.dataPath, []);
+
+        const data = _.orderBy(
+          _.map(
+            _.filter(
+              rawData,
+              item =>
+                _.get(item, BudgetsCyclesMapping.cycleFrom, null) !== null,
+            ),
+            (item, index) => {
+              const from = _.get(item, BudgetsCyclesMapping.cycleFrom, '');
+              const to = _.get(item, BudgetsCyclesMapping.cycleTo, '');
+
+              let value = from;
+
+              if (from && to) {
+                value = `${from} - ${to}`;
+              }
+
+              return {
+                name: `Cycle ${index + 1}`,
+                value,
+              };
+            },
+          ),
+          item => parseInt(item.value.toString().split(' - ')[0], 10),
+          'asc',
+        );
+
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
 }
