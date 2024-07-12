@@ -58,10 +58,10 @@ export class FundingRequestsController {
                         : '--',
                       grant: subitem.grant,
                       startingDate: subitem.startingDate
-                        ? moment(subitem.startDate).format('DD MMM YYYY')
+                        ? moment(subitem.startingDate).format('DD MMM YYYY')
                         : '--',
                       endingDate: subitem.endingDate
-                        ? moment(subitem.endDate).format('DD MMM YYYY')
+                        ? moment(subitem.endingDate).format('DD MMM YYYY')
                         : '--',
                       principalRecipient: subitem.principalRecipient,
                     };
