@@ -27,22 +27,31 @@ export class GrantsController {
     @param.path.string('pageSize') pageSize: string,
   ) {
     const mapper = mapTransform(GrantsListMapping.map);
-    const params = querystring.stringify(
-      {
-        ...getPage(filtering.page, parseInt(page, 10), parseInt(pageSize, 10)),
-        [filtering.page_size]: pageSize,
-      },
-      '&',
-      filtering.param_assign_operator,
-      {
-        encodeURIComponent: (str: string) => str,
-      },
-    );
+    const params =
+      pageSize === 'all'
+        ? ''
+        : querystring.stringify(
+            {
+              ...getPage(
+                filtering.page,
+                parseInt(page, 10),
+                parseInt(pageSize, 10),
+              ),
+              [filtering.page_size]: pageSize,
+            },
+            '&',
+            filtering.param_assign_operator,
+            {
+              encodeURIComponent: (str: string) => str,
+            },
+          );
     const filterString = filterGrants(
       this.req.query,
       GrantsListMapping.urlParams,
     );
-    const url = `${urls.GRANTS}${filterString}&${params}`;
+    const url = `${urls.GRANTS}${filterString}${
+      params.length > 0 ? `&${params}` : params
+    }`;
 
     return axios
       .get(url)

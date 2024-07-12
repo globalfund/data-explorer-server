@@ -401,7 +401,7 @@ export class AllocationsController {
     let filterString = filterFinancialIndicators(
       {...this.req.query, geographies: countryCode},
       AllocationRadialFieldsMapping.urlParamsLocation,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
     );
 

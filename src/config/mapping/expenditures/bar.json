@@ -4,5 +4,5 @@
   "itemName": "<componentField>.name",
   "indicatorName": "indicatorName",
   "value": "actual",
-  "urlParams": "?$apply=filter(indicatorName in ('Expenditure: Module-Intervention - Reference Rate') AND isAnnualized eq true<filterString>)/groupby((indicatorName,<componentField>/name,<componentField>/parent/name),aggregate(actualAmount with sum as actual))"
+  "urlParams": "?$apply=filter(indicatorName in ('Expenditure: Module-Intervention - Reference Rate') AND isLatestReported eq true<filterString>)/groupby((indicatorName,<componentField>/name,<componentField>/parent/name),aggregate(actualAmountCumulative with sum as actual))"
 }
