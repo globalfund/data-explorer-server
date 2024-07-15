@@ -1,0 +1,11 @@
+{
+  "dataPath": "value",
+  "count": "count",
+  "pie1Field": "implementationPeriod.grant.activityArea.name",
+  "pie2Field": "implementationPeriod.grant.principalRecipient.name",
+  "pie3Field": "financialDataSet",
+  "colors": ["#0A2840", "#013E77", "#00B5AE", "#C3EDFD", "#F3F5F4"],
+  "pie1UrlParams": "?$apply=filter(implementationPeriod/grant/geography/code eq '<code>' AND financialDataSet in ('Disbursement_ReferenceRate')<filterString>)/groupby((implementationPeriod/grant/activityArea/name),aggregate(actualAmount with sum as count))",
+  "pie2UrlParams": "?$apply=filter(implementationPeriod/grant/geography/code eq '<code>' AND financialDataSet in ('Disbursement_ReferenceRate')<filterString>)/groupby((implementationPeriod/grant/principalRecipient/name),aggregate(actualAmount with sum as count))",
+  "pie3UrlParams": "?$apply=filter(implementationPeriod/grant/geography/code eq '<code>' AND financialDataSet in ('Disbursement_ReferenceRate', 'Commitment_ReferenceRate')<filterString>)/groupby((financialDataSet),aggregate(actualAmount with sum as count))"
+}

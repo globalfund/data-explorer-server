@@ -1,0 +1,16 @@
+{
+  "dataPath": "value",
+  "tableMap": [
+    "value[]",
+    {
+      "components": "",
+      "submissionDate": "submissionDate",
+      "approach": "reviewApproach",
+      "trpWindow": "window",
+      "trpOutcome": "reviewOutcome",
+      "portfolioCategorization": "",
+      "boardApproval": "boardApproval",
+      "items": []
+    }
+  ]
+}

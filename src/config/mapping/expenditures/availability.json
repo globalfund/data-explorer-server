@@ -1,0 +1,4 @@
+{
+  "dataPath": "@odata.count",
+  "urlParams": "?$count=true&$top=0&$filter=financialDataSet eq 'Expenditure_Intervention_ReferenceRate' AND isLatestReported eq true<filterString>"
+}

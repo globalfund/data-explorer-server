@@ -1,0 +1,12 @@
+{
+  "dataPath": "value",
+  "cycle": "periodFrom",
+  "name": "activityArea.name",
+  "tooltipItem": "geography.parent.parent.name",
+  "value": "value",
+  "countryCode": "geography/code",
+  "urlParams": "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((activityArea/name,geography/parent/parent/name),aggregate(actualAmount with sum as value))",
+  "urlParamsLocation": "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((activityArea/name),aggregate(actualAmount with sum as value))",
+  "countriesCountUrlParams": "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((geography/name))",
+  "colors": ["#0A2840", "#013E77", "#00B5AE", "#C3EDFD"]
+}

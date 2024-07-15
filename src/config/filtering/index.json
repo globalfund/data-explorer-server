@@ -10,5 +10,7 @@
   "or_operator": "OR",
   "eq": " eq ",
   "in": " in ",
+  "gte": " ge ",
+  "lte": " le ",
   "multi_param_separator": ","
 }

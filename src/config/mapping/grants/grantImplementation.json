@@ -1,0 +1,24 @@
+{
+  "dataPath": "value",
+  "cycle": "periodFrom",
+  "value": "actualAmount",
+  "category": "indicatorName",
+  "categories": {
+    "Disbursement Amount - Reference Rate": "Disbursed",
+    "Commitment Amount - Reference Rate": "Committed",
+    "Total Signed Amount - Reference Rate": "Signed"
+  },
+  "radialUrlParams": "?$filter=implementationPeriod/grant/code eq '<code>' AND implementationPeriod/code eq '<code-ip>' AND indicatorName in ('Disbursement Amount - Reference Rate', 'Commitment Amount - Reference Rate', 'Total Signed Amount - Reference Rate')<filterString>&$select=indicatorName,actualAmount",
+  "colors": ["#0A2840", "#013E77", "#00B5AE"],
+  "date": "valueDate",
+  "barUrlParams": "?$filter=indicatorName eq 'Disbursement Amount - Reference Rate' AND implementationPeriod/grant/code eq '<code>' AND implementationPeriod/code eq '<code-ip>'<filterString>&$select=valueDate,actualAmount",
+  "barColors": ["#0A2840", "#013E77", "#00B5AE", "#C3EDFD", "#D9D9D9"],
+  "sankeyValue": "totalAmount",
+  "sankeyVariant1Category1": "activityArea.parent.name",
+  "sankeyVariant1Category2": "activityArea.name",
+  "sankeyVariant1UrlParams": "?$apply=filter(indicatorName eq 'Budget - Reference Rate' AND financialDataSet eq 'GrantBudget_ReferenceRate' AND implementationPeriod/grant/code eq '<code>' AND implementationPeriod/code eq '<code-ip>'<filterString>)/groupby((activityArea/name,activityArea/parent/name),aggregate(plannedAmount with sum as totalAmount))",
+  "sankeyVariant2Category1": "financialCategory.parent.parent.name",
+  "sankeyVariant2Category2": "financialCategory.parent.name",
+  "sankeyVariant2Category3": "financialCategory.name",
+  "sankeyVariant2UrlParams": "?$apply=filter(indicatorName eq 'Budget - Reference Rate' AND financialDataSet eq 'GrantBudget_ReferenceRate' AND implementationPeriod/grant/code eq '<code>' AND implementationPeriod/code eq '<code-ip>'<filterString>)/groupby((financialCategory/name,financialCategory/parent/name,financialCategory/parent/parent/name),aggregate(plannedAmount with sum as totalAmount))"
+}
