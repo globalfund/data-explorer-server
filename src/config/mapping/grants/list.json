@@ -1,0 +1,21 @@
+{
+  "map": [
+    "value[]",
+    {
+      "status": "status.statusName",
+      "location": "geography.name",
+      "rating": "rating",
+      "component": "activityArea.name",
+      "number": "code",
+      "principalRecipient": "principalRecipient.name",
+      "startDate": "periodStartDate",
+      "endDate": "periodEndDate",
+      "title": "narratives[0].narrativeText",
+      "signed": "totalSignedAmount_ReferenceRate",
+      "disbursed": "totalDisbursedAmount_ReferenceRate",
+      "committed": "totalCommitmentAmount_ReferenceRate"
+    }
+  ],
+  "count": "@odata.count",
+  "urlParams": "?$filter=<filterString>&$count=true&$expand=status($select=statusName),geography($select=name),activityArea($select=name),principalRecipient($select=name),narratives($select=narrativeType,narrativeLanguage,narrativeText)&$select=code,status,geography,activityArea,principalRecipient,periodStartDate,periodEndDate,narratives,totalSignedAmount_ReferenceRate,totalCommitmentAmount_ReferenceRate,totalDisbursedAmount_ReferenceRate&$orderby=status/statusName asc,geography/name asc,code asc"
+}

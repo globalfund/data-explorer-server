@@ -1,0 +1,15 @@
+{
+  "dataPath": "value",
+  "year": "resultValueYear",
+  "name": "indicatorName",
+  "component": "activityArea.name",
+  "value": "value",
+  "componentColors": {
+    "HIV/AIDS": "#0A2840",
+    "Malaria": "#013E77",
+    "Tuberculosis": "#00B5AE",
+    "HIV/TB": "#C3EDFD",
+    "RSSH": "#D9D9D9"
+  },
+  "urlParams": "?$apply=filter(programmaticDataset eq 'Annual_Results'<filterString>)/groupby((indicatorName,activityArea/name,resultValueYear),aggregate(resultValueNumerator with sum as value))&$orderby=value desc"
+}

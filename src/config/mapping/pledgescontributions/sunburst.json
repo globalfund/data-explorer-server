@@ -1,0 +1,12 @@
+{
+  "dataPath": "value",
+  "type": "donor.type.name",
+  "donor": "donor.name",
+  "type2": "donor.type.parent.name",
+  "indicatorField": "indicatorName",
+  "indicatorPledge": "Pledge - Reference Rate",
+  "indicatorContribution": "Contribution - Reference Rate",
+  "amount": "amount",
+  "pledgeUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Pledge - Reference Rate'<filterString>)/groupby((donor/name,donor/type/name,donor/type/parent/name),aggregate(plannedAmount with sum as amount))",
+  "contributionUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Contribution - Reference Rate'<filterString>)/groupby((donor/name,donor/type/name,donor/type/parent/name),aggregate(actualAmount with sum as amount))"
+}

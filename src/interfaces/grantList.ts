@@ -1,13 +1,13 @@
 export interface GrantListItemModel {
-  id: string;
+  code: string;
   title: string;
   status: string;
   component: string;
-  geoLocation: string;
+  location: string;
   rating: string | null;
+  principalRecipient: string;
   disbursed: number;
   committed: number;
   signed: number;
-  recipientName: string;
-  recipientShortName: string;
+  percentage: number;
 }

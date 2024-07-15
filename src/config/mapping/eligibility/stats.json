@@ -1,0 +1,6 @@
+{
+  "dataPath": "value",
+  "geography": "geography.name",
+  "component": "activityArea.name",
+  "urlParams": "?$apply=filter(isEligible eq true<filterString>)/groupby((activityArea/name,geography/name))"
+}

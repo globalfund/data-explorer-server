@@ -1,0 +1,34 @@
+{
+  "dataPath": "value[0]",
+  "implementationPeriodArray": "implementationPeriods",
+  "implementationPeriodFrom": "implementationPeriodFrom",
+  "implementationPeriod": {
+    "financialIndicators": "financialIndicators",
+    "financialIndicator": {
+      "value": "actualAmount",
+      "type": "indicatorName",
+      "types": [
+        {
+          "label": "Disbursement",
+          "value": "Disbursement Amount - Reference Rate"
+        },
+        {"label": "Commitment", "value": "Commitment Amount - Reference Rate"},
+        {"label": "Signed", "value": "Total Signed Amount - Reference Rate"}
+      ]
+    },
+    "code": "code",
+    "status": "status.statusName",
+    "narratives": "narratives",
+    "narrative": {
+      "text": "narrativeText",
+      "index": "narrativeIndex",
+      "lang": "narrativeLanguage",
+      "type": "narrativeType",
+      "types": ["Goal", "Objective"]
+    },
+    "boardApprovedDate": "milestones[0].date",
+    "startDate": "periodStartDate",
+    "endDate": "periodEndDate"
+  },
+  "urlParams": "?$filter=code eq '<code>'&$expand=implementationPeriods($expand=financialIndicators,status,narratives,milestones)"
+}

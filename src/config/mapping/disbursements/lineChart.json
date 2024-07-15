@@ -1,0 +1,12 @@
+{
+  "dataPath": "value",
+  "count": "@odata.count",
+  "cycle": "periodFrom",
+  "value": "value",
+  "line": "implementationPeriod.grant.<componentField>.name",
+  "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((periodFrom,implementationPeriod/grant/<componentField>/name),aggregate(actualAmount with sum as value))",
+  "urlParams2": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((periodFrom,implementationPeriod/grant/<componentField>/parent/name),aggregate(actualAmount with sum as value))",
+  "url1Items": ["Malaria", "Tuberculosis"],
+  "url2Items": ["HIV/AIDS", "Other"],
+  "colors": ["#0A2840", "#DEE1E7", "#013E77", "#00B5AE", "#C3EDFD", "#D9D9D9"]
+}

@@ -1,0 +1,7 @@
+{
+  "dataPath": "value",
+  "cycle": "resultValueYear",
+  "name": "indicatorName",
+  "value": "value",
+  "urlParams": "?$apply=filter((indicatorName eq 'People on antiretroviral therapy for HIV' OR indicatorName eq 'People with TB treated' OR indicatorName eq 'Mosquito nets distributed')<filterString>)/groupby((indicatorName),aggregate(resultValueNumerator with sum as value))"
+}

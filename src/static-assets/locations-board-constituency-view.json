@@ -1,0 +1,1510 @@
+[
+  {
+    "name": "Eastern Europe and Central Asia (EECA)",
+    "value": null,
+    "extraInfo": {
+      "isDonor": false,
+      "isRecipient": false,
+      "level": null
+    },
+    "items": [
+      {
+        "name": "Albania",
+        "value": "ALB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Armenia",
+        "value": "ARM",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Azerbaijan",
+        "value": "AZE",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Belarus",
+        "value": "BLR",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Bulgaria",
+        "value": "BGR",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Georgia",
+        "value": "GEO",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Kazakhstan",
+        "value": "KAZ",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Kosovo",
+        "value": "QNA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Kyrgyzstan",
+        "value": "KGZ",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Moldova",
+        "value": "MDA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Montenegro",
+        "value": "MNE",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Multicountry EECA ECOM",
+        "value": "MCECOM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry EECA ECUO",
+        "value": "MCECUO",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry EECA EHRN",
+        "value": "MCEHRN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry EECA IHAU",
+        "value": "MCIHAU",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry EECA PAS",
+        "value": "MCPAS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry HIV EECA APH",
+        "value": "MCEECAAPH",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "North Macedonia",
+        "value": "MKD",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Romania",
+        "value": "ROU",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Russian Federation",
+        "value": "RUS",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Serbia",
+        "value": "SRB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Tajikistan",
+        "value": "TJK",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Turkmenistan",
+        "value": "TKM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Ukraine",
+        "value": "UKR",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Uzbekistan",
+        "value": "UZB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Eastern Mediterranean Region",
+    "value": null,
+    "extraInfo": {
+      "isDonor": false,
+      "isRecipient": false,
+      "level": null
+    },
+    "items": [
+      {
+        "name": "Afghanistan",
+        "value": "AFG",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Djibouti",
+        "value": "DJI",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Egypt",
+        "value": "EGY",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Iran (Islamic Republic)",
+        "value": "IRN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Iraq",
+        "value": "IRQ",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Morocco",
+        "value": "MAR",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Multicountry MENA HRA",
+        "value": "MCMENAHRA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry MENA Key Populations",
+        "value": "MCMENA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Middle East MER",
+        "value": "MCMER",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Pakistan",
+        "value": "PAK",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Somalia",
+        "value": "SOM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Sudan",
+        "value": "SDN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Tunisia",
+        "value": "TUN",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Eastern and Southern Africa (ESA)",
+    "value": null,
+    "extraInfo": {
+      "isDonor": false,
+      "isRecipient": false,
+      "level": null
+    },
+    "items": [
+      {
+        "name": "Angola",
+        "value": "AGO",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Botswana",
+        "value": "BWA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Burundi",
+        "value": "BDI",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Comoros",
+        "value": "COM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Eritrea",
+        "value": "ERI",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Eswatini",
+        "value": "SWZ",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Ethiopia",
+        "value": "ETH",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Kenya",
+        "value": "KEN",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Lesotho",
+        "value": "LSO",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Madagascar",
+        "value": "MDG",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Malawi",
+        "value": "MWI",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Mauritius",
+        "value": "MUS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Mozambique",
+        "value": "MOZ",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Multicountry Africa ECSA-HC",
+        "value": "MCECSA-HC",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Eastern Africa ANECCA",
+        "value": "MCANECCA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Eastern Africa IGAD",
+        "value": "MCIGAD",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Eastern Africa KANCO",
+        "value": "MCKANCO",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Southern Africa ARASA",
+        "value": "MCARASA-ENDA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Southern Africa E8",
+        "value": "MCE8",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Southern Africa HIVOS",
+        "value": "MCHIVOS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Southern Africa MOSASWA",
+        "value": "MCMOSASWA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Southern Africa SADC",
+        "value": "MCSADC",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Southern Africa TIMS",
+        "value": "MCTIMS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Southern Africa WHC",
+        "value": "MCWHC",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Namibia",
+        "value": "NAM",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Rwanda",
+        "value": "RWA",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "South Africa",
+        "value": "ZAF",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "South Sudan",
+        "value": "SSD",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Tanzania (United Republic)",
+        "value": "TZA",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Uganda",
+        "value": "UGA",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Zambia",
+        "value": "ZMB",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Zanzibar",
+        "value": "QNB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Subnational"
+        }
+      },
+      {
+        "name": "Zimbabwe",
+        "value": "ZWE",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Latin America and the Caribbean (LAC)",
+    "value": null,
+    "extraInfo": {
+      "isDonor": false,
+      "isRecipient": false,
+      "level": null
+    },
+    "items": [
+      {
+        "name": "Belize",
+        "value": "BLZ",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Bolivia (Plurinational State)",
+        "value": "BOL",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Colombia",
+        "value": "COL",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Costa Rica",
+        "value": "CRI",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Cuba",
+        "value": "CUB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Dominican Republic",
+        "value": "DOM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Ecuador",
+        "value": "ECU",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "El Salvador",
+        "value": "SLV",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Guatemala",
+        "value": "GTM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Guyana",
+        "value": "GUY",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Haiti",
+        "value": "HTI",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Honduras",
+        "value": "HND",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Jamaica",
+        "value": "JAM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Multicountry Americas CVC-COIN",
+        "value": "MCCVC/COIN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Americas EMMIE",
+        "value": "MCEMMIE",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Americas ICW",
+        "value": "MCICW",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Americas ORAS-CONHU",
+        "value": "MCORAS-CONHU",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Americas REDLACTRANS",
+        "value": "MCREDLACTRANS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Americas REDTRASEX",
+        "value": "MCREDTRASEX",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Caribbean CARICOM-PANCAP",
+        "value": "MCCARICOM/PANCAP",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Caribbean MCC",
+        "value": "MCC",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Central Americas REDCA",
+        "value": "MCREDCA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry HIV Latin America ALEP",
+        "value": "MCALEP",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry TB LAC PIH",
+        "value": "MCPIH",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Nicaragua",
+        "value": "NIC",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Panama",
+        "value": "PAN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Paraguay",
+        "value": "PRY",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Peru",
+        "value": "PER",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Suriname",
+        "value": "SUR",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Venezuela",
+        "value": "VEN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      }
+    ]
+  },
+  {
+    "name": "South East Asia (SEA)",
+    "value": null,
+    "extraInfo": {
+      "isDonor": false,
+      "isRecipient": false,
+      "level": null
+    },
+    "items": [
+      {
+        "name": "Bangladesh",
+        "value": "BGD",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Bhutan",
+        "value": "BTN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "India",
+        "value": "IND",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Indonesia",
+        "value": "IDN",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Korea (Democratic Peoples Republic)",
+        "value": "PRK",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Multicountry Asia IHAA",
+        "value": "MCIHAA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry East Asia and Pacific RAI",
+        "value": "MCRAI",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry HIV SEA AFAO",
+        "value": "MCSEAAFAO",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry South Asia",
+        "value": "MCSA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry South-Eastern Asia AFAO",
+        "value": "MCAFAO",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry TB Asia TEAM",
+        "value": "MCASIATEAM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry TB Asia UNDP",
+        "value": "MCASIAUNDP",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Myanmar",
+        "value": "MMR",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Nepal",
+        "value": "NPL",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Sri Lanka",
+        "value": "LKA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Thailand",
+        "value": "THA",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Timor-Leste",
+        "value": "TLS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      }
+    ]
+  },
+  {
+    "name": "West Pacific Region (WPR)",
+    "value": null,
+    "extraInfo": {
+      "isDonor": false,
+      "isRecipient": false,
+      "level": null
+    },
+    "items": [
+      {
+        "name": "Cambodia",
+        "value": "KHM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Fiji",
+        "value": "FJI",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Lao (Peoples Democratic Republic)",
+        "value": "LAO",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Malaysia",
+        "value": "MYS",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Mongolia",
+        "value": "MNG",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Multicountry East Asia and Pacific APN",
+        "value": "MCAPN",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry East Asia and Pacific HIVOS",
+        "value": "MCISEAN-HIVOS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Western Pacific",
+        "value": "MCWP",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Papua New Guinea",
+        "value": "PNG",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Philippines",
+        "value": "PHL",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Solomon Islands",
+        "value": "SLB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Viet Nam",
+        "value": "VNM",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Western and Central Africa (WCA)",
+    "value": null,
+    "extraInfo": {
+      "isDonor": false,
+      "isRecipient": false,
+      "level": null
+    },
+    "items": [
+      {
+        "name": "Algeria",
+        "value": "DZA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Benin",
+        "value": "BEN",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Burkina Faso",
+        "value": "BFA",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Cabo Verde",
+        "value": "CPV",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Cameroon",
+        "value": "CMR",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Central African Republic",
+        "value": "CAF",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Chad",
+        "value": "TCD",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Congo",
+        "value": "COG",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Congo (Democratic Republic)",
+        "value": "COD",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Côte d'Ivoire",
+        "value": "CIV",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Gabon",
+        "value": "GAB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Gambia",
+        "value": "GMB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Ghana",
+        "value": "GHA",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Guinea",
+        "value": "GIN",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Guinea-Bissau",
+        "value": "GNB",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Liberia",
+        "value": "LBR",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Mali",
+        "value": "MLI",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Mauritania",
+        "value": "MRT",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Multicountry TB WC Africa NTP/SRL",
+        "value": "MCNTPSRL",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry West Africa ALCO",
+        "value": "MCOCAL",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry West Africa ITPC",
+        "value": "MCITPC-WA",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Western Africa ANCS",
+        "value": "MCANCS",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Multicountry Western Africa HI",
+        "value": "MCHI",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Multicountry"
+        }
+      },
+      {
+        "name": "Niger",
+        "value": "NER",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Nigeria",
+        "value": "NGA",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Sao Tome and Principe",
+        "value": "STP",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Senegal",
+        "value": "SEN",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Sierra Leone",
+        "value": "SLE",
+        "extraInfo": {
+          "isDonor": false,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      },
+      {
+        "name": "Togo",
+        "value": "TGO",
+        "extraInfo": {
+          "isDonor": true,
+          "isRecipient": true,
+          "level": "Country"
+        }
+      }
+    ]
+  }
+]

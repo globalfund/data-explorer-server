@@ -1,0 +1,12 @@
+{
+  "dataPath": "value",
+  "pledgeAmount": "plannedAmount",
+  "contributionAmount": "actualAmount",
+  "pledgeIndicator": "Pledge - Reference Rate",
+  "indicatorField": "indicatorName",
+  "contributionIndicator": "Contribution - Reference Rate",
+  "totalValuesUrlParams": "?$apply=filter(((financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Pledge - Reference Rate') OR (financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Contribution - Reference Rate'))<filterString>)/groupby((indicatorName),aggregate(plannedAmount with sum as plannedAmount,actualAmount with sum as actualAmount))",
+  "donorType": "donor.type.name",
+  "count": "count",
+  "donorTypesCountUrlParams": "?$apply=filter(financialDataSet eq 'Pledges_Contributions'<filterString>)/groupby((donor/type/name),aggregate(donor/name with countdistinct as count))"
+}

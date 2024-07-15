@@ -1,0 +1,10 @@
+{
+  "dataPath": "value",
+  "level1Field": "financialCategory.parent.parent.name",
+  "level2Field": "financialCategory.parent.name",
+  "level3Field": "financialCategory.name",
+  "valueField": "value",
+  "cycle": "periodFrom",
+  "nodeColors": ["#252C34", "#252C34", "#252C34"],
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((financialCategory/name,financialCategory/parent/name,financialCategory/parent/parent/name),aggregate(plannedAmount with sum as value))"
+}

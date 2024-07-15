@@ -1,0 +1,6 @@
+{
+  "dataPath": "value",
+  "cycleFrom": "periodCovered",
+  "cycleTo": "",
+  "urlParams": "?$apply=filter(indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'<filterString>)/groupby((periodCovered))&$orderby=periodCovered asc"
+}

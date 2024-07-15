@@ -1,0 +1,33 @@
+{
+  "dataPath": "value",
+  "cycle": "fundingStream",
+  "incomeLevel": "incomeLevel",
+  "diseaseBurden": "diseaseBurden",
+  "isEligible": "isEligible",
+  "eligibilityYear": "eligibilityYear",
+  "component": "activityArea.name",
+  "urlParams": "?$select=fundingStream,incomeLevel,isEligible,diseaseBurden,eligibilityYear,geography,activityArea&$expand=activityArea&$filter=geography/code eq '<countryCode>'",
+  "isEligibleValueMapping": {
+    "true": "Eligible",
+    "false": "Not Eligible"
+  },
+  "incomeLevelValueMapping": {
+    "Lower middle income": "LM",
+    "Small Island income": "SI",
+    "Low income": "Low",
+    "Lower-Lower middle income": "LLM",
+    "Upper middle income": "UM",
+    "NA": "NA",
+    "High income": "High",
+    "Upper-Lower middle income": "ULM"
+  },
+  "diseaseBurdenValueMapping": {
+    "NA": "NA",
+    "Low": "L",
+    "Moderate": "M",
+    "High": "H",
+    "Severe": "S",
+    "Extreme": "E",
+    "Not High": "NH"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "dataPath": "value",
+  "groupby": "geography",
+  "map": [
+    "value",
+    {
+      "geography": "geography.name",
+      "components": "name",
+      "submissionDate": "submissionDate",
+      "approach": "reviewApproach",
+      "trpWindow": "window",
+      "trpOutcome": "reviewOutcome",
+      "portfolioCategorization": "differentiationCategory",
+      "gacMeeting": "reviewDate",
+      "items": [
+        "implementationPeriods",
+        {
+          "boardApproval": "milestones[1].date",
+          "grant": "grant.code",
+          "startingDate": "periodStartDate",
+          "endingDate": "periodEndDate",
+          "principalRecipient": "grant.principalRecipient.name"
+        }
+      ]
+    }
+  ],
+  "urlParams": "?$filter=<filterString>&$select=name,submissionDate,reviewApproach,window,reviewOutcome,reviewDate,differentiationCategory&$expand=geography($select=name),implementationPeriods($select=periodStartDate,periodEndDate;$expand=milestones($select=date),grant($select=code;$expand=principalRecipient($select=name)))"
+}

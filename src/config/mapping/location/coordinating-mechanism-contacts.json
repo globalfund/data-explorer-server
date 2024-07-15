@@ -1,0 +1,18 @@
+{
+  "dataPath": "value",
+  "orgName": "name",
+  "items": "contacts",
+  "itemRole": "roleName",
+  "itemTitle": "title",
+  "itemSalutation": "salutation",
+  "itemFirstName": "firstName",
+  "itemMiddleName": "middleName",
+  "itemLastName": "lastName",
+  "itemEmail": "emailAddress",
+  "itemRoleOrder": {
+    "Chair": 0,
+    "Vice Chair": 1,
+    "Admin Focal Point": 2
+  },
+  "urlParams": "?$expand=contacts&$filter=geography/code eq '<code>'"
+}
