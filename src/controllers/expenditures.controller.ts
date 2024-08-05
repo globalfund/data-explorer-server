@@ -8,6 +8,7 @@ import ExpendituresCyclesMapping from '../config/mapping/expenditures/cycles.jso
 import ExpendituresHeatmapMapping from '../config/mapping/expenditures/heatmap.json';
 import ExpendituresTableMapping from '../config/mapping/expenditures/table.json';
 import urls from '../config/urls/index.json';
+import CycleMapping from '../static-assets/cycle-mapping.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 
@@ -472,9 +473,11 @@ export class ExpendituresController {
             value = `${from} - ${to}`;
           }
 
+          const name = _.find(CycleMapping, {value})?.name ?? value;
+
           return {
-            name: `Cycle ${index + 1}`,
-            value,
+            name,
+            value: name,
           };
         });
 

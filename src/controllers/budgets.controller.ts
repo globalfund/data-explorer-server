@@ -11,6 +11,7 @@ import BudgetsTableFieldsMapping from '../config/mapping/budgets/table.json';
 import BudgetsTreemapFieldsMapping from '../config/mapping/budgets/treemap.json';
 import urls from '../config/urls/index.json';
 import {BudgetSankeyChartData} from '../interfaces/budgetSankey';
+import CycleMapping from '../static-assets/cycle-mapping.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 
@@ -483,7 +484,7 @@ export class BudgetsController {
               item =>
                 _.get(item, BudgetsCyclesMapping.cycleFrom, null) !== null,
             ),
-            (item, index) => {
+            item => {
               const from = _.get(item, BudgetsCyclesMapping.cycleFrom, '');
               const to = _.get(item, BudgetsCyclesMapping.cycleTo, '');
 
@@ -493,9 +494,11 @@ export class BudgetsController {
                 value = `${from} - ${to}`;
               }
 
+              const name = _.find(CycleMapping, {value})?.name ?? value;
+
               return {
-                name: `Cycle ${index + 1}`,
-                value,
+                name,
+                value: name,
               };
             },
           ),
@@ -530,13 +533,14 @@ export class BudgetsController {
         'implementationPeriod/grant/geography_BoardConstituencyView/code',
       ];
     }
-    const years = cycle.split('-');
+    // const years = cycle.split('-');
 
     const filterString1 = filterFinancialIndicators(
       {
         ...this.req.query,
-        years: years[0],
-        yearsTo: years[1],
+        cycleNames: cycle,
+        // years: years[0],
+        // yearsTo: years[1],
       },
       BudgetsBreakdownFieldsMapping.urlParams1.replace(
         '<componentField>',
@@ -562,8 +566,9 @@ export class BudgetsController {
       filterString2 = filterFinancialIndicators(
         {
           ...this.req.query,
-          years: years[0],
-          yearsTo: years[1],
+          cycleNames: cycle,
+          // years: years[0],
+          // yearsTo: years[1],
         },
         BudgetsBreakdownFieldsMapping.urlParams2.replace(
           '<componentField>',
@@ -1324,9 +1329,11 @@ export class BudgetsController {
                 value = `${from} - ${to}`;
               }
 
+              const name = _.find(CycleMapping, {value})?.name ?? value;
+
               return {
-                name: `Cycle ${index + 1}`,
-                value,
+                name,
+                value: name,
               };
             },
           ),

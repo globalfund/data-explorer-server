@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
+import CycleMapping from '../../static-assets/cycle-mapping.json';
 import {getGeographyValues} from './geographies';
 
 const MAPPING = {
@@ -38,6 +39,24 @@ export function filterFinancialIndicators(
   componentMapping: string,
 ): string {
   let str = '';
+
+  if (_.get(params, 'cycleNames', '')) {
+    const cycles = _.get(params, 'cycleNames', '').split(',');
+    const cycleValues = _.filter(
+      cycles.map(
+        (cycle: string) => _.find(CycleMapping, {name: cycle})?.value ?? '',
+      ),
+      (c: string) => c.length > 0,
+    );
+    cycleValues.forEach((cycle: string) => {
+      const splits = cycle.split(' - ');
+      params = {
+        ...params,
+        years: splits[0],
+        yearsTo: splits[1],
+      };
+    });
+  }
 
   const geos = _.filter(
     _.get(params, 'geographies', '').split(','),

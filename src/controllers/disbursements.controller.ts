@@ -8,6 +8,7 @@ import LineChartFieldsMapping from '../config/mapping/disbursements/lineChart.js
 import TableFieldsMapping from '../config/mapping/disbursements/table.json';
 import FinancialInsightsStatsMapping from '../config/mapping/financialInsightsStats.json';
 import urls from '../config/urls/index.json';
+import CycleMapping from '../static-assets/cycle-mapping.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 
@@ -566,7 +567,7 @@ export class DisbursementsController {
             item =>
               _.get(item, DisbursementsCyclesMapping.cycleFrom, null) !== null,
           ),
-          (item, index) => {
+          item => {
             const from = _.get(item, DisbursementsCyclesMapping.cycleFrom, '');
             const to = _.get(item, DisbursementsCyclesMapping.cycleTo, '');
 
@@ -576,9 +577,11 @@ export class DisbursementsController {
               value = `${from} - ${to}`;
             }
 
+            const name = _.find(CycleMapping, {value})?.name ?? value;
+
             return {
-              name: `Cycle ${index + 1}`,
-              value,
+              name,
+              value: name,
             };
           },
         );
