@@ -2,6 +2,8 @@
   "dataPath": "value",
   "module": "activityArea.name",
   "name": "indicatorName",
+  "category": "grouping_Level1",
+  "disaggregation": "grouping_Level2",
   "reversed": "isReversed",
   "geoCoverage": "geographicCoverage",
   "cumulation": "aggregationType",
@@ -14,5 +16,5 @@
   "target": "targetValuePercentage",
   "result": "resultValuePercentage",
   "achievement": "performance",
-  "urlParams": "?$filter=programmaticDataSet eq 'IMPLEMENTATION_PERIOD_TARGETS_RESULTS' AND implementationPeriod/code eq '<grantIP>' AND valueType eq '<type>'&$expand=activityArea($select=name)&$select=activityArea,indicatorName,isReversed,geographicCoverage,startDate,baselineValuePercentage,baselineValueYear,valueSource,targetValueYear,targetValuePercentage,resultValuePercentage,performance"
+  "urlParams": "?$filter=programmaticDataSet eq 'IMPLEMENTATION_PERIOD_TARGETS_RESULTS' AND implementationPeriod/code eq '<grantIP>' AND valueType eq '<type>'&$expand=activityArea($select=name)&$select=activityArea,indicatorName,isReversed,geographicCoverage,startDate,baselineValuePercentage,baselineValueYear,valueSource,targetValueYear,targetValuePercentage,resultValuePercentage,performance,grouping_Level1,grouping_Level2"
 }

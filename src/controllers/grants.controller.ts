@@ -565,6 +565,8 @@ export class GrantsController {
       .replace('<grantIP>', `${id}P0${ip}`)
       .replace('<type>', type)}`;
 
+    console.log(url);
+
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
@@ -614,7 +616,22 @@ export class GrantsController {
                 _.uniq(years),
                 year => year !== 'null' && year !== 'NaN',
               );
+              const category = _.get(
+                item,
+                GrantTargetsResultsMapping.category,
+                '',
+              );
+              const disaggregation = _.get(
+                item,
+                GrantTargetsResultsMapping.disaggregation,
+                '',
+              );
+              let name = undefined;
+              if (category || disaggregation) {
+                name = `${category}: ${disaggregation}`;
+              }
               let itempush = {
+                name,
                 reversed:
                   _.get(item, GrantTargetsResultsMapping.reversed, false) ===
                   true
@@ -668,7 +685,7 @@ export class GrantsController {
                     return {
                       target: target ? `T:${target}%` : '',
                       result: result ? `T:${result}%` : '',
-                      achievement: achievement ? `${achievement}%` : '',
+                      achievement: achievement ? `${achievement * 100}%` : '',
                     };
                   }),
                 };
