@@ -199,7 +199,7 @@ export class ResultsController {
           [],
         );
 
-        const data = _.map(rawData, (item, index) => {
+        const data = _.map(rawData, item => {
           const from = _.get(item, ResultsCyclesMappingFields.cycleFrom, '');
           const to = _.get(item, ResultsCyclesMappingFields.cycleTo, '');
 

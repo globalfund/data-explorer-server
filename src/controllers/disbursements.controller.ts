@@ -314,14 +314,13 @@ export class DisbursementsController {
             data.push({
               name: line,
               data: years.map(year => {
-                const value = _.get(
+                return _.get(
                   _.find(items, {
                     [LineChartFieldsMapping.cycle]: year,
                   }),
                   LineChartFieldsMapping.value,
                   null,
                 );
-                return value;
               }),
               itemStyle: {
                 color: '',
@@ -337,14 +336,13 @@ export class DisbursementsController {
             data.push({
               name: line,
               data: years.map(year => {
-                const value = _.get(
+                return _.get(
                   _.find(items, {
                     [LineChartFieldsMapping.cycle]: year,
                   }),
                   LineChartFieldsMapping.value,
                   null,
                 );
-                return value;
               }),
               itemStyle: {
                 color: '',
@@ -448,7 +446,7 @@ export class DisbursementsController {
             data: _.orderBy(
               [
                 ...(componentField === 'activityAreaGroup'
-                  ? _.filter(groupedByComponent1, (_, component) => {
+                  ? _.filter(groupedByComponent1, (_var, component) => {
                       return (
                         TableFieldsMapping.url1Items.indexOf(component) !== -1
                       );
@@ -484,7 +482,7 @@ export class DisbursementsController {
                     ),
                   };
                 }),
-                ..._.filter(groupedByComponent2, (_, component) => {
+                ..._.filter(groupedByComponent2, (_var, component) => {
                   return TableFieldsMapping.url2Items.indexOf(component) !== -1;
                 }).map(items => {
                   return {

@@ -128,7 +128,7 @@ export class GrantsController {
               ]
                 .join(' ')
                 .trim()
-                .replace(/  /g, ' '),
+                .replace(/ {2}/g, ' '),
               FPMEmail: _.get(raw, GrantMapping.FPMEmail, ''),
             },
           ],
@@ -358,7 +358,7 @@ export class GrantsController {
         }[] = [];
 
         _.orderBy(raw, [GrantImplementationMapping.date], ['asc']).forEach(
-          (item: any, index: number) => {
+          (item: any) => {
             data.push({
               name: new Date(item[GrantImplementationMapping.date])
                 .getFullYear()
@@ -447,14 +447,10 @@ export class GrantsController {
           links: [],
         };
         const groupedByCategory1 = _.groupBy(raw, category1);
-        Object.keys(groupedByCategory1).forEach((category1: string) => {
-          const category1Items = _.get(
-            groupedByCategory1,
-            `["${category1}"]`,
-            [],
-          );
+        Object.keys(groupedByCategory1).forEach((cat1: string) => {
+          const category1Items = _.get(groupedByCategory1, `["${cat1}"]`, []);
           data.nodes.push({
-            name: category1,
+            name: cat1,
             level: 1,
             itemStyle: {
               color: '#252C34',
@@ -462,24 +458,20 @@ export class GrantsController {
           });
           data.links.push({
             source: 'Total budget',
-            target: category1,
+            target: cat1,
             value: _.sumBy(
               category1Items,
               GrantImplementationMapping.sankeyValue,
             ),
           });
           const groupedByCategory2 = _.groupBy(category1Items, category2);
-          Object.keys(groupedByCategory2).forEach((category2: string) => {
-            const category2Items = _.get(
-              groupedByCategory2,
-              `["${category2}"]`,
-              [],
-            );
+          Object.keys(groupedByCategory2).forEach((cat2: string) => {
+            const category2Items = _.get(groupedByCategory2, `["${cat2}"]`, []);
             const sameLevel1Category = _.find(
               data.nodes,
-              node => node.name === category2 && node.level === 1,
+              node => node.name === cat2 && node.level === 1,
             );
-            const name = `${category2}${sameLevel1Category ? ' (1)' : ''}`;
+            const name = `${cat2}${sameLevel1Category ? ' (1)' : ''}`;
             data.nodes.push({
               name,
               level: 2,
@@ -488,7 +480,7 @@ export class GrantsController {
               },
             });
             data.links.push({
-              source: category1,
+              source: cat1,
               target: name,
               value: _.sumBy(
                 category2Items,
@@ -497,28 +489,26 @@ export class GrantsController {
             });
             if (category3) {
               const groupedByCategory3 = _.groupBy(category2Items, category3);
-              Object.keys(groupedByCategory3).forEach((category3: string) => {
+              Object.keys(groupedByCategory3).forEach((cat3: string) => {
                 const category3Items = _.get(
                   groupedByCategory3,
-                  `["${category3}"]`,
+                  `["${cat3}"]`,
                   [],
                 );
                 const sameLevel1Or2Category = _.find(
                   data.nodes,
                   node =>
-                    node.name === category3 &&
+                    node.name === cat3 &&
                     (node.level === 1 || node.level === 2),
                 );
                 const existingCategoryIndex = _.findIndex(
                   data.nodes,
-                  node => node.name === category3 && node.level === 3,
+                  node => node.name === cat3 && node.level === 3,
                 );
                 if (existingCategoryIndex === -1) {
-                  const name = `${category3}${
-                    sameLevel1Or2Category ? ' (1)' : ''
-                  }`;
+                  const name1 = `${cat3}${sameLevel1Or2Category ? ' (1)' : ''}`;
                   data.nodes.push({
-                    name,
+                    name: name1,
                     level: 3,
                     itemStyle: {
                       color: '#252C34',
@@ -526,8 +516,8 @@ export class GrantsController {
                   });
 
                   data.links.push({
-                    source: category2,
-                    target: name,
+                    source: cat2,
+                    target: name1,
                     value: _.sumBy(
                       category3Items,
                       GrantImplementationMapping.sankeyValue,
@@ -535,8 +525,8 @@ export class GrantsController {
                   });
                 } else {
                   data.links.push({
-                    source: category2,
-                    target: category3,
+                    source: cat2,
+                    target: cat3,
                     value: _.sumBy(
                       category3Items,
                       GrantImplementationMapping.sankeyValue,
@@ -606,7 +596,7 @@ export class GrantsController {
               _children: [],
             };
 
-            _.map(nameItems, item => {
+            _.map(nameItems, item1 => {
               const groupedByYear = _.groupBy(
                 nameItems,
                 GrantTargetsResultsMapping.year,
@@ -617,12 +607,12 @@ export class GrantsController {
                 year => year !== 'null' && year !== 'NaN',
               );
               const category = _.get(
-                item,
+                item1,
                 GrantTargetsResultsMapping.category,
                 '',
               );
               const disaggregation = _.get(
-                item,
+                item1,
                 GrantTargetsResultsMapping.disaggregation,
                 '',
               );
@@ -633,32 +623,32 @@ export class GrantsController {
               let itempush = {
                 name,
                 reversed:
-                  _.get(item, GrantTargetsResultsMapping.reversed, false) ===
+                  _.get(item1, GrantTargetsResultsMapping.reversed, false) ===
                   true
                     ? 'Yes'
                     : 'No',
                 geoCoverage: _.get(
-                  item,
+                  item1,
                   GrantTargetsResultsMapping.geoCoverage,
                   '',
                 ),
                 cumulation: _.get(
-                  item,
+                  item1,
                   GrantTargetsResultsMapping.cumulation,
                   '',
                 ),
                 baselineValue: _.get(
-                  item,
+                  item1,
                   GrantTargetsResultsMapping.baselineValue,
                   '',
                 ),
                 baselineYear: _.get(
-                  item,
+                  item1,
                   GrantTargetsResultsMapping.baselineYear,
                   '',
                 ),
                 baselineSource: _.get(
-                  item,
+                  item1,
                   GrantTargetsResultsMapping.baselineSource,
                   '',
                 ),

@@ -1,6 +1,0 @@
-{
-  "dataPath": "value[0].members",
-  "label": "geographicAreaName",
-  "value": "geographicAreaCode_ISO3",
-  "children": "members"
-}
