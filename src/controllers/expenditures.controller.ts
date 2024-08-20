@@ -464,7 +464,7 @@ export class ExpendituresController {
           [],
         );
 
-        const data = _.map(rawData, (item, index) => {
+        const data = _.map(rawData, item => {
           const from = _.get(item, ExpendituresCyclesMapping.cycleFrom, '');
           const to = _.get(item, ExpendituresCyclesMapping.cycleTo, '');
 

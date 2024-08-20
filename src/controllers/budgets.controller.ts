@@ -1320,7 +1320,7 @@ export class BudgetsController {
               item =>
                 _.get(item, BudgetsCyclesMapping.cycleFrom, null) !== null,
             ),
-            (item, index) => {
+            item => {
               const from = _.get(item, BudgetsCyclesMapping.cycleFrom, '');
               const to = _.get(item, BudgetsCyclesMapping.cycleTo, '');
 
