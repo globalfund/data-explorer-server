@@ -346,7 +346,7 @@ export class BudgetsController {
   @get('/budgets/table/{componentField}/{geographyGrouping}')
   @response(200)
   async table(
-    @param.path.string('componentField') componentField: string,
+    @param.path.string('componentField') _componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
     let geographyMappings = [
@@ -638,7 +638,7 @@ export class BudgetsController {
 
           const total = _.sumBy(data, 'value');
 
-          data.forEach((item, index) => {
+          data.forEach(item => {
             item.value = (item.value / total) * 100;
           });
 
@@ -743,38 +743,38 @@ export class BudgetsController {
             BudgetsMetricsFieldsMapping.organisationType,
           );
           const items = _.map(groupedByOrganisationType, (value, key) => {
-            const disbursement = _.filter(
+            const disbursement1 = _.filter(
               value,
               (item: any) =>
                 item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                 BudgetsMetricsFieldsMapping.disbursementIndicatorName,
             );
-            const cashBalance = _.filter(
+            const cashBalance1 = _.filter(
               value,
               (item: any) =>
                 item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                 BudgetsMetricsFieldsMapping.cashBalanceIndicatorName,
             );
-            const budget = _.filter(
+            const budget1 = _.filter(
               value,
               (item: any) =>
                 item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                 BudgetsMetricsFieldsMapping.budgetIndicatorName,
             );
-            const disbursementValue = _.sumBy(
-              disbursement,
+            const disbursementValue1 = _.sumBy(
+              disbursement1,
               BudgetsMetricsFieldsMapping.disbursementValue,
             );
-            const cashBalanceValue = _.sumBy(
-              cashBalance,
+            const cashBalanceValue1 = _.sumBy(
+              cashBalance1,
               BudgetsMetricsFieldsMapping.cashBalanceValue,
             );
-            const budgetValue = _.sumBy(
-              budget,
+            const budgetValue1 = _.sumBy(
+              budget1,
               BudgetsMetricsFieldsMapping.budgetValue,
             );
-            const totalValue = disbursementValue + cashBalanceValue;
-            const utilization = (totalValue / budgetValue) * 100;
+            const totalValue1 = disbursementValue1 + cashBalanceValue1;
+            const utilization1 = (totalValue1 / budgetValue1) * 100;
             const groupedBySubOrganisations = _.groupBy(
               value,
               BudgetsMetricsFieldsMapping.organisationSubType,
@@ -782,42 +782,42 @@ export class BudgetsController {
             return {
               level: 0,
               name: key,
-              value: utilization,
+              value: utilization1,
               color: '#013E77',
               items: _.orderBy(
                 _.map(groupedBySubOrganisations, (value2, key2) => {
-                  const disbursement = _.filter(
+                  const disbursement2 = _.filter(
                     value2,
                     (item: any) =>
                       item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                       BudgetsMetricsFieldsMapping.disbursementIndicatorName,
                   );
-                  const cashBalance = _.filter(
+                  const cashBalance2 = _.filter(
                     value2,
                     (item: any) =>
                       item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                       BudgetsMetricsFieldsMapping.cashBalanceIndicatorName,
                   );
-                  const budget = _.filter(
+                  const budget2 = _.filter(
                     value2,
                     (item: any) =>
                       item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                       BudgetsMetricsFieldsMapping.budgetIndicatorName,
                   );
-                  const disbursementValue = _.sumBy(
-                    disbursement,
+                  const disbursementValue2 = _.sumBy(
+                    disbursement2,
                     BudgetsMetricsFieldsMapping.disbursementValue,
                   );
-                  const cashBalanceValue = _.sumBy(
-                    cashBalance,
+                  const cashBalanceValue2 = _.sumBy(
+                    cashBalance2,
                     BudgetsMetricsFieldsMapping.cashBalanceValue,
                   );
-                  const budgetValue = _.sumBy(
-                    budget,
+                  const budgetValue2 = _.sumBy(
+                    budget2,
                     BudgetsMetricsFieldsMapping.budgetValue,
                   );
-                  const totalValue = disbursementValue + cashBalanceValue;
-                  const utilization = (totalValue / budgetValue) * 100;
+                  const totalValue2 = disbursementValue2 + cashBalanceValue2;
+                  const utilization2 = (totalValue2 / budgetValue2) * 100;
                   const groupedByOrganisations = _.groupBy(
                     value2,
                     BudgetsMetricsFieldsMapping.organisationName,
@@ -825,11 +825,11 @@ export class BudgetsController {
                   return {
                     level: 1,
                     name: key2,
-                    value: utilization,
+                    value: utilization2,
                     color: '#013E77',
                     items: _.orderBy(
                       _.map(groupedByOrganisations, (value3, key3) => {
-                        const disbursement = _.filter(
+                        const disbursement3 = _.filter(
                           value3,
                           (item: any) =>
                             item[
@@ -837,7 +837,7 @@ export class BudgetsController {
                             ] ===
                             BudgetsMetricsFieldsMapping.disbursementIndicatorName,
                         );
-                        const cashBalance = _.filter(
+                        const cashBalance3 = _.filter(
                           value3,
                           (item: any) =>
                             item[
@@ -845,7 +845,7 @@ export class BudgetsController {
                             ] ===
                             BudgetsMetricsFieldsMapping.cashBalanceIndicatorName,
                         );
-                        const budget = _.filter(
+                        const budget3 = _.filter(
                           value3,
                           (item: any) =>
                             item[
@@ -853,24 +853,25 @@ export class BudgetsController {
                             ] ===
                             BudgetsMetricsFieldsMapping.budgetIndicatorName,
                         );
-                        const disbursementValue = _.sumBy(
-                          disbursement,
+                        const disbursementValue3 = _.sumBy(
+                          disbursement3,
                           BudgetsMetricsFieldsMapping.disbursementValue,
                         );
-                        const cashBalanceValue = _.sumBy(
-                          cashBalance,
+                        const cashBalanceValue3 = _.sumBy(
+                          cashBalance3,
                           BudgetsMetricsFieldsMapping.cashBalanceValue,
                         );
-                        const budgetValue = _.sumBy(
-                          budget,
+                        const budgetValue3 = _.sumBy(
+                          budget3,
                           BudgetsMetricsFieldsMapping.budgetValue,
                         );
-                        const totalValue = disbursementValue + cashBalanceValue;
-                        const utilization = (totalValue / budgetValue) * 100;
+                        const totalValue3 =
+                          disbursementValue3 + cashBalanceValue3;
+                        const utilization3 = (totalValue3 / budgetValue3) * 100;
                         return {
                           level: 2,
                           name: key3,
-                          value: utilization,
+                          value: utilization3,
                           color: '#013E77',
                           items: [],
                         };
@@ -975,27 +976,27 @@ export class BudgetsController {
             BudgetsMetricsFieldsMapping.organisationType,
           );
           const items = _.map(groupedByOrganisationType, (value, key) => {
-            const expenditure = _.filter(
+            const expenditure1 = _.filter(
               value,
               (item: any) =>
                 item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                 BudgetsMetricsFieldsMapping.expenditureIndicatorName,
             );
-            const budget = _.filter(
+            const budget1 = _.filter(
               value,
               (item: any) =>
                 item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                 BudgetsMetricsFieldsMapping.budgetIndicatorName,
             );
-            const expenditureValue = _.sumBy(
-              expenditure,
+            const expenditureValue1 = _.sumBy(
+              expenditure1,
               BudgetsMetricsFieldsMapping.expenditureValue,
             );
-            const budgetValue = _.sumBy(
-              budget,
+            const budgetValue1 = _.sumBy(
+              budget1,
               BudgetsMetricsFieldsMapping.budgetValue,
             );
-            const absorption = (expenditureValue / budgetValue) * 100;
+            const absorption1 = (expenditureValue1 / budgetValue1) * 100;
             const groupedBySubOrganisations = _.groupBy(
               value,
               BudgetsMetricsFieldsMapping.organisationSubType,
@@ -1003,31 +1004,31 @@ export class BudgetsController {
             return {
               level: 0,
               name: key,
-              value: absorption,
+              value: absorption1,
               color: '#00B5AE',
               items: _.orderBy(
                 _.map(groupedBySubOrganisations, (value2, key2) => {
-                  const expenditure = _.filter(
+                  const expenditure2 = _.filter(
                     value2,
                     (item: any) =>
                       item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                       BudgetsMetricsFieldsMapping.expenditureIndicatorName,
                   );
-                  const budget = _.filter(
+                  const budget2 = _.filter(
                     value2,
                     (item: any) =>
                       item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                       BudgetsMetricsFieldsMapping.budgetIndicatorName,
                   );
-                  const expenditureValue = _.sumBy(
-                    expenditure,
+                  const expenditureValue2 = _.sumBy(
+                    expenditure2,
                     BudgetsMetricsFieldsMapping.expenditureValue,
                   );
-                  const budgetValue = _.sumBy(
-                    budget,
+                  const budgetValue2 = _.sumBy(
+                    budget2,
                     BudgetsMetricsFieldsMapping.budgetValue,
                   );
-                  const absorption = (expenditureValue / budgetValue) * 100;
+                  const absorption2 = (expenditureValue2 / budgetValue2) * 100;
                   const groupedByOrganisations = _.groupBy(
                     value2,
                     BudgetsMetricsFieldsMapping.organisationName,
@@ -1035,11 +1036,11 @@ export class BudgetsController {
                   return {
                     level: 1,
                     name: key2,
-                    value: absorption,
+                    value: absorption2,
                     color: '#00B5AE',
                     items: _.orderBy(
                       _.map(groupedByOrganisations, (value3, key3) => {
-                        const expenditure = _.filter(
+                        const expenditure3 = _.filter(
                           value3,
                           (item: any) =>
                             item[
@@ -1047,7 +1048,7 @@ export class BudgetsController {
                             ] ===
                             BudgetsMetricsFieldsMapping.expenditureIndicatorName,
                         );
-                        const budget = _.filter(
+                        const budget3 = _.filter(
                           value3,
                           (item: any) =>
                             item[
@@ -1055,20 +1056,20 @@ export class BudgetsController {
                             ] ===
                             BudgetsMetricsFieldsMapping.budgetIndicatorName,
                         );
-                        const expenditureValue = _.sumBy(
-                          expenditure,
+                        const expenditureValue3 = _.sumBy(
+                          expenditure3,
                           BudgetsMetricsFieldsMapping.expenditureValue,
                         );
-                        const budgetValue = _.sumBy(
-                          budget,
+                        const budgetValue3 = _.sumBy(
+                          budget3,
                           BudgetsMetricsFieldsMapping.budgetValue,
                         );
-                        const absorption =
-                          (expenditureValue / budgetValue) * 100;
+                        const absorption3 =
+                          (expenditureValue3 / budgetValue3) * 100;
                         return {
                           level: 2,
                           name: key3,
-                          value: absorption,
+                          value: absorption3,
                           color: '#00B5AE',
                           items: [],
                         };
@@ -1173,27 +1174,27 @@ export class BudgetsController {
             BudgetsMetricsFieldsMapping.organisationType,
           );
           const items = _.map(groupedByOrganisationType, (value, key) => {
-            const expenditure = _.filter(
+            const expenditure1 = _.filter(
               value,
               (item: any) =>
                 item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                 BudgetsMetricsFieldsMapping.expenditureIndicatorName,
             );
-            const disbursement = _.filter(
+            const disbursement1 = _.filter(
               value,
               (item: any) =>
                 item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                 BudgetsMetricsFieldsMapping.disbursementIndicatorName,
             );
-            const expenditureValue = _.sumBy(
-              expenditure,
+            const expenditureValue1 = _.sumBy(
+              expenditure1,
               BudgetsMetricsFieldsMapping.expenditureValue,
             );
-            const disbursementValue = _.sumBy(
-              disbursement,
+            const disbursementValue1 = _.sumBy(
+              disbursement1,
               BudgetsMetricsFieldsMapping.disbursementValue,
             );
-            const utilization = (expenditureValue / disbursementValue) * 100;
+            const utilization1 = (expenditureValue1 / disbursementValue1) * 100;
             const groupedBySubOrganisations = _.groupBy(
               value,
               BudgetsMetricsFieldsMapping.organisationSubType,
@@ -1201,32 +1202,32 @@ export class BudgetsController {
             return {
               level: 0,
               name: key,
-              value: utilization,
+              value: utilization1,
               color: '#0A2840',
               items: _.orderBy(
                 _.map(groupedBySubOrganisations, (value2, key2) => {
-                  const expenditure = _.filter(
+                  const expenditure2 = _.filter(
                     value2,
                     (item: any) =>
                       item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                       BudgetsMetricsFieldsMapping.expenditureIndicatorName,
                   );
-                  const disbursement = _.filter(
+                  const disbursement2 = _.filter(
                     value2,
                     (item: any) =>
                       item[BudgetsMetricsFieldsMapping.indicatorNameField] ===
                       BudgetsMetricsFieldsMapping.disbursementIndicatorName,
                   );
-                  const expenditureValue = _.sumBy(
-                    expenditure,
+                  const expenditureValue2 = _.sumBy(
+                    expenditure2,
                     BudgetsMetricsFieldsMapping.expenditureValue,
                   );
-                  const disbursementValue = _.sumBy(
-                    disbursement,
+                  const disbursementValue2 = _.sumBy(
+                    disbursement2,
                     BudgetsMetricsFieldsMapping.disbursementValue,
                   );
-                  const utilization =
-                    (expenditureValue / disbursementValue) * 100;
+                  const utilization2 =
+                    (expenditureValue2 / disbursementValue2) * 100;
                   const groupedByOrganisations = _.groupBy(
                     value2,
                     BudgetsMetricsFieldsMapping.organisationName,
@@ -1234,11 +1235,11 @@ export class BudgetsController {
                   return {
                     level: 1,
                     name: key2,
-                    value: utilization,
+                    value: utilization2,
                     color: '#0A2840',
                     items: _.orderBy(
                       _.map(groupedByOrganisations, (value3, key3) => {
-                        const expenditure = _.filter(
+                        const expenditure3 = _.filter(
                           value3,
                           (item: any) =>
                             item[
@@ -1246,7 +1247,7 @@ export class BudgetsController {
                             ] ===
                             BudgetsMetricsFieldsMapping.expenditureIndicatorName,
                         );
-                        const disbursement = _.filter(
+                        const disbursement3 = _.filter(
                           value3,
                           (item: any) =>
                             item[
@@ -1254,20 +1255,20 @@ export class BudgetsController {
                             ] ===
                             BudgetsMetricsFieldsMapping.disbursementIndicatorName,
                         );
-                        const expenditureValue = _.sumBy(
-                          expenditure,
+                        const expenditureValue3 = _.sumBy(
+                          expenditure3,
                           BudgetsMetricsFieldsMapping.expenditureValue,
                         );
-                        const disbursementValue = _.sumBy(
-                          disbursement,
+                        const disbursementValue3 = _.sumBy(
+                          disbursement3,
                           BudgetsMetricsFieldsMapping.disbursementValue,
                         );
-                        const utilization =
-                          (expenditureValue / disbursementValue) * 100;
+                        const utilization3 =
+                          (expenditureValue3 / disbursementValue3) * 100;
                         return {
                           level: 2,
                           name: key3,
-                          value: utilization,
+                          value: utilization3,
                           color: '#0A2840',
                           items: [],
                         };
@@ -1319,7 +1320,7 @@ export class BudgetsController {
               item =>
                 _.get(item, BudgetsCyclesMapping.cycleFrom, null) !== null,
             ),
-            (item, index) => {
+            item => {
               const from = _.get(item, BudgetsCyclesMapping.cycleFrom, '');
               const to = _.get(item, BudgetsCyclesMapping.cycleTo, '');
 

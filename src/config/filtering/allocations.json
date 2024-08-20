@@ -1,8 +1,0 @@
-{
-  "country": "geographicArea/geographicAreaCode_ISO3",
-  "component": "component/componentName",
-  "multicountry": "multiCountryName",
-  "periodStart": "periodStartYear",
-  "periodEnd": "periodEndYear",
-  "search": "(contains(component/componentName,<value>) OR contains(geographicArea/geographicAreaName,<value>) OR contains(multiCountryName,<value>))"
-}

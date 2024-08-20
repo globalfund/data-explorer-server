@@ -1,8 +1,0 @@
-[
-  "value[]",
-  {
-    "number": "implementationPeriodNumber",
-    "startDate": "implementationPeriodStartDate",
-    "endDate": "implementationPeriodEndDate"
-  }
-]

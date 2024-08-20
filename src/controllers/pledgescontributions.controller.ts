@@ -10,9 +10,9 @@ import urls from '../config/urls/index.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 
-async function getBarData(urls: string[]) {
+async function getBarData(urls1: string[]) {
   return axios
-    .all(urls.map(url => axios.get(url)))
+    .all(urls1.map(url => axios.get(url)))
     .then(async responses => {
       const pledgesData = _.get(
         responses[0].data,
@@ -39,7 +39,7 @@ async function getBarData(urls: string[]) {
         ...Object.keys(contributions),
       ]);
 
-      const data = years.map(year => {
+      return years.map(year => {
         return {
           name: year,
           value: _.sumBy(
@@ -52,8 +52,6 @@ async function getBarData(urls: string[]) {
           ),
         };
       });
-
-      return data;
     })
     .catch(handleDataApiError);
 }

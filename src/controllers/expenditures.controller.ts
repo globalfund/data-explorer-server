@@ -201,8 +201,8 @@ export class ExpendituresController {
         rowDimensionArray.forEach((rowDimensionValue, rowIndex) => {
           columnDimensionArray.forEach((columnDimensionValue, columnIndex) => {
             raw.forEach((item: any) => {
-              const row = _.get(item, rowDimensionValue, '');
-              const column = _.get(item, columnDimensionValue, '');
+              const row1 = _.get(item, rowDimensionValue, '');
+              const column1 = _.get(item, columnDimensionValue, '');
               const expenditureAmount = _.get(
                 item,
                 ExpendituresHeatmapMapping.expenditure,
@@ -216,7 +216,8 @@ export class ExpendituresController {
 
               const fItemIndex = _.findIndex(
                 data,
-                dataItem => dataItem.row === row && dataItem.column === column,
+                dataItem =>
+                  dataItem.row === row1 && dataItem.column === column1,
               );
 
               if (fItemIndex > -1) {
@@ -232,7 +233,7 @@ export class ExpendituresController {
                 if (data[fItemIndex].percentage > 120) {
                   data[fItemIndex].percentage = 120;
                 }
-              } else if (row && column) {
+              } else if (row1 && column1) {
                 let parentRow =
                   rowIndex > 0
                     ? _.get(item, rowDimensionArray[rowIndex - 1])
@@ -463,7 +464,7 @@ export class ExpendituresController {
           [],
         );
 
-        const data = _.map(rawData, (item, index) => {
+        const data = _.map(rawData, item => {
           const from = _.get(item, ExpendituresCyclesMapping.cycleFrom, '');
           const to = _.get(item, ExpendituresCyclesMapping.cycleTo, '');
 

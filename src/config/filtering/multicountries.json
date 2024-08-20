@@ -1,8 +1,0 @@
-{
-  "country": "GrantAgreement/MultiCountry/MultiCountryName",
-  "component": "GrantAgreement/Component/ComponentName",
-  "status": "ImplementationPeriodStatusType/ProgramStatusTypeName",
-  "partner": "PrincipalRecipientId",
-  "partner_sub_type": "PrincipalRecipientId",
-  "partner_type": "PrincipalRecipientId"
-}

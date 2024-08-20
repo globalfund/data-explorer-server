@@ -102,8 +102,8 @@ export class LocationController {
 
     return axios
       .get(url)
-      .then(response => {
-        const raw = _.get(response.data, GeographiesMapping.dataPath, []);
+      .then(resp => {
+        const raw = _.get(resp.data, GeographiesMapping.dataPath, []);
         let data: GeographyModel[] = [];
 
         const world: GeographyModel = {
@@ -377,7 +377,7 @@ export class LocationController {
                 ]
                   .join(' ')
                   .trim()
-                  .replace(/  /g, ' '),
+                  .replace(/ {2}/g, ' '),
                 FPMEmail: _.get(rawFPM, LocationInfoMapping.FPMEmail, ''),
                 currentPrincipalRecipients,
                 formerPrincipalRecipients: _.filter(
@@ -421,9 +421,9 @@ export class LocationController {
 
     return axios
       .get(url)
-      .then(response => {
+      .then(resp => {
         const raw = _.get(
-          response.data,
+          resp.data,
           CoordinatingMehanismContactsMapping.dataPath,
           [],
         );
