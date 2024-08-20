@@ -255,9 +255,9 @@ export class ExpendituresController {
                   parentColumn = undefined;
                 }
                 data.push({
-                  row,
+                  row: row1,
                   parentRow,
-                  column,
+                  column: column1,
                   parentColumn,
                   budget: budgetAmount,
                   value: expenditureAmount,
