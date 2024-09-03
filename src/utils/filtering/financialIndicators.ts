@@ -29,7 +29,17 @@ const MAPPING = {
   yearTo: 'implementationPeriod/periodTo',
   grantIP: 'implementationPeriod/code',
   status: 'implementationPeriod/status/statusName',
-  search: `(contains(donor/type/name,<value>) OR contains(donor/name,<value>) OR contains(periodCovered,<value>))`,
+  search: {
+    allocation:
+      '(contains(geography/code,<value>) OR contains(geography/name,<value>) OR contains(activityArea/name,<value>))',
+    budget:
+      '(<geography> OR <component> OR contains(financialCategory/name,<value>) OR contains(financialCategory/parent/name,<value>) OR contains(financialCategory/parent/parent/name,<value>))',
+    generic: '(<geography> OR <component>)',
+    expenditure:
+      '(<geography> OR contains(<componentField>/name,<value>) OR contains(<componentField>/parent/name,<value>))',
+    'pledge-contribution':
+      '(contains(donor/type/name,<value>) OR contains(donor/name,<value>) OR contains(periodCovered,<value>))',
+  },
 };
 
 export function filterFinancialIndicators(
@@ -37,6 +47,13 @@ export function filterFinancialIndicators(
   urlParams: string,
   geographyMapping: string | string[],
   componentMapping: string,
+  datasetType:
+    | 'allocation'
+    | 'budget'
+    | 'commitment'
+    | 'disbursement'
+    | 'expenditure'
+    | 'pledge-contribution',
 ): string {
   let str = '';
 
@@ -185,9 +202,29 @@ export function filterFinancialIndicators(
     }(${statuses.join(filtering.multi_param_separator)})`;
   }
 
+  let mappingSearch = _.get(
+    MAPPING,
+    `search.${datasetType}`,
+    MAPPING.search.generic,
+  );
+  mappingSearch = mappingSearch.replace(
+    '<geography>',
+    (Array.isArray(geographyMapping) ? geographyMapping : [geographyMapping])
+      .map((g: string) => `contains(${g},<value>)`)
+      .join(' OR '),
+  );
+  mappingSearch = mappingSearch.replace(
+    '<component>',
+    `contains(${componentMapping},<value>)`,
+  );
+  mappingSearch = mappingSearch.replace(
+    /<componentField>/g,
+    componentMapping.split('/')[0],
+  );
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.search.replace(
+    str += `${str.length > 0 ? ' AND ' : ''}${mappingSearch.replace(
       /<value>/g,
       `'${search}'`,
     )}`;

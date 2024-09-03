@@ -7,7 +7,7 @@ const MAPPING = {
   component: 'activityArea/name',
   year: 'resultValueYear',
   search:
-    'contains(geography/code,<value>) OR contains(activityArea/name,<value>)',
+    '(contains(geography/code,<value>) OR contains(activityArea/name,<value>) OR contains(indicatorName,<value>))',
 };
 
 export function filterProgrammaticIndicators(

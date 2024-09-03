@@ -553,9 +553,12 @@ export class GrantsController {
       urls.PROGRAMMATIC_INDICATORS
     }/${GrantTargetsResultsMapping.urlParams
       .replace('<grantIP>', `${id}P0${ip}`)
-      .replace('<type>', type)}`;
-
-    console.log(url);
+      .replace('<type>', type)}`.replace(
+      '<search>',
+      this.req.query.q
+        ? ` AND (contains(activityArea/name,'${this.req.query.q}') OR contains(indicatorName,'${this.req.query.q}'))`
+        : '',
+    );
 
     return axios
       .get(url)

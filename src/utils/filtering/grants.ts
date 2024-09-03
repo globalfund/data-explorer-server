@@ -10,7 +10,7 @@ const MAPPING = {
   startDate: 'periodStartDate',
   endDate: 'periodEndDate',
   search:
-    'contains(geography/name,<value>) OR contains(activityArea/name,<value>) OR contains(principalRecipient/name,<value>) OR contains(status/statusName,<value>) OR contains(code,<value>)',
+    '(contains(geography/name,<value>) OR contains(activityArea/name,<value>) OR contains(principalRecipient/name,<value>) OR contains(status/statusName,<value>) OR contains(code,<value>))',
 };
 
 export function filterGrants(

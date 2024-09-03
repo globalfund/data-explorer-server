@@ -7,6 +7,8 @@ const MAPPING = {
   component: 'activityArea/name',
   year: 'eligibilityYear',
   cycle: 'fundingStream',
+  search:
+    '(contains(geography/name,<value>) OR contains(geography/name,<value>) OR contains(activityArea/name,<value>) OR contains(fundingStream,<value>))',
 };
 
 export function filterEligibility(
@@ -64,13 +66,13 @@ export function filterEligibility(
     }(${cycles.join(filtering.multi_param_separator)})`;
   }
 
-  // const search = _.get(params, 'q', '');
-  // if (search.length > 0) {
-  //   str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.search.replace(
-  //     /<value>/g,
-  //     `'${search}'`,
-  //   )}`;
-  // }
+  const search = _.get(params, 'q', '');
+  if (search.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.search.replace(
+      /<value>/g,
+      `'${search}'`,
+    )}`;
+  }
 
   let res = urlParams;
 

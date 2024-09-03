@@ -5,7 +5,7 @@ import {getGeographyValues} from './geographies';
 const MAPPING = {
   geography: ['geography/code', 'geography/name'],
   type: 'documentType/parent/name',
-  search: `contains(documentType/parent/name,<value>) OR contains(title,<value>)`,
+  search: `(contains(documentType/parent/name,<value>) OR contains(title,<value>))`,
 };
 
 export function filterDocuments(

@@ -8,6 +8,8 @@ const MAPPING = {
   period: 'periodFrom',
   trpWindow: 'window',
   portfolioCategory: 'differentiationCategory',
+  search:
+    '(contains(geography/name, <value>) OR contains(name, <value>)) OR contains(reviewApproach, <value>) OR contains(window, <value>) OR contains(reviewOutcome, <value>) OR contains(differentiationCategory, <value>)',
 };
 
 export function filterFundingRequests(
@@ -76,13 +78,13 @@ export function filterFundingRequests(
     }(${portfolioCategories.join(filtering.multi_param_separator)})`;
   }
 
-  // const search = _.get(params, 'q', '');
-  // if (search.length > 0) {
-  //   str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.search.replace(
-  //     /<value>/g,
-  //     `'${search}'`,
-  //   )}`;
-  // }
+  const search = _.get(params, 'q', '');
+  if (search.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.search.replace(
+      /<value>/g,
+      `'${search}'`,
+    )}`;
+  }
 
   let res = urlParams;
 

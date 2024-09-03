@@ -153,7 +153,13 @@ export class ResultsController {
   ) {
     let filterString = ResultsTableLocationMappingFields.urlParams
       .replace('<countryCode>', countryCode)
-      .replace('<cycle>', cycle);
+      .replace('<cycle>', cycle)
+      .replace(
+        '<search>',
+        this.req.query.q
+          ? ` AND (contains(geography/code,'${this.req.query.q}') OR contains(activityArea/name,'${this.req.query.q}') OR contains(indicatorName,'${this.req.query.q}'))`
+          : '',
+      );
     const url = `${urls.PROGRAMMATIC_INDICATORS}/${filterString}`;
 
     return axios

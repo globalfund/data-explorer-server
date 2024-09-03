@@ -70,6 +70,7 @@ export class AllocationsController {
       AllocationCumulativeByCyclesFieldsMapping.urlParams,
       ['geography/name', 'geography/code'],
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -155,6 +156,7 @@ export class AllocationsController {
       AllocationSunburstFieldsMapping.urlParams,
       ['geography/name', 'geography/code'],
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -202,6 +204,7 @@ export class AllocationsController {
       urlParams,
       ['geography/name', 'geography/code'],
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -276,6 +279,7 @@ export class AllocationsController {
       AllocationTableFieldsMapping.urlParams,
       ['geography/name', 'geography/code'],
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -354,12 +358,14 @@ export class AllocationsController {
       AllocationRadialFieldsMapping.urlParams,
       ['geography/name', 'geography/code'],
       'activityArea/name',
+      'allocation',
     );
     let filterString2 = filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.countriesCountUrlParams,
       ['geography/name', 'geography/code'],
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -386,6 +392,7 @@ export class AllocationsController {
       AllocationRadialFieldsMapping.urlParamsLocation,
       'geography/code',
       'activityArea/name',
+      'allocation',
     );
 
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -403,6 +410,7 @@ export class AllocationsController {
       AllocationCyclesFieldsMapping.urlParams,
       'geography/code',
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

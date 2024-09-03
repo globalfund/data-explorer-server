@@ -164,6 +164,7 @@ export class ExpendituresController {
       filterString,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'expenditure',
     );
 
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -308,6 +309,7 @@ export class ExpendituresController {
       ),
       geographyMappings,
       `${componentField}/parent/parent/name`,
+      'expenditure',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -376,6 +378,7 @@ export class ExpendituresController {
       ),
       geographyMappings,
       `${componentField}/parent/parent/name`,
+      'expenditure',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -452,6 +455,7 @@ export class ExpendituresController {
       ExpendituresCyclesMapping.urlParams,
       geographyMappings,
       'implementationPeriod/grant/activityArea/name',
+      'expenditure',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -510,6 +514,7 @@ export class ExpendituresController {
       ExpendituresAvailabilityMapping.urlParams,
       geographyMappings,
       'implementationPeriod/grant/activityArea/name',
+      'expenditure',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

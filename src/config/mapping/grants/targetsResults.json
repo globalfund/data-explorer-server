@@ -16,5 +16,5 @@
   "target": "targetValuePercentage",
   "result": "resultValuePercentage",
   "achievement": "performance",
-  "urlParams": "?$filter=programmaticDataSet eq 'IMPLEMENTATION_PERIOD_TARGETS_RESULTS' AND implementationPeriod/code eq '<grantIP>' AND valueType eq '<type>'&$expand=activityArea($select=name)&$select=activityArea,indicatorName,isReversed,geographicCoverage,startDate,baselineValuePercentage,baselineValueYear,valueSource,targetValueYear,targetValuePercentage,resultValuePercentage,performance,grouping_Level1,grouping_Level2"
+  "urlParams": "?$filter=programmaticDataSet eq 'IMPLEMENTATION_PERIOD_TARGETS_RESULTS' AND implementationPeriod/code eq '<grantIP>' AND valueType eq '<type>'<search>&$expand=activityArea($select=name)&$select=activityArea,indicatorName,isReversed,geographicCoverage,startDate,baselineValuePercentage,baselineValueYear,valueSource,targetValueYear,targetValuePercentage,resultValuePercentage,performance,grouping_Level1,grouping_Level2"
 }

@@ -5,7 +5,7 @@ const MAPPING = {
   geography: 'donor/geography/code',
   donor: 'name',
   donorType: 'type/name',
-  search: `contains(type/name,<value>) OR contains(name,<value>)`,
+  search: `(contains(type/name,<value>) OR contains(name,<value>))`,
 };
 
 export function filterDonors(

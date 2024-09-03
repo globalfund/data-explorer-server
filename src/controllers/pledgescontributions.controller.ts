@@ -67,12 +67,14 @@ export class PledgescontributionsController {
       PledgesContributionsStatsFieldsMapping.totalValuesUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
       PledgesContributionsStatsFieldsMapping.donorTypesCountUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -136,6 +138,7 @@ export class PledgescontributionsController {
       PledgesContributionsBarFieldsMapping.donorBarUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -265,6 +268,7 @@ export class PledgescontributionsController {
       urlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -375,6 +379,7 @@ export class PledgescontributionsController {
       PledgesContributionsBarFieldsMapping.donorBarUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -500,12 +505,14 @@ export class PledgescontributionsController {
       PledgesContributionsBarFieldsMapping.pledgesUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     let filterString2 = filterFinancialIndicators(
       this.req.query,
       PledgesContributionsBarFieldsMapping.contributionsUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -526,6 +533,7 @@ export class PledgescontributionsController {
       PledgesContributionsBarFieldsMapping.pledgesUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     let filterString2 = filterFinancialIndicators(
       {
@@ -535,6 +543,7 @@ export class PledgescontributionsController {
       PledgesContributionsBarFieldsMapping.contributionsUrlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -550,6 +559,7 @@ export class PledgescontributionsController {
       PledgesContributionsCyclesFieldsMapping.urlParams,
       ['donor/geography/name', 'donor/geography/code'],
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

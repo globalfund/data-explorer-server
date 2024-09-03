@@ -41,6 +41,7 @@ export class DisbursementsController {
       FinancialInsightsStatsMapping.urlParams,
       geographyMappings,
       `${componentField}/name`,
+      'disbursement',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -115,6 +116,7 @@ export class DisbursementsController {
       ),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = BarChartFieldsMapping.name.replace(
@@ -138,6 +140,7 @@ export class DisbursementsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'disbursement',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -237,6 +240,7 @@ export class DisbursementsController {
       ),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = LineChartFieldsMapping.line.replace(
@@ -260,6 +264,7 @@ export class DisbursementsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'disbursement',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -393,6 +398,7 @@ export class DisbursementsController {
       TableFieldsMapping.urlParams1.replace('<componentField>', componentField),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = TableFieldsMapping.component.replace(
@@ -416,6 +422,7 @@ export class DisbursementsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'disbursement',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -547,6 +554,7 @@ export class DisbursementsController {
       DisbursementsCyclesMapping.urlParams,
       geographyMappings,
       'activityArea/name',
+      'disbursement',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

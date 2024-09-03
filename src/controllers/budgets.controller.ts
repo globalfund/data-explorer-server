@@ -41,6 +41,7 @@ export class BudgetsController {
       BudgetsRadialFieldsMapping.urlParams,
       geographyMappings,
       'implementationPeriod/grant/activityArea/name',
+      'budget',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -86,6 +87,7 @@ export class BudgetsController {
       BudgetsSankeyFieldsMapping.urlParams,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -220,6 +222,7 @@ export class BudgetsController {
       ),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = BudgetsTreemapFieldsMapping.name.replace(
@@ -243,6 +246,7 @@ export class BudgetsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'budget',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -389,6 +393,7 @@ export class BudgetsController {
       urlParams,
       geographyMappings,
       'implementationPeriod/grant/activityArea/name',
+      'budget',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -469,6 +474,7 @@ export class BudgetsController {
       BudgetsCyclesMapping.urlParams,
       'implementationPeriod/grant/geography/code',
       'implementationPeriod/grant/activityArea/name',
+      'budget',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -548,6 +554,7 @@ export class BudgetsController {
       ),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = BudgetsBreakdownFieldsMapping.name.replace(
@@ -576,6 +583,7 @@ export class BudgetsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'budget',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -684,12 +692,14 @@ export class BudgetsController {
       BudgetsMetricsFieldsMapping.urlParams,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParamsOrganisations,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -927,12 +937,14 @@ export class BudgetsController {
       BudgetsMetricsFieldsMapping.urlParams,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParamsOrganisations,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -1125,12 +1137,14 @@ export class BudgetsController {
       BudgetsMetricsFieldsMapping.urlParams,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const filterString2 = filterFinancialIndicators(
       this.req.query,
       BudgetsMetricsFieldsMapping.urlParamsOrganisations,
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'budget',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -1305,6 +1319,7 @@ export class BudgetsController {
       BudgetsCyclesMapping.urlParamsMetrics,
       'implementationPeriod/grant/geography/code',
       'implementationPeriod/grant/activityArea/name',
+      'budget',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
