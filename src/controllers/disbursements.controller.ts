@@ -619,13 +619,38 @@ export class DisbursementsController {
         });
         data.nodes = _.uniqBy(data.nodes, 'name');
         data.nodes = _.orderBy(
+          _.map(data.nodes, node => {
+            return {
+              ...node,
+              value: _.sumBy(
+                _.filter(data.links, {target: node.name}),
+                'value',
+              ),
+            };
+          }),
+          'value',
+          'asc',
+        );
+        const rootNodeIndex = _.findIndex(data.nodes, {level: 0});
+        data.nodes[rootNodeIndex].value = _.sumBy(data.nodes, node =>
+          node.level === 1 && node.value ? node.value : 0,
+        );
+        data.nodes = _.orderBy(
           data.nodes,
           node => {
-            const links = _.filter(data.links, {target: node.name});
-            return _.sumBy(links, 'value');
+            if (node.level === 0) {
+              return [node.value, node.value];
+            }
+            if (node.level === 1) {
+              const nodeLinks = _.filter(data.links, {source: node.name});
+              return [_.sumBy(nodeLinks, 'value'), node.value];
+            }
+            const source = _.find(data.links, {target: node.name})?.source;
+            return [_.find(data.nodes, {name: source})?.value, node.value];
           },
-          'desc',
+          ['desc', 'desc'],
         );
+        data.nodes = _.orderBy(data.nodes, 'level', 'asc');
         data.links = _.orderBy(data.links, 'value', 'desc');
         return {data};
       })
