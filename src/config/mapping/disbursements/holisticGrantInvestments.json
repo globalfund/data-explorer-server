@@ -1,0 +1,9 @@
+{
+  "dataPath": "value",
+  "level1Field": "financialCategory.parent.name",
+  "level2Field": "financialCategory.name",
+  "valueField": "value",
+  "cycle": "periodFrom",
+  "nodeColors": ["#252C34", "#252C34", "#252C34"],
+  "urlParams": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((financialCategory/name,financialCategory/parent/name,financialCategory/parent/parent/name),aggregate(actualAmount with sum as value))"
+}
