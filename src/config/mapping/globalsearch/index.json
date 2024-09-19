@@ -4,7 +4,7 @@
       "name": "Location(s)",
       "type": "Country",
       "link": "/location/<code>/overview",
-      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((geography/code,geography/name),aggregate(id with countdistinct as count))",
+      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((geography/code,geography/name),aggregate(id with countdistinct as count))",
       "itemname": "",
       "filterFields": [
         "geography/code",
@@ -28,7 +28,7 @@
       "name": "Grant(s)",
       "type": "Grant",
       "link": "/grant/<code>",
-      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$select=code,status&$expand=status(select=statusName)&$filter=(<filterStr>)&$orderby=status/statusName asc",
+      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$select=code,status&$expand=status(select=statusName)&$filter=(<filterStr>)&$orderby=status/statusName asc",
       "itemname": "<code>",
       "filterFields": [
         "geography/code",
@@ -57,7 +57,7 @@
       "name": "Partner(s)",
       "type": "Partner",
       "link": "",
-      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((principalRecipient/id,principalRecipient/name,principalRecipient/shortName),aggregate(id with countdistinct as count))",
+      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((principalRecipient/id,principalRecipient/name,principalRecipient/shortName),aggregate(id with countdistinct as count))",
       "itemname": "<shortName&longName>",
       "filterFields": [
         "geography/code",
@@ -101,7 +101,7 @@
       "name": "Result(s)",
       "type": "Result",
       "link": "",
-      "url": "https://api-gf-api-gf-02.azurewebsites.net/v4/odata/allProgrammaticIndicators?$apply=filter(<filterStr> AND programmaticDataset eq 'Annual_Results')/groupby((indicatorName,recordId),aggregate(resultValueNumerator with sum as value))",
+      "url": "https://fetch.theglobalfund.org/v4/odata/allProgrammaticIndicators?$apply=filter(<filterStr> AND programmaticDataset eq 'Annual_Results')/groupby((indicatorName,recordId),aggregate(resultValueNumerator with sum as value))",
       "itemname": "",
       "filterFields": [
         "geography/code",
