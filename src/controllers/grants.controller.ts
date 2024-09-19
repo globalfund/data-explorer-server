@@ -95,7 +95,11 @@ export class GrantsController {
                 ['asc'],
               ).map((p, index: number) => ({
                 code: index + 1,
-                name: `Implementation Period ${_.get(
+                name: `${_.get(
+                  p,
+                  GrantMapping.implementationPeriodCode,
+                  '',
+                )} ${_.get(
                   p,
                   GrantMapping.implementationPeriodFrom,
                   '',
