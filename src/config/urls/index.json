@@ -18,5 +18,6 @@
   "GEOGRAPHIES": "https://fetch.theglobalfund.org/v4/odata/Geographies",
   "FUNDING_REQUESTS": "https://fetch.theglobalfund.org/v4/odata/FundingRequests",
   "DOCUMENTS": "https://fetch.theglobalfund.org/v4/odata/Documents",
-  "ELIGIBILITY": "https://fetch.theglobalfund.org/v4/odata/Eligibility"
+  "ELIGIBILITY": "https://fetch.theglobalfund.org/v4/odata/Eligibility",
+  "DATASET_INFORMATION": "https://fetch.theglobalfund.org/v4.1/odata/DatasetInformation?a=b"
 }

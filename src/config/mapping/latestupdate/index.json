@@ -1,47 +1,47 @@
 {
-  "dataPath": "value[0]",
-  "updated": "dateTimeUpdated",
-  "created": "dateTimeCreated",
+  "dataPath": "value",
+  "updated": "lastUpdated",
+  "dataset": "dataset",
   "datasets": [
     {
       "name": "allocations",
-      "url": "https://fetch.theglobalfund.org/v4/odata/allFinancialIndicators?$filter=indicatorName eq 'Communicated Allocation - Reference Rate' AND financialDataSet eq 'CommunicatedAllocation_ReferenceRate'&$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "CommunicatedAllocation_ReferenceRate"
     },
     {
       "name": "budgets",
-      "url": "https://fetch.theglobalfund.org/v4/odata/allFinancialIndicators?$filter=contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'&$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "GrantBudget_ReferenceRate"
     },
     {
       "name": "disbursements",
-      "url": "https://fetch.theglobalfund.org/v4/odata/allFinancialIndicators?$filter=contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'&$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Disbursement_ReferenceRate"
     },
     {
       "name": "eligibility",
-      "url": "https://fetch.theglobalfund.org/v4/odata/Eligibility?$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Eligibility"
     },
     {
       "name": "expenditures",
-      "url": "https://fetch.theglobalfund.org/v4/odata/allFinancialIndicators?$filter=financialDataSet eq 'Expenditure_Intervention_ReferenceRate' AND isLatestReported eq true&$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Expenditure_InvestmentLandscape_ReferenceRate"
     },
     {
       "name": "funding_requests",
-      "url": "https://fetch.theglobalfund.org/v4/odata/FundingRequests?$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Funding_Requests"
     },
     {
       "name": "geographies",
-      "url": "https://fetch.theglobalfund.org/v4/odata/Geographies?$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Geography"
     },
     {
       "name": "grants",
-      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Grants"
     },
     {
       "name": "pledges-contributions",
-      "url": "https://fetch.theglobalfund.org/v4/odata/allFinancialIndicators?$filter=financialDataSet eq 'Pledges_Contributions' AND indicatorName eq 'Pledge - Reference Rate'&$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Pledges_Contributions"
     },
     {
       "name": "results",
-      "url": "https://fetch.theglobalfund.org/v4/odata/allProgrammaticIndicators?$filter=programmaticDataset eq 'Annual_Results'&$top=1&$orderby=dateTimeUpdated desc,dateTimeCreated desc&$select=dateTimeUpdated,dateTimeCreated"
+      "datasetLabel": "Annual_Results"
     }
   ]
 }
