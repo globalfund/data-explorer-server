@@ -387,8 +387,9 @@ export class AllocationsController {
   async allocationsRadialChartInLocation(
     @param.path.string('countryCode') countryCode: string,
   ) {
+    const decodedCode = countryCode.replace(/\|/g, '%2F');
     let filterString = filterFinancialIndicators(
-      {...this.req.query, geographies: countryCode},
+      {...this.req.query, geographies: decodedCode},
       AllocationRadialFieldsMapping.urlParamsLocation,
       'geography/code',
       'activityArea/name',
