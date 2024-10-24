@@ -6,7 +6,7 @@
   "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/name),aggregate(plannedAmount with sum as value))",
   "urlParams2": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'GrantBudget_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/parent/name),aggregate(plannedAmount with sum as value))",
   "url1Items": ["Malaria", "Tuberculosis"],
-  "url2Items": ["HIV/AIDS", "Other"],
+  "url2Items": ["HIV", "Other"],
   "textbgcolors": [
     {
       "color": "#0A2840",

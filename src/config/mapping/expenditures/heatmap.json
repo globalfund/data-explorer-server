@@ -5,7 +5,7 @@
   "cycle": "periodCovered",
   "urlParams": "?$apply=filter(financialDataSet eq 'Expenditure_Intervention_ReferenceRate' AND isLatestReported eq true<filterString>)/groupby((<rowField>,<columnField>),aggregate(actualAmountCumulative with sum as value1,plannedAmountCumulative with sum as value2))",
   "url1Items": ["Malaria", "Tuberculosis"],
-  "url2Items": ["HIV/AIDS", "Other"],
+  "url2Items": ["HIV", "Other"],
   "fields": {
     "principalRecipient": "implementationPeriod/grant/principalRecipient/name",
     "principalRecipientSubType": "implementationPeriod/grant/principalRecipient/type/name",
