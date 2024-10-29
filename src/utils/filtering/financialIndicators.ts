@@ -136,6 +136,20 @@ export function filterFinancialIndicators(
     }(${principalRecipients.join(filtering.multi_param_separator)})`;
   }
 
+  const principalRecipientSubTypes = _.filter(
+    _.get(params, 'principalRecipientSubTypes', '').split(','),
+    (o: string) => o.length > 0,
+  ).map(
+    (principalRecipientSubType: string) => `'${principalRecipientSubType}'`,
+  );
+  if (principalRecipientSubTypes.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      MAPPING.principalRecipientSubType
+    }${filtering.in}(${principalRecipientSubTypes.join(
+      filtering.multi_param_separator,
+    )})`;
+  }
+
   const principalRecipientTypes = _.filter(
     _.get(params, 'principalRecipientTypes', '').split(','),
     (o: string) => o.length > 0,
