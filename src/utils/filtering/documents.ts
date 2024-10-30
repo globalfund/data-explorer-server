@@ -4,6 +4,7 @@ import {getGeographyValues} from './geographies';
 
 const MAPPING = {
   geography: ['geography/code', 'geography/name'],
+  component: 'activityArea/name',
   type: 'documentType/parent/name',
   search: `(contains(documentType/parent/name,<value>) OR contains(title,<value>))`,
 };
@@ -29,6 +30,16 @@ export function filterDocuments(
           )})`,
       )
       .join(' OR ')})`;
+  }
+
+  const components = _.filter(
+    _.get(params, 'components', '').split(','),
+    (o: string) => o.length > 0,
+  ).map((component: string) => `'${component}'`);
+  if (components.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.component}${
+      filtering.in
+    }(${components.join(filtering.multi_param_separator)})`;
   }
 
   const types = _.filter(
