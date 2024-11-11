@@ -1,15 +1,10 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
 import CycleMapping from '../../static-assets/cycle-mapping.json';
-import {getGeographyValues} from './geographies';
+import {GeographyFiltering} from './geographies';
 
 const MAPPING = {
-  geography: [
-    'geography/code',
-    'geography/name',
-    'implementationPeriod/grant/geography/code',
-    'implementationPeriod/grant/geography/name',
-  ],
+  geography: ['geography/code', 'implementationPeriod/grant/geography/code'],
   component: [
     'activityArea/name',
     'activityAreaGroup/name',
@@ -42,7 +37,7 @@ const MAPPING = {
   },
 };
 
-export function filterFinancialIndicators(
+export async function filterFinancialIndicators(
   params: Record<string, any>,
   urlParams: string,
   geographyMapping: string | string[],
@@ -54,7 +49,7 @@ export function filterFinancialIndicators(
     | 'disbursement'
     | 'expenditure'
     | 'pledge-contribution',
-): string {
+): Promise<string> {
   let str = '';
 
   if (_.get(params, 'cycleNames', '')) {
@@ -75,26 +70,11 @@ export function filterFinancialIndicators(
     });
   }
 
-  const geos = _.filter(
+  str = await GeographyFiltering(
+    str,
     _.get(params, 'geographies', '').split(','),
-    (o: string) => o.length > 0,
+    geographyMapping,
   );
-  const geographies = geos.map(
-    (geography: string) => `'${geography.replace(/'/g, "''")}'`,
-  );
-  if (geos.length > 0) {
-    const values: string[] = [...geographies, ...getGeographyValues(geos)];
-    const geoMapping =
-      geographyMapping instanceof Array ? geographyMapping : [geographyMapping];
-    str += `${str.length > 0 ? ' AND ' : ''}(${geoMapping
-      .map(
-        m =>
-          `${m}${filtering.in}(${values.join(
-            filtering.multi_param_separator,
-          )})`,
-      )
-      .join(' OR ')})`;
-  }
 
   const components = _.filter(
     _.get(params, 'components', '').split(','),

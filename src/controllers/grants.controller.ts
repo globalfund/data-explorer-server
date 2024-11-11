@@ -45,7 +45,7 @@ export class GrantsController {
               encodeURIComponent: (str: string) => str,
             },
           );
-    const filterString = filterGrants(
+    const filterString = await filterGrants(
       this.req.query,
       GrantsListMapping.urlParams,
     );
