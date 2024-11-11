@@ -13,7 +13,7 @@ export class DocumentsController {
   @get('/documents')
   @response(200)
   async documents() {
-    const filterString = filterDocuments(
+    const filterString = await filterDocuments(
       this.req.query,
       DocumentsListMapping.urlParams,
     );

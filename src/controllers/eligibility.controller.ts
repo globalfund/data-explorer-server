@@ -38,7 +38,7 @@ export class EligibilityController {
   @get('/eligibility/stats/{year}')
   @response(200)
   async eligibilityStats(@param.path.string('year') year: string) {
-    const filterString = filterEligibility(
+    const filterString = await filterEligibility(
       {...this.req.query, years: year},
       EligibilityStatsMapping.urlParams,
     );
@@ -65,7 +65,7 @@ export class EligibilityController {
   @get('/eligibility/table')
   @response(200)
   async eligibilityTable() {
-    const filterString = filterEligibility(
+    const filterString = await filterEligibility(
       this.req.query,
       EligibilityTableMapping.urlParams,
     );

@@ -65,10 +65,10 @@ export class AllocationsController {
   @get('/allocations/cumulative-by-cycles')
   @response(200)
   async cumulativeByCycles() {
-    let filterString = filterFinancialIndicators(
+    let filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationCumulativeByCyclesFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
       'allocation',
     );
@@ -151,10 +151,10 @@ export class AllocationsController {
   @get('/allocations/sunburst')
   @response(200)
   async allocationsSunburst() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationSunburstFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
       'allocation',
     );
@@ -199,10 +199,10 @@ export class AllocationsController {
         urlParams = AllocationTreemapFieldsMapping.urlParams[1];
       }
     }
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
       'allocation',
     );
@@ -274,10 +274,10 @@ export class AllocationsController {
   @get('/allocations/table')
   @response(200)
   async allocationsTable() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationTableFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
       'allocation',
     );
@@ -353,17 +353,17 @@ export class AllocationsController {
   @get('/allocations/radial')
   @response(200)
   async allocationsRadialChart() {
-    let filterString = filterFinancialIndicators(
+    let filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
       'allocation',
     );
-    let filterString2 = filterFinancialIndicators(
+    let filterString2 = await filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.countriesCountUrlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
       'allocation',
     );
@@ -388,7 +388,7 @@ export class AllocationsController {
     @param.path.string('countryCode') countryCode: string,
   ) {
     const decodedCode = countryCode.replace(/\|/g, '%2F');
-    let filterString = filterFinancialIndicators(
+    let filterString = await filterFinancialIndicators(
       {...this.req.query, geographies: decodedCode},
       AllocationRadialFieldsMapping.urlParamsLocation,
       'geography/code',
@@ -406,7 +406,7 @@ export class AllocationsController {
   @get('/allocations/cycles')
   @response(200)
   async cycles() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationCyclesFieldsMapping.urlParams,
       'geography/code',
