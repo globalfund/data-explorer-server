@@ -564,6 +564,8 @@ export class GrantsController {
         : '',
     );
 
+    console.log(url);
+
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
@@ -627,6 +629,39 @@ export class GrantsController {
               if (category || disaggregation) {
                 name = `${category}: ${disaggregation}`;
               }
+              let baselineValue = '';
+              const baselineValuePercentage = _.get(
+                item1,
+                GrantTargetsResultsMapping.baselineValuePercentage,
+                null,
+              );
+              const baselineValueNumerator = _.get(
+                item1,
+                GrantTargetsResultsMapping.baselineValueNumerator,
+                null,
+              );
+              const baselineValueDenominator = _.get(
+                item1,
+                GrantTargetsResultsMapping.baselineValueDenominator,
+                null,
+              );
+              const baselineValueText = _.get(
+                item1,
+                GrantTargetsResultsMapping.baselineValueText,
+                null,
+              );
+              if (baselineValueNumerator) {
+                baselineValue += `N:${baselineValueNumerator}`;
+              }
+              if (baselineValueDenominator) {
+                baselineValue += `,D:${baselineValueDenominator}`;
+              }
+              if (baselineValuePercentage) {
+                baselineValue = `,P:${baselineValuePercentage}%`;
+              }
+              if (baselineValueText) {
+                baselineValue += `,T:${baselineValueText}`;
+              }
               let itempush = {
                 name,
                 reversed:
@@ -644,19 +679,10 @@ export class GrantsController {
                   GrantTargetsResultsMapping.cumulation,
                   '',
                 ),
-                baselineValue: _.get(
-                  item1,
-                  GrantTargetsResultsMapping.baselineValue,
-                  '',
-                ),
+                baselineValue,
                 baselineYear: _.get(
                   item1,
                   GrantTargetsResultsMapping.baselineYear,
-                  '',
-                ),
-                baselineSource: _.get(
-                  item1,
-                  GrantTargetsResultsMapping.baselineSource,
                   '',
                 ),
               };
@@ -664,24 +690,82 @@ export class GrantsController {
                 itempush = {
                   ...itempush,
                   [key3]: yearItems.map((yearItem: any) => {
-                    const target = _.get(
-                      yearItem,
-                      GrantTargetsResultsMapping.target,
-                      '',
+                    let targetValue = '';
+                    const targetValuePercentage = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.targetValuePercentage,
+                      null,
                     );
-                    const result = _.get(
-                      yearItem,
-                      GrantTargetsResultsMapping.result,
-                      '',
+                    const targetValueNumerator = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.targetValueNumerator,
+                      null,
                     );
+                    const targetValueDenominator = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.targetValueDenominator,
+                      null,
+                    );
+                    const targetValueText = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.targetValueText,
+                      null,
+                    );
+                    if (targetValueNumerator) {
+                      targetValue += `N:${targetValueNumerator}`;
+                    }
+                    if (targetValueDenominator) {
+                      targetValue += `,D:${targetValueDenominator}`;
+                    }
+                    if (targetValuePercentage) {
+                      targetValue = `,P:${targetValuePercentage}%`;
+                    }
+                    if (targetValueText) {
+                      targetValue += `,T:${targetValueText}`;
+                    }
+
+                    let resultValue = '';
+                    const resultValuePercentage = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.resultValuePercentage,
+                      null,
+                    );
+                    const resultValueNumerator = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.resultValueNumerator,
+                      null,
+                    );
+                    const resultValueDenominator = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.resultValueDenominator,
+                      null,
+                    );
+                    const resultValueText = _.get(
+                      item1,
+                      GrantTargetsResultsMapping.resultValueText,
+                      null,
+                    );
+                    if (resultValueNumerator) {
+                      resultValue += `N:${resultValueNumerator}`;
+                    }
+                    if (resultValueDenominator) {
+                      resultValue += `,D:${resultValueDenominator}`;
+                    }
+                    if (resultValuePercentage) {
+                      resultValue = `,P:${resultValuePercentage}%`;
+                    }
+                    if (resultValueText) {
+                      resultValue += `,T:${resultValueText}`;
+                    }
+
                     const achievement = _.get(
                       yearItem,
                       GrantTargetsResultsMapping.achievement,
                       '',
                     );
                     return {
-                      target: target ? `T:${target}%` : '',
-                      result: result ? `T:${result}%` : '',
+                      target: targetValue,
+                      result: resultValue,
                       achievement: achievement ? `${achievement * 100}%` : '',
                     };
                   }),
