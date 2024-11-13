@@ -64,8 +64,12 @@ export async function filterFinancialIndicators(
       const splits = cycle.split(' - ');
       params = {
         ...params,
-        years: splits[0],
-        yearsTo: splits[1],
+        years: `${_.get(params, 'years', '')}${
+          _.get(params, 'years', '') ? ',' : ''
+        }${splits[0]}`,
+        yearsTo: `${_.get(params, 'yearsTo', '')}${
+          _.get(params, 'yearsTo', '') ? ',' : ''
+        }${splits[1]}`,
       };
     });
   }
