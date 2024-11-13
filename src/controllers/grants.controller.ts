@@ -564,8 +564,6 @@ export class GrantsController {
         : '',
     );
 
-    console.log(url);
-
     return axios
       .get(url)
       .then((resp: AxiosResponse) => {
