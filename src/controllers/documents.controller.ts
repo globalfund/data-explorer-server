@@ -30,35 +30,42 @@ export class DocumentsController {
         );
 
         return {
-          data: _.map(groupedByLocation, (locationObj, location) => {
-            const groupedByType = _.groupBy(
-              locationObj,
-              DocumentsListMapping.type,
-            );
+          data: _.orderBy(
+            _.map(groupedByLocation, (locationObj, location) => {
+              const groupedByType = _.groupBy(
+                locationObj,
+                DocumentsListMapping.type,
+              );
 
-            return {
-              name: location,
-              documents: Object.keys(locationObj).length,
-              _children: _.map(groupedByType, (typeObj, type) => {
-                const groupedBySubType = _.groupBy(
-                  typeObj,
-                  DocumentsListMapping.subType,
-                );
-                return {
-                  name: type,
-                  documents: Object.keys(typeObj).length,
-                  _children: _.map(groupedBySubType, (subTypeObj, subType) => ({
-                    name: subType,
-                    documents: Object.keys(subTypeObj).length,
-                    _children: _.map(subTypeObj, doc => ({
-                      name: _.get(doc, DocumentsListMapping.title, ''),
-                      documents: _.get(doc, DocumentsListMapping.url, ''),
-                    })),
-                  })),
-                };
-              }),
-            };
-          }),
+              return {
+                name: location,
+                documents: Object.keys(locationObj).length,
+                _children: _.map(groupedByType, (typeObj, type) => {
+                  const groupedBySubType = _.groupBy(
+                    typeObj,
+                    DocumentsListMapping.subType,
+                  );
+                  return {
+                    name: type,
+                    documents: Object.keys(typeObj).length,
+                    _children: _.map(
+                      groupedBySubType,
+                      (subTypeObj, subType) => ({
+                        name: subType,
+                        documents: Object.keys(subTypeObj).length,
+                        _children: _.map(subTypeObj, doc => ({
+                          name: _.get(doc, DocumentsListMapping.title, ''),
+                          documents: _.get(doc, DocumentsListMapping.url, ''),
+                        })),
+                      }),
+                    ),
+                  };
+                }),
+              };
+            }),
+            'name',
+            'asc',
+          ),
         };
       })
       .catch(handleDataApiError);
