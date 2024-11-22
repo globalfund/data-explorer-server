@@ -4,7 +4,7 @@
       "name": "Location(s)",
       "type": "Country",
       "link": "/location/<code>/overview",
-      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((geography/code,geography/name),aggregate(id with countdistinct as count))",
+      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((geography/code,geography/name))",
       "itemname": "",
       "filterFields": [
         "geography/code",
@@ -57,7 +57,7 @@
       "name": "Partner(s)",
       "type": "Partner",
       "link": "",
-      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((principalRecipient/id,principalRecipient/name,principalRecipient/shortName),aggregate(id with countdistinct as count))",
+      "url": "https://fetch.theglobalfund.org/v4/odata/Grants?$apply=filter(<filterStr>)/groupby((principalRecipient/id,principalRecipient/name,principalRecipient/shortName))",
       "itemname": "<shortName&longName>",
       "filterFields": [
         "geography/code",
