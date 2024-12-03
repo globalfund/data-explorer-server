@@ -82,11 +82,19 @@ export class DisbursementsController {
       .catch(handleDataApiError);
   }
 
-  @get('/disbursements/bar-chart/{componentField}/{geographyGrouping}')
+  @get(
+    '/disbursements/bar-chart/{componentField}/{geographyGrouping}/{xAxisVariable}',
+  )
   @response(200)
   async barChart(
     @param.path.string('componentField') componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
+    @param.path.string('xAxisVariable')
+    xAxisVariable?:
+      | 'Geography'
+      | 'Component'
+      | 'PrincipalRecipientType'
+      | 'PrincipalRecipient',
   ) {
     let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (geographyGrouping === 'Portfolio View') {
@@ -96,21 +104,34 @@ export class DisbursementsController {
       geographyMappings =
         'implementationPeriod/grant/geography_BoardConstituencyView/code';
     }
+
     const filterString1 = await filterFinancialIndicators(
       this.req.query,
-      BarChartFieldsMapping.urlParams1.replace(
-        '<componentField>',
-        componentField,
-      ),
+      BarChartFieldsMapping.urlParams1
+        .replace(
+          '<groubByField>',
+          _.get(
+            BarChartFieldsMapping.groubByItems,
+            xAxisVariable ?? 'Component',
+            BarChartFieldsMapping.groubByItems.Component,
+          ),
+        )
+        .replace('<componentField>', componentField),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
       'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
-    const nameField1 = BarChartFieldsMapping.name.replace(
-      '<componentField>',
-      componentField,
-    );
+    const nameField1 = BarChartFieldsMapping.name
+      .replace(
+        '<groubByField>',
+        _.get(
+          BarChartFieldsMapping.groubByItems,
+          xAxisVariable ?? 'Component',
+          BarChartFieldsMapping.groubByItems.Component,
+        ).replace(/\//g, '.'),
+      )
+      .replace('<componentField>', componentField);
 
     let filterString2 = '';
     let url2 = '';
@@ -199,11 +220,14 @@ export class DisbursementsController {
       .catch(handleDataApiError);
   }
 
-  @get('/disbursements/line-chart/{componentField}/{geographyGrouping}')
+  @get(
+    '/disbursements/line-chart/{componentField}/{geographyGrouping}/{xAxisLine}',
+  )
   @response(200)
   async lineChart(
     @param.path.string('componentField') componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
+    @param.path.string('xAxisLine') xAxisLine: string,
   ) {
     let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (geographyGrouping === 'Portfolio View') {
@@ -215,19 +239,31 @@ export class DisbursementsController {
     }
     const filterString1 = await filterFinancialIndicators(
       this.req.query,
-      LineChartFieldsMapping.urlParams1.replace(
-        '<componentField>',
-        componentField,
-      ),
+      LineChartFieldsMapping.urlParams1
+        .replace(
+          '<groubByField>',
+          _.get(
+            BarChartFieldsMapping.groubByItems,
+            xAxisLine ?? 'Component',
+            BarChartFieldsMapping.groubByItems.Component,
+          ),
+        )
+        .replace('<componentField>', componentField),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
       'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
-    const nameField1 = LineChartFieldsMapping.line.replace(
-      '<componentField>',
-      componentField,
-    );
+    const nameField1 = LineChartFieldsMapping.line
+      .replace(
+        '<groubByField>',
+        _.get(
+          BarChartFieldsMapping.groubByItems,
+          xAxisLine ?? 'Component',
+          BarChartFieldsMapping.groubByItems.Component,
+        ).replace(/\//g, '.'),
+      )
+      .replace('<componentField>', componentField);
 
     let filterString2 = '';
     let url2 = '';

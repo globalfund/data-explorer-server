@@ -1,10 +1,17 @@
 {
   "dataPath": "value",
-  "name": "implementationPeriod.grant.<componentField>.name",
+  "name": "<groubByField>",
   "value": "value",
-  "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/name),aggregate(actualAmount with sum as value))&$orderby=value desc",
+  "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((<groubByField>),aggregate(actualAmount with sum as value))&$orderby=value desc",
   "urlParams2": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((implementationPeriod/grant/<componentField>/parent/name),aggregate(actualAmount with sum as value))&$orderby=value desc",
   "url1Items": ["Malaria", "Tuberculosis"],
   "url2Items": ["HIV", "Other"],
-  "barColor": "#013E77"
+  "barColor": "#013E77",
+  "groubByItems":{
+    "Component": "implementationPeriod/grant/<componentField>/name",
+    "Geography": "implementationPeriod/grant/geography/name",
+    "PrincipalRecipientType": "implementationPeriod/grant/principalRecipient/type/parent/name",
+    "PrincipalRecipient": "implementationPeriod/grant/principalRecipient/name"
+
+  }
 }
