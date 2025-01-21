@@ -143,7 +143,11 @@ export class EligibilityController {
               );
               if (isEligible) {
                 isEligible = EligibilityTableMapping.eligibilityValues.eligible;
-              } else if (isEligible === false) {
+              } else if (
+                !isEligible &&
+                isEligible !== null &&
+                isEligible !== ''
+              ) {
                 isEligible =
                   EligibilityTableMapping.eligibilityValues.notEligible;
               } else {
