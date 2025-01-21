@@ -12,8 +12,8 @@ export class LatestUpdateController {
   @get('/latest-update')
   @response(200)
   async latestUpdate() {
-    const response = await axios.get(urls.DATASET_INFORMATION);
-    const rawData = _.get(response.data, LatestUpdateMapping.dataPath, []);
+    const resp = await axios.get(urls.DATASET_INFORMATION);
+    const rawData = _.get(resp.data, LatestUpdateMapping.dataPath, []);
 
     const data = LatestUpdateMapping.datasets.map(dataset => {
       const fDataset = _.find(rawData, {
