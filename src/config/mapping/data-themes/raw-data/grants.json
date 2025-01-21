@@ -1,4 +1,0 @@
-{
-  "dataPath": "value",
-  "select": "$select=geographicAreaName,geographicAreaCode_ISO3,componentName,grantAgreementNumber,multiCountryName,grantAgreementStatusTypeName,grantAgreementTitle,principalRecipientName,principalRecipientShortName,principalRecipientClassificationName,principalRecipientSubClassificationName,totalSignedAmount,totalCommittedAmount,totalDisbursedAmount"
-}

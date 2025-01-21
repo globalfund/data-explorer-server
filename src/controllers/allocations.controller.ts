@@ -9,6 +9,7 @@ import AllocationSunburstFieldsMapping from '../config/mapping/allocations/sunbu
 import AllocationTableFieldsMapping from '../config/mapping/allocations/table.json';
 import AllocationTreemapFieldsMapping from '../config/mapping/allocations/treemap.json';
 import urls from '../config/urls/index.json';
+import {TableDataItem} from '../interfaces/table';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 
@@ -64,11 +65,12 @@ export class AllocationsController {
   @get('/allocations/cumulative-by-cycles')
   @response(200)
   async cumulativeByCycles() {
-    let filterString = filterFinancialIndicators(
+    let filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationCumulativeByCyclesFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -130,7 +132,7 @@ export class AllocationsController {
 
         data.unshift({
           name: 'Total Allocation',
-          values: cycles.map((cycle, index) =>
+          values: cycles.map((_cycle, index) =>
             _.sumBy(data, `values[${index}]`),
           ),
           itemStyle: {
@@ -149,11 +151,12 @@ export class AllocationsController {
   @get('/allocations/sunburst')
   @response(200)
   async allocationsSunburst() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationSunburstFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -196,11 +199,12 @@ export class AllocationsController {
         urlParams = AllocationTreemapFieldsMapping.urlParams[1];
       }
     }
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -270,11 +274,12 @@ export class AllocationsController {
   @get('/allocations/table')
   @response(200)
   async allocationsTable() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationTableFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -289,22 +294,10 @@ export class AllocationsController {
         );
 
         const data: {
-          [key: string]:
-            | string
-            | number
-            | boolean
-            | null
-            | object
-            | Array<object>;
+          [key: string]: TableDataItem;
         }[] = _.map(groupedByGeography, (value, key) => {
           let item: {
-            [key: string]:
-              | string
-              | number
-              | boolean
-              | null
-              | object
-              | Array<object>;
+            [key: string]: TableDataItem;
           } = {
             name: key,
             _children: [],
@@ -315,10 +308,10 @@ export class AllocationsController {
             AllocationTableFieldsMapping.cycle,
           );
 
-          _.forEach(geoGroupedByYear, (value, key) => {
+          _.forEach(geoGroupedByYear, (value2, key2) => {
             item = {
               ...item,
-              [key]: _.sumBy(value, AllocationTableFieldsMapping.value),
+              [key2]: _.sumBy(value2, AllocationTableFieldsMapping.value),
             };
           });
 
@@ -327,27 +320,21 @@ export class AllocationsController {
             AllocationTableFieldsMapping.component,
           );
 
-          item._children = _.map(groupedByComponent, (value, key) => {
+          item._children = _.map(groupedByComponent, (value3, key3) => {
             const componentItem: {
-              [key: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | object
-                | Array<object>;
+              [key: string]: TableDataItem;
             } = {
-              name: key,
+              name: key3,
             };
 
             const componentGroupedByYear = _.groupBy(
-              value,
+              value3,
               AllocationTableFieldsMapping.cycle,
             );
 
-            _.forEach(componentGroupedByYear, (value, key) => {
-              componentItem[key] = _.sumBy(
-                value,
+            _.forEach(componentGroupedByYear, (value4, key4) => {
+              componentItem[key4] = _.sumBy(
+                value4,
                 AllocationTableFieldsMapping.value,
               );
             });
@@ -366,17 +353,19 @@ export class AllocationsController {
   @get('/allocations/radial')
   @response(200)
   async allocationsRadialChart() {
-    let filterString = filterFinancialIndicators(
+    let filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.urlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
+      'allocation',
     );
-    let filterString2 = filterFinancialIndicators(
+    let filterString2 = await filterFinancialIndicators(
       this.req.query,
       AllocationRadialFieldsMapping.countriesCountUrlParams,
-      ['geography/name', 'geography/code'],
+      'geography/code',
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -398,11 +387,13 @@ export class AllocationsController {
   async allocationsRadialChartInLocation(
     @param.path.string('countryCode') countryCode: string,
   ) {
-    let filterString = filterFinancialIndicators(
-      {...this.req.query, geographies: countryCode},
+    const decodedCode = countryCode.replace(/\|/g, '%2F');
+    let filterString = await filterFinancialIndicators(
+      {...this.req.query, geographies: decodedCode},
       AllocationRadialFieldsMapping.urlParamsLocation,
       'geography/code',
       'activityArea/name',
+      'allocation',
     );
 
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
@@ -415,11 +406,12 @@ export class AllocationsController {
   @get('/allocations/cycles')
   @response(200)
   async cycles() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       AllocationCyclesFieldsMapping.urlParams,
       'geography/code',
       'activityArea/name',
+      'allocation',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

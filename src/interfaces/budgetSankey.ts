@@ -1,6 +1,7 @@
 export interface BudgetSankeyChartNode {
   name: string;
   level: number;
+  value?: number;
   itemStyle?: {
     color: string;
   };

@@ -16,7 +16,7 @@ export class FundingRequestsController {
   @get('/funding-requests')
   @response(200)
   async fundingRequests() {
-    const filterString = filterFundingRequests(
+    const filterString = await filterFundingRequests(
       this.req.query,
       Table2FieldsMapping.urlParams,
     );
@@ -108,7 +108,7 @@ export class FundingRequestsController {
   @get('/funding-requests/cycles')
   @response(200)
   async cycles() {
-    const filterString = filterFundingRequests(
+    const filterString = await filterFundingRequests(
       this.req.query,
       CyclesMapping.urlParams,
     );

@@ -1,6 +1,0 @@
-{
-  "dataPath": "value",
-  "periodStart": "periodStartYear",
-  "periodEnd": "periodEndYear",
-  "aggregation": "$apply=groupby((periodStartYear,periodEndYear))&$orderby=periodStartYear desc"
-}

@@ -7,6 +7,7 @@ import EligibilityStatsMapping from '../config/mapping/eligibility/stats.json';
 import EligibilityTableMapping from '../config/mapping/eligibility/table.json';
 import EligibilityYearsFieldsMapping from '../config/mapping/eligibility/years.json';
 import urls from '../config/urls/index.json';
+import {TableDataItem} from '../interfaces/table';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterEligibility} from '../utils/filtering/eligibility';
 
@@ -37,7 +38,7 @@ export class EligibilityController {
   @get('/eligibility/stats/{year}')
   @response(200)
   async eligibilityStats(@param.path.string('year') year: string) {
-    const filterString = filterEligibility(
+    const filterString = await filterEligibility(
       {...this.req.query, years: year},
       EligibilityStatsMapping.urlParams,
     );
@@ -64,7 +65,7 @@ export class EligibilityController {
   @get('/eligibility/table')
   @response(200)
   async eligibilityTable() {
-    const filterString = filterEligibility(
+    const filterString = await filterEligibility(
       this.req.query,
       EligibilityTableMapping.urlParams,
     );
@@ -83,22 +84,10 @@ export class EligibilityController {
         const years: string[] = [];
 
         const data: {
-          [key: string]:
-            | string
-            | number
-            | boolean
-            | null
-            | object
-            | Array<object>;
+          [key: string]: TableDataItem;
         }[] = _.map(groupedByGeography, (value, key) => {
           const item: {
-            [key: string]:
-              | string
-              | number
-              | boolean
-              | null
-              | object
-              | Array<object>;
+            [key: string]: TableDataItem;
           } = {
             name: key,
             _children: [
@@ -113,10 +102,10 @@ export class EligibilityController {
             EligibilityTableMapping.year,
           );
 
-          _.forEach(geoGroupedByYear, (value, key) => {
+          _.forEach(geoGroupedByYear, (value1, key1) => {
             (item._children as object[])[0] = {
               ...(item._children as object[])[0],
-              [key]: _.get(value, '[0].incomeLevel', ''),
+              [key1]: _.get(value1, '[0].incomeLevel', ''),
             };
           });
 
@@ -125,17 +114,11 @@ export class EligibilityController {
             EligibilityTableMapping.component,
           );
 
-          item._children = _.map(groupedByComponent, (value, key) => {
+          item._children = _.map(groupedByComponent, (value2, key2) => {
             const componentItem: {
-              [key: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | object
-                | Array<object>;
+              [key: string]: TableDataItem;
             } = {
-              name: key,
+              name: key2,
               _children: [
                 {
                   name: 'Disease Burden',
@@ -147,20 +130,24 @@ export class EligibilityController {
             };
 
             const componentGroupedByYear = _.groupBy(
-              value,
+              value2,
               EligibilityTableMapping.year,
             );
 
-            _.forEach(componentGroupedByYear, (value, key) => {
-              years.push(key);
+            _.forEach(componentGroupedByYear, (value3, key3) => {
+              years.push(key3);
               let isEligible = _.get(
-                value,
+                value3,
                 `[0]["${EligibilityTableMapping.isEligible}"]`,
                 '',
               );
               if (isEligible) {
                 isEligible = EligibilityTableMapping.eligibilityValues.eligible;
-              } else if (isEligible === false) {
+              } else if (
+                !isEligible &&
+                isEligible !== null &&
+                isEligible !== ''
+              ) {
                 isEligible =
                   EligibilityTableMapping.eligibilityValues.notEligible;
               } else {
@@ -169,15 +156,15 @@ export class EligibilityController {
               }
               (componentItem._children as object[])[0] = {
                 ...(componentItem._children as object[])[0],
-                [key]: _.get(
-                  value,
+                [key3]: _.get(
+                  value3,
                   `[0]["${EligibilityTableMapping.diseaseBurden}"]`,
                   '',
                 ),
               };
               (componentItem._children as object[])[1] = {
                 ...(componentItem._children as object[])[1],
-                [key]: isEligible,
+                [key3]: isEligible,
               };
             });
 

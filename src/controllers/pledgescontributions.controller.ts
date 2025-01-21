@@ -10,9 +10,9 @@ import urls from '../config/urls/index.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 
-async function getBarData(urls: string[]) {
+async function getBarData(urls1: string[]) {
   return axios
-    .all(urls.map(url => axios.get(url)))
+    .all(urls1.map(url => axios.get(url)))
     .then(async responses => {
       const pledgesData = _.get(
         responses[0].data,
@@ -39,7 +39,7 @@ async function getBarData(urls: string[]) {
         ...Object.keys(contributions),
       ]);
 
-      const data = years.map(year => {
+      return years.map(year => {
         return {
           name: year,
           value: _.sumBy(
@@ -52,8 +52,6 @@ async function getBarData(urls: string[]) {
           ),
         };
       });
-
-      return data;
     })
     .catch(handleDataApiError);
 }
@@ -64,17 +62,19 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/stats')
   @response(200)
   async stats() {
-    const filterString1 = filterFinancialIndicators(
+    const filterString1 = await filterFinancialIndicators(
       this.req.query,
       PledgesContributionsStatsFieldsMapping.totalValuesUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
-    const filterString2 = filterFinancialIndicators(
+    const filterString2 = await filterFinancialIndicators(
       this.req.query,
       PledgesContributionsStatsFieldsMapping.donorTypesCountUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -133,11 +133,12 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/expandable-bar')
   @response(200)
   async expandableBar() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       PledgesContributionsBarFieldsMapping.donorBarUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -262,11 +263,12 @@ export class PledgescontributionsController {
       type === 'pledge'
         ? PledgesContributionsSunburstFieldsMapping.pledgeUrlParams
         : PledgesContributionsSunburstFieldsMapping.contributionUrlParams;
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       urlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -372,11 +374,12 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/table')
   @response(200)
   async table() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       PledgesContributionsBarFieldsMapping.donorBarUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -497,17 +500,19 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/bar')
   @response(200)
   async bar() {
-    let filterString1 = filterFinancialIndicators(
+    let filterString1 = await filterFinancialIndicators(
       this.req.query,
       PledgesContributionsBarFieldsMapping.pledgesUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
-    let filterString2 = filterFinancialIndicators(
+    let filterString2 = await filterFinancialIndicators(
       this.req.query,
       PledgesContributionsBarFieldsMapping.contributionsUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -520,23 +525,25 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/bar/{countryCode}')
   @response(200)
   async barInLocation(@param.path.string('countryCode') countryCode: string) {
-    let filterString1 = filterFinancialIndicators(
+    let filterString1 = await filterFinancialIndicators(
       {
         ...this.req.query,
         geographies: countryCode,
       },
       PledgesContributionsBarFieldsMapping.pledgesUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
-    let filterString2 = filterFinancialIndicators(
+    let filterString2 = await filterFinancialIndicators(
       {
         ...this.req.query,
         geographies: countryCode,
       },
       PledgesContributionsBarFieldsMapping.contributionsUrlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
@@ -547,11 +554,12 @@ export class PledgescontributionsController {
   @get('/pledges-contributions/cycles')
   @response(200)
   async cycles() {
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       PledgesContributionsCyclesFieldsMapping.urlParams,
-      ['donor/geography/name', 'donor/geography/code'],
+      'donor/geography/code',
       'activityArea/name',
+      'pledge-contribution',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 

@@ -1,14 +1,10 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
-import {getGeographyValues} from './geographies';
+import CycleMapping from '../../static-assets/cycle-mapping.json';
+import {GeographyFiltering} from './geographies';
 
 const MAPPING = {
-  geography: [
-    'geography/code',
-    'geography/name',
-    'implementationPeriod/grant/geography/code',
-    'implementationPeriod/grant/geography/name',
-  ],
+  geography: ['geography/code', 'implementationPeriod/grant/geography/code'],
   component: [
     'activityArea/name',
     'activityAreaGroup/name',
@@ -28,37 +24,61 @@ const MAPPING = {
   yearTo: 'implementationPeriod/periodTo',
   grantIP: 'implementationPeriod/code',
   status: 'implementationPeriod/status/statusName',
-  search: `(contains(donor/type/name,<value>) OR contains(donor/name,<value>) OR contains(periodCovered,<value>))`,
+  search: {
+    allocation:
+      '(contains(geography/code,<value>) OR contains(geography/name,<value>) OR contains(activityArea/name,<value>))',
+    budget:
+      '(<geography> OR <component> OR contains(financialCategory/name,<value>) OR contains(financialCategory/parent/name,<value>) OR contains(financialCategory/parent/parent/name,<value>))',
+    generic: '(<geography> OR <component>)',
+    expenditure:
+      '(<geography> OR contains(<componentField>/name,<value>) OR contains(<componentField>/parent/name,<value>))',
+    'pledge-contribution':
+      '(contains(donor/type/name,<value>) OR contains(donor/name,<value>) OR contains(periodCovered,<value>))',
+  },
 };
 
-export function filterFinancialIndicators(
+export async function filterFinancialIndicators(
   params: Record<string, any>,
   urlParams: string,
   geographyMapping: string | string[],
   componentMapping: string,
-): string {
+  datasetType:
+    | 'allocation'
+    | 'budget'
+    | 'commitment'
+    | 'disbursement'
+    | 'expenditure'
+    | 'pledge-contribution',
+): Promise<string> {
   let str = '';
 
-  const geos = _.filter(
-    _.get(params, 'geographies', '').split(','),
-    (o: string) => o.length > 0,
-  );
-  const geographies = geos.map(
-    (geography: string) => `'${geography.replace(/'/g, "''")}'`,
-  );
-  if (geos.length > 0) {
-    const values: string[] = [...geographies, ...getGeographyValues(geos)];
-    const geoMapping =
-      geographyMapping instanceof Array ? geographyMapping : [geographyMapping];
-    str += `${str.length > 0 ? ' AND ' : ''}(${geoMapping
-      .map(
-        m =>
-          `${m}${filtering.in}(${values.join(
-            filtering.multi_param_separator,
-          )})`,
-      )
-      .join(' OR ')})`;
+  if (_.get(params, 'cycleNames', '')) {
+    const cycles = _.get(params, 'cycleNames', '').split(',');
+    const cycleValues = _.filter(
+      cycles.map(
+        (cycle: string) => _.find(CycleMapping, {name: cycle})?.value ?? '',
+      ),
+      (c: string) => c.length > 0,
+    );
+    cycleValues.forEach((cycle: string) => {
+      const splits = cycle.split(' - ');
+      params = {
+        ...params,
+        years: `${_.get(params, 'years', '')}${
+          _.get(params, 'years', '') ? ',' : ''
+        }${splits[0]}`,
+        yearsTo: `${_.get(params, 'yearsTo', '')}${
+          _.get(params, 'yearsTo', '') ? ',' : ''
+        }${splits[1]}`,
+      };
+    });
   }
+
+  str = await GeographyFiltering(
+    str,
+    _.get(params, 'geographies', '').split(','),
+    geographyMapping,
+  );
 
   const components = _.filter(
     _.get(params, 'components', '').split(','),
@@ -98,6 +118,20 @@ export function filterFinancialIndicators(
     str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.principalRecipient}${
       filtering.in
     }(${principalRecipients.join(filtering.multi_param_separator)})`;
+  }
+
+  const principalRecipientSubTypes = _.filter(
+    _.get(params, 'principalRecipientSubTypes', '').split(','),
+    (o: string) => o.length > 0,
+  ).map(
+    (principalRecipientSubType: string) => `'${principalRecipientSubType}'`,
+  );
+  if (principalRecipientSubTypes.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${
+      MAPPING.principalRecipientSubType
+    }${filtering.in}(${principalRecipientSubTypes.join(
+      filtering.multi_param_separator,
+    )})`;
   }
 
   const principalRecipientTypes = _.filter(
@@ -166,9 +200,29 @@ export function filterFinancialIndicators(
     }(${statuses.join(filtering.multi_param_separator)})`;
   }
 
+  let mappingSearch = _.get(
+    MAPPING,
+    `search.${datasetType}`,
+    MAPPING.search.generic,
+  );
+  mappingSearch = mappingSearch.replace(
+    '<geography>',
+    (Array.isArray(geographyMapping) ? geographyMapping : [geographyMapping])
+      .map((g: string) => `contains(${g},<value>)`)
+      .join(' OR '),
+  );
+  mappingSearch = mappingSearch.replace(
+    '<component>',
+    `contains(${componentMapping},<value>)`,
+  );
+  mappingSearch = mappingSearch.replace(
+    /<componentField>/g,
+    componentMapping.split('/')[0],
+  );
+
   const search = _.get(params, 'q', '');
   if (search.length > 0) {
-    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.search.replace(
+    str += `${str.length > 0 ? ' AND ' : ''}${mappingSearch.replace(
       /<value>/g,
       `'${search}'`,
     )}`;

@@ -1,0 +1,47 @@
+{
+  "dataPath": "value",
+  "updated": "lastUpdated",
+  "dataset": "dataset",
+  "datasets": [
+    {
+      "name": "allocations",
+      "datasetLabel": "CommunicatedAllocation_ReferenceRate"
+    },
+    {
+      "name": "budgets",
+      "datasetLabel": "GrantBudget_ReferenceRate"
+    },
+    {
+      "name": "disbursements",
+      "datasetLabel": "Disbursement_ReferenceRate"
+    },
+    {
+      "name": "eligibility",
+      "datasetLabel": "Eligibility"
+    },
+    {
+      "name": "expenditures",
+      "datasetLabel": "Expenditure_InvestmentLandscape_ReferenceRate"
+    },
+    {
+      "name": "funding_requests",
+      "datasetLabel": "Funding_Requests"
+    },
+    {
+      "name": "geographies",
+      "datasetLabel": "Geography"
+    },
+    {
+      "name": "grants",
+      "datasetLabel": "Grants"
+    },
+    {
+      "name": "pledges-contributions",
+      "datasetLabel": "Pledges_Contributions"
+    },
+    {
+      "name": "results",
+      "datasetLabel": "Annual_Results"
+    }
+  ]
+}

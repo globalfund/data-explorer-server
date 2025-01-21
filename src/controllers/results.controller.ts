@@ -17,7 +17,7 @@ export class ResultsController {
   @get('/results/polyline/{cycle}')
   @response(200)
   async polyline(@param.path.string('cycle') cycle: string) {
-    const filterString = filterProgrammaticIndicators(
+    const filterString = await filterProgrammaticIndicators(
       {
         ...this.req.query,
         years: this.req.query.years
@@ -74,7 +74,7 @@ export class ResultsController {
   @get('/results/table')
   @response(200)
   async table() {
-    const filterString = filterProgrammaticIndicators(
+    const filterString = await filterProgrammaticIndicators(
       this.req.query,
       ResultsTableMappingFields.urlParams,
     );
@@ -119,7 +119,7 @@ export class ResultsController {
   @response(200)
   async resultsStats() {
     const cycle = this.req.query.cycle ?? new Date().getFullYear() - 1;
-    const filterString = filterProgrammaticIndicators(
+    const filterString = await filterProgrammaticIndicators(
       {...this.req.query, years: cycle.toString()},
       ResultsStatsMappingFields.urlParams,
     );
@@ -153,7 +153,13 @@ export class ResultsController {
   ) {
     let filterString = ResultsTableLocationMappingFields.urlParams
       .replace('<countryCode>', countryCode)
-      .replace('<cycle>', cycle);
+      .replace('<cycle>', cycle)
+      .replace(
+        '<search>',
+        this.req.query.q
+          ? ` AND (contains(geography/code,'${this.req.query.q}') OR contains(activityArea/name,'${this.req.query.q}') OR contains(indicatorName,'${this.req.query.q}'))`
+          : '',
+      );
     const url = `${urls.PROGRAMMATIC_INDICATORS}/${filterString}`;
 
     return axios
@@ -184,7 +190,7 @@ export class ResultsController {
   @get('/results/cycles')
   @response(200)
   async cycles() {
-    const filterString = filterProgrammaticIndicators(
+    const filterString = await filterProgrammaticIndicators(
       this.req.query,
       ResultsCyclesMappingFields.urlParams,
     );
@@ -199,7 +205,7 @@ export class ResultsController {
           [],
         );
 
-        const data = _.map(rawData, (item, index) => {
+        const data = _.map(rawData, item => {
           const from = _.get(item, ResultsCyclesMappingFields.cycleFrom, '');
           const to = _.get(item, ResultsCyclesMappingFields.cycleTo, '');
 

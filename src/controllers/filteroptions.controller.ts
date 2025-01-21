@@ -1,7 +1,9 @@
 import {inject} from '@loopback/core';
 import {get, param, Request, response, RestBindings} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
+import fs from 'fs';
 import _ from 'lodash';
+import path from 'path';
 import ComponentMapping from '../config/mapping/filter-options/components.json';
 import DonorMapping from '../config/mapping/filter-options/donors.json';
 import GeographyMapping from '../config/mapping/filter-options/geography.json';
@@ -164,13 +166,46 @@ export class FilteroptionsController {
           });
         });
 
-        return {
+        const result = {
           data: {
             id: 'geography',
             name: 'Geography',
             options: _.orderBy(data, 'name', 'asc'),
           },
         };
+
+        if (type === 'Standard View') {
+          const flattened: FilterGroupOption[] = [];
+          result.data.options.forEach((item1: any) => {
+            flattened.push({name: item1.name, value: item1.value});
+            if (item1.options) {
+              item1.options.forEach((item2: any) => {
+                flattened.push({name: item2.name, value: item2.value});
+                if (item2.options) {
+                  item2.options.forEach((item3: any) => {
+                    flattened.push({name: item3.name, value: item3.value});
+                    if (item3.options) {
+                      item3.options.forEach((item4: any) => {
+                        flattened.push({name: item4.name, value: item4.value});
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+          return new Promise(resolve => {
+            fs.writeFile(
+              `${path.join(__dirname, '../../public/locations-flat.json')}`,
+              JSON.stringify(flattened, null, 2),
+              () => resolve({}),
+            );
+          })
+            .then(() => result)
+            .catch(() => result);
+        } else {
+          return result;
+        }
       })
       .catch(handleDataApiError);
   }

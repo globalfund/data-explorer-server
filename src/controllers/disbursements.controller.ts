@@ -4,10 +4,13 @@ import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import BarChartFieldsMapping from '../config/mapping/disbursements/barChart.json';
 import DisbursementsCyclesMapping from '../config/mapping/disbursements/cycles.json';
+import HolisticGrantInvestmentsMapping from '../config/mapping/disbursements/holisticGrantInvestments.json';
 import LineChartFieldsMapping from '../config/mapping/disbursements/lineChart.json';
 import TableFieldsMapping from '../config/mapping/disbursements/table.json';
 import FinancialInsightsStatsMapping from '../config/mapping/financialInsightsStats.json';
 import urls from '../config/urls/index.json';
+import {BudgetSankeyChartData} from '../interfaces/budgetSankey';
+import CycleMapping from '../static-assets/cycle-mapping.json';
 import {handleDataApiError} from '../utils/dataApiError';
 import {filterFinancialIndicators} from '../utils/filtering/financialIndicators';
 
@@ -20,26 +23,20 @@ export class DisbursementsController {
     @param.path.string('componentField') componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
-    let geographyMappings = [
-      'implementationPeriod/grant/geography/name',
-      'implementationPeriod/grant/geography/code',
-    ];
+    let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (geographyGrouping === 'Portfolio View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_PortfolioView/name',
-        'implementationPeriod/grant/geography_PortfolioView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_PortfolioView/code';
     } else if (geographyGrouping === 'Board Constituency View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_BoardConstituencyView/name',
-        'implementationPeriod/grant/geography_BoardConstituencyView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_BoardConstituencyView/code';
     }
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       FinancialInsightsStatsMapping.urlParams,
       geographyMappings,
       `${componentField}/name`,
+      'disbursement',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -91,22 +88,15 @@ export class DisbursementsController {
     @param.path.string('componentField') componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
-    let geographyMappings = [
-      'implementationPeriod/grant/geography/name',
-      'implementationPeriod/grant/geography/code',
-    ];
+    let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (geographyGrouping === 'Portfolio View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_PortfolioView/name',
-        'implementationPeriod/grant/geography_PortfolioView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_PortfolioView/code';
     } else if (geographyGrouping === 'Board Constituency View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_BoardConstituencyView/name',
-        'implementationPeriod/grant/geography_BoardConstituencyView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_BoardConstituencyView/code';
     }
-    const filterString1 = filterFinancialIndicators(
+    const filterString1 = await filterFinancialIndicators(
       this.req.query,
       BarChartFieldsMapping.urlParams1.replace(
         '<componentField>',
@@ -114,6 +104,7 @@ export class DisbursementsController {
       ),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = BarChartFieldsMapping.name.replace(
@@ -129,7 +120,7 @@ export class DisbursementsController {
     );
 
     if (componentField === 'activityAreaGroup') {
-      filterString2 = filterFinancialIndicators(
+      filterString2 = await filterFinancialIndicators(
         this.req.query,
         BarChartFieldsMapping.urlParams2.replace(
           '<componentField>',
@@ -137,6 +128,7 @@ export class DisbursementsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'disbursement',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -213,22 +205,15 @@ export class DisbursementsController {
     @param.path.string('componentField') componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
-    let geographyMappings = [
-      'implementationPeriod/grant/geography/name',
-      'implementationPeriod/grant/geography/code',
-    ];
+    let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (geographyGrouping === 'Portfolio View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_PortfolioView/name',
-        'implementationPeriod/grant/geography_PortfolioView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_PortfolioView/code';
     } else if (geographyGrouping === 'Board Constituency View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_BoardConstituencyView/name',
-        'implementationPeriod/grant/geography_BoardConstituencyView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_BoardConstituencyView/code';
     }
-    const filterString1 = filterFinancialIndicators(
+    const filterString1 = await filterFinancialIndicators(
       this.req.query,
       LineChartFieldsMapping.urlParams1.replace(
         '<componentField>',
@@ -236,6 +221,7 @@ export class DisbursementsController {
       ),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = LineChartFieldsMapping.line.replace(
@@ -251,7 +237,7 @@ export class DisbursementsController {
     );
 
     if (componentField === 'activityAreaGroup') {
-      filterString2 = filterFinancialIndicators(
+      filterString2 = await filterFinancialIndicators(
         this.req.query,
         LineChartFieldsMapping.urlParams2.replace(
           '<componentField>',
@@ -259,6 +245,7 @@ export class DisbursementsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'disbursement',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -313,14 +300,13 @@ export class DisbursementsController {
             data.push({
               name: line,
               data: years.map(year => {
-                const value = _.get(
+                return _.get(
                   _.find(items, {
                     [LineChartFieldsMapping.cycle]: year,
                   }),
                   LineChartFieldsMapping.value,
                   null,
                 );
-                return value;
               }),
               itemStyle: {
                 color: '',
@@ -336,14 +322,13 @@ export class DisbursementsController {
             data.push({
               name: line,
               data: years.map(year => {
-                const value = _.get(
+                return _.get(
                   _.find(items, {
                     [LineChartFieldsMapping.cycle]: year,
                   }),
                   LineChartFieldsMapping.value,
                   null,
                 );
-                return value;
               }),
               itemStyle: {
                 color: '',
@@ -374,26 +359,20 @@ export class DisbursementsController {
     @param.path.string('componentField') componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
   ) {
-    let geographyMappings = [
-      'implementationPeriod/grant/geography/name',
-      'implementationPeriod/grant/geography/code',
-    ];
+    let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (geographyGrouping === 'Portfolio View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_PortfolioView/name',
-        'implementationPeriod/grant/geography_PortfolioView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_PortfolioView/code';
     } else if (geographyGrouping === 'Board Constituency View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_BoardConstituencyView/name',
-        'implementationPeriod/grant/geography_BoardConstituencyView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_BoardConstituencyView/code';
     }
-    const filterString1 = filterFinancialIndicators(
+    const filterString1 = await filterFinancialIndicators(
       this.req.query,
       TableFieldsMapping.urlParams1.replace('<componentField>', componentField),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
+      'disbursement',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
     const nameField1 = TableFieldsMapping.component.replace(
@@ -409,7 +388,7 @@ export class DisbursementsController {
     );
 
     if (componentField === 'activityAreaGroup') {
-      filterString2 = filterFinancialIndicators(
+      filterString2 = await filterFinancialIndicators(
         this.req.query,
         TableFieldsMapping.urlParams2.replace(
           '<componentField>',
@@ -417,6 +396,7 @@ export class DisbursementsController {
         ),
         geographyMappings,
         `implementationPeriod/grant/${componentField}/parent/name`,
+        'disbursement',
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
@@ -447,7 +427,7 @@ export class DisbursementsController {
             data: _.orderBy(
               [
                 ...(componentField === 'activityAreaGroup'
-                  ? _.filter(groupedByComponent1, (_, component) => {
+                  ? _.filter(groupedByComponent1, (_var, component) => {
                       return (
                         TableFieldsMapping.url1Items.indexOf(component) !== -1
                       );
@@ -483,7 +463,7 @@ export class DisbursementsController {
                     ),
                   };
                 }),
-                ..._.filter(groupedByComponent2, (_, component) => {
+                ..._.filter(groupedByComponent2, (_var, component) => {
                   return TableFieldsMapping.url2Items.indexOf(component) !== -1;
                 }).map(items => {
                   return {
@@ -525,29 +505,224 @@ export class DisbursementsController {
       .catch(handleDataApiError);
   }
 
+  @get('/disbursements/hgi/sankey')
+  @response(200)
+  async holisticGrantInvestmentsSankey() {
+    const filterString = await filterFinancialIndicators(
+      this.req.query,
+      HolisticGrantInvestmentsMapping.urlParams,
+      'implementationPeriod/grant/geography/code',
+      'implementationPeriod/grant/activityArea/name',
+      'disbursement',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}&t=t`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          HolisticGrantInvestmentsMapping.dataPath,
+          [],
+        );
+
+        const data: BudgetSankeyChartData = {
+          nodes: [
+            {
+              name: 'Total Disbursed',
+              level: 0,
+              itemStyle: {
+                color: HolisticGrantInvestmentsMapping.nodeColors[0],
+              },
+            },
+          ],
+          links: [],
+        };
+
+        const groupedDataLevel1 = _.groupBy(
+          rawData,
+          HolisticGrantInvestmentsMapping.level1Field,
+        );
+        _.forEach(groupedDataLevel1, (level1Data, level1) => {
+          data.nodes.push({
+            name: level1,
+            level: 1,
+            itemStyle: {
+              color: HolisticGrantInvestmentsMapping.nodeColors[1],
+            },
+          });
+          data.links.push({
+            source: data.nodes[0].name,
+            target: level1,
+            value: _.sumBy(
+              level1Data,
+              HolisticGrantInvestmentsMapping.valueField,
+            ),
+          });
+
+          const groupedDataLevel2 = _.groupBy(
+            level1Data,
+            HolisticGrantInvestmentsMapping.level2Field,
+          );
+          _.forEach(groupedDataLevel2, (level2Data, level2) => {
+            const level2inLevel1 = _.find(data.nodes, {
+              name: level2,
+              level: 1,
+            });
+            data.nodes.push({
+              name: level2inLevel1 ? `${level2}1` : level2,
+              level: 2,
+              itemStyle: {
+                color: HolisticGrantInvestmentsMapping.nodeColors[2],
+              },
+            });
+            data.links.push({
+              source: level1,
+              target: level2inLevel1 ? `${level2}1` : level2,
+              value: _.sumBy(
+                level2Data,
+                HolisticGrantInvestmentsMapping.valueField,
+              ),
+            });
+          });
+        });
+        data.nodes = _.uniqBy(data.nodes, 'name');
+        data.nodes = _.orderBy(
+          _.map(data.nodes, node => {
+            return {
+              ...node,
+              value: _.sumBy(
+                _.filter(data.links, {target: node.name}),
+                'value',
+              ),
+            };
+          }),
+          'value',
+          'asc',
+        );
+        const rootNodeIndex = _.findIndex(data.nodes, {level: 0});
+        data.nodes[rootNodeIndex].value = _.sumBy(data.nodes, node =>
+          node.level === 1 && node.value ? node.value : 0,
+        );
+        data.nodes = _.orderBy(
+          data.nodes,
+          node => {
+            if (node.level === 0) {
+              return [node.value, node.value];
+            }
+            if (node.level === 1) {
+              const nodeLinks = _.filter(data.links, {source: node.name});
+              return [_.sumBy(nodeLinks, 'value'), node.value];
+            }
+            const source = _.find(data.links, {target: node.name})?.source;
+            return [_.find(data.nodes, {name: source})?.value, node.value];
+          },
+          ['desc', 'desc'],
+        );
+        data.nodes = _.orderBy(data.nodes, 'level', 'asc');
+        data.links = _.orderBy(data.links, 'value', 'desc');
+        return {data};
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/disbursements/hgi/table')
+  @response(200)
+  async holisticGrantInvestmentsTable() {
+    const filterString = await filterFinancialIndicators(
+      this.req.query,
+      HolisticGrantInvestmentsMapping.urlParams,
+      'implementationPeriod/grant/geography/code',
+      'implementationPeriod/grant/activityArea/name',
+      'disbursement',
+    );
+    const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const rawData = _.get(
+          resp.data,
+          HolisticGrantInvestmentsMapping.dataPath,
+          [],
+        );
+        const groupedByLevel1 = _.groupBy(
+          rawData,
+          HolisticGrantInvestmentsMapping.level1Field,
+        );
+
+        const data: {
+          name: string;
+          amount: number;
+          _children: {
+            name: string;
+            amount: number;
+            _children?: {
+              name: string;
+              amount: number;
+            }[];
+          }[];
+        }[] = [];
+
+        _.forEach(groupedByLevel1, (level1Data, level1) => {
+          const grouepdByLevel2 = _.groupBy(
+            level1Data,
+            HolisticGrantInvestmentsMapping.level2Field,
+          );
+          const level1Amount = _.sumBy(
+            level1Data,
+            HolisticGrantInvestmentsMapping.valueField,
+          );
+          const level1Children = _.map(
+            grouepdByLevel2,
+            (level2Data, level2) => {
+              const level2Amount = _.sumBy(
+                level2Data,
+                HolisticGrantInvestmentsMapping.valueField,
+              );
+              return {
+                name: level2,
+                amount: level2Amount,
+              };
+            },
+          );
+          data.push({
+            name: level1,
+            amount: level1Amount,
+            _children: level1Children,
+          });
+        });
+
+        return {
+          data: [
+            {
+              name: 'Total Disbursed',
+              amount: _.sumBy(data, 'amount'),
+              _children: data,
+            },
+          ],
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
   @get('/disbursements/cycles')
   @response(200)
   async cycles() {
-    let geographyMappings = [
-      'implementationPeriod/grant/geography/name',
-      'implementationPeriod/grant/geography/code',
-    ];
+    let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (this.req.query.geographyGrouping === 'Portfolio View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_PortfolioView/name',
-        'implementationPeriod/grant/geography_PortfolioView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_PortfolioView/code';
     } else if (this.req.query.geographyGrouping === 'Board Constituency View') {
-      geographyMappings = [
-        'implementationPeriod/grant/geography_BoardConstituencyView/name',
-        'implementationPeriod/grant/geography_BoardConstituencyView/code',
-      ];
+      geographyMappings =
+        'implementationPeriod/grant/geography_BoardConstituencyView/code';
     }
-    const filterString = filterFinancialIndicators(
+    const filterString = await filterFinancialIndicators(
       this.req.query,
       DisbursementsCyclesMapping.urlParams,
       geographyMappings,
       'activityArea/name',
+      'disbursement',
     );
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
@@ -566,7 +741,7 @@ export class DisbursementsController {
             item =>
               _.get(item, DisbursementsCyclesMapping.cycleFrom, null) !== null,
           ),
-          (item, index) => {
+          item => {
             const from = _.get(item, DisbursementsCyclesMapping.cycleFrom, '');
             const to = _.get(item, DisbursementsCyclesMapping.cycleTo, '');
 
@@ -576,9 +751,11 @@ export class DisbursementsController {
               value = `${from} - ${to}`;
             }
 
+            const name = _.find(CycleMapping, {value})?.name ?? value;
+
             return {
-              name: `Cycle ${index + 1}`,
-              value,
+              name,
+              value: name,
             };
           },
         );

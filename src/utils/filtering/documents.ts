@@ -1,34 +1,34 @@
 import _ from 'lodash';
 import filtering from '../../config/filtering/index.json';
-import {getGeographyValues} from './geographies';
+import {GeographyFiltering} from './geographies';
 
 const MAPPING = {
-  geography: ['geography/code', 'geography/name'],
+  geography: 'geography/code',
+  component: 'activityArea/name',
   type: 'documentType/parent/name',
-  search: `contains(documentType/parent/name,<value>) OR contains(title,<value>)`,
+  search: `(contains(documentType/parent/name,<value>) OR contains(title,<value>))`,
 };
 
-export function filterDocuments(
+export async function filterDocuments(
   params: Record<string, any>,
   urlParams: string,
-): string {
+): Promise<string> {
   let str = '';
 
-  const geos = _.filter(
+  str = await GeographyFiltering(
+    str,
     _.get(params, 'geographies', '').split(','),
-    (o: string) => o.length > 0,
+    MAPPING.geography,
   );
-  const geographies = geos.map((geography: string) => `'${geography}'`);
-  if (geos.length > 0) {
-    const values: string[] = [...geographies, ...getGeographyValues(geos)];
-    str += `${str.length > 0 ? ' AND ' : ''}(${MAPPING.geography
-      .map(
-        m =>
-          `${m}${filtering.in}(${values.join(
-            filtering.multi_param_separator,
-          )})`,
-      )
-      .join(' OR ')})`;
+
+  const components = _.filter(
+    _.get(params, 'components', '').split(','),
+    (o: string) => o.length > 0,
+  ).map((component: string) => `'${component}'`);
+  if (components.length > 0) {
+    str += `${str.length > 0 ? ' AND ' : ''}${MAPPING.component}${
+      filtering.in
+    }(${components.join(filtering.multi_param_separator)})`;
   }
 
   const types = _.filter(

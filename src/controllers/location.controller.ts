@@ -17,9 +17,19 @@ export class LocationController {
   @get('/location/{code}/grants/pie-charts')
   @response(200)
   async locationGrantsPieCharts(@param.path.string('code') code: string) {
-    let filterString1 = PieChartsMapping.pie1UrlParams.replace('<code>', code);
-    let filterString2 = PieChartsMapping.pie2UrlParams.replace('<code>', code);
-    let filterString3 = PieChartsMapping.pie3UrlParams.replace('<code>', code);
+    const decodedCode = code.replace(/\|/g, '%2F');
+    let filterString1 = PieChartsMapping.pie1UrlParams.replace(
+      '<code>',
+      decodedCode,
+    );
+    let filterString2 = PieChartsMapping.pie2UrlParams.replace(
+      '<code>',
+      decodedCode,
+    );
+    let filterString3 = PieChartsMapping.pie3UrlParams.replace(
+      '<code>',
+      decodedCode,
+    );
     filterString1 = filterString1.replace('<filterString>', '');
     filterString2 = filterString2.replace('<filterString>', '');
     filterString3 = filterString3.replace('<filterString>', '');
@@ -102,8 +112,8 @@ export class LocationController {
 
     return axios
       .get(url)
-      .then(response => {
-        const raw = _.get(response.data, GeographiesMapping.dataPath, []);
+      .then(resp => {
+        const raw = _.get(resp.data, GeographiesMapping.dataPath, []);
         let data: GeographyModel[] = [];
 
         const world: GeographyModel = {
@@ -302,25 +312,26 @@ export class LocationController {
   @get('/location/{code}/info')
   @response(200)
   async locationInfo(@param.path.string('code') code: string) {
+    const decodedCode = code.replace(/\|/g, '%2F');
     const url = `${urls.GEOGRAPHIES}/${LocationInfoMapping.urlParams.replace(
       '<code>',
-      code,
+      decodedCode,
     )}`;
     const FPMurl = `${urls.GRANTS}/${LocationInfoMapping.FPMurlParams.replace(
       '<code>',
-      code,
+      decodedCode,
     )}`;
     const currPrincipalRecipientsUrl = `${
       urls.GRANTS
     }/${LocationInfoMapping.currentPrincipalRecipientsUrlParams.replace(
       '<code>',
-      code,
+      decodedCode,
     )}`;
     const formerPrincipalRecipientsUrl = `${
       urls.GRANTS
     }/${LocationInfoMapping.formerPrincipalRecipientsUrlParams.replace(
       '<code>',
-      code,
+      decodedCode,
     )}`;
 
     return axios
@@ -377,7 +388,7 @@ export class LocationController {
                 ]
                   .join(' ')
                   .trim()
-                  .replace(/  /g, ' '),
+                  .replace(/ {2}/g, ' '),
                 FPMEmail: _.get(rawFPM, LocationInfoMapping.FPMEmail, ''),
                 currentPrincipalRecipients,
                 formerPrincipalRecipients: _.filter(
@@ -413,17 +424,18 @@ export class LocationController {
   async locationCoordinatingMechanismContacts(
     @param.path.string('code') code: string,
   ) {
+    const decodedCode = code.replace(/\|/g, '%2F');
     const filterString = CoordinatingMehanismContactsMapping.urlParams.replace(
       '<code>',
-      code,
+      decodedCode,
     );
     const url = `${urls.COORDINATING_MECHANISMS}/${filterString}`;
 
     return axios
       .get(url)
-      .then(response => {
+      .then(resp => {
         const raw = _.get(
-          response.data,
+          resp.data,
           CoordinatingMehanismContactsMapping.dataPath,
           [],
         );

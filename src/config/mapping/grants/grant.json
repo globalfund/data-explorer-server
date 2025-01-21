@@ -10,6 +10,7 @@
   "implementationPeriodFrom": "periodFrom",
   "implementationPeriodTo": "periodTo",
   "implementationPeriodTitle": "title",
+  "implementationPeriodCode": "code",
   "countryCode": "geography.code",
   "countryName": "geography.name",
   "principalRecipientId": "principalRecipient.id",

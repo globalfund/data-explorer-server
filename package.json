@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "data-explorer-server",
+  "license": "MIT",
   "keywords": [
     "data-explorer-server",
     "api",
@@ -13,7 +14,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": ">=10.16"
+    "node": ">=22.13"
   },
   "scripts": {
     "build": "lb-tsc",
@@ -55,30 +56,30 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^4.0.1",
-    "@loopback/core": "^3.0.1",
-    "@loopback/repository": "^4.0.1",
-    "@loopback/rest": "^11.0.1",
-    "@loopback/rest-explorer": "^4.0.1",
-    "@loopback/service-proxy": "^4.0.1",
-    "@turf/center": "^6.5.0",
-    "@turf/helpers": "^6.5.0",
-    "@types/lodash": "^4.14.178",
-    "axios": "^0.24.0",
+    "@loopback/boot": "^7.0.10",
+    "@loopback/core": "^6.1.7",
+    "@loopback/repository": "^7.0.10",
+    "@loopback/rest": "^14.0.10",
+    "@loopback/rest-explorer": "^7.0.10",
+    "@loopback/service-proxy": "^7.0.10",
+    "@turf/center": "^7.2.0",
+    "@turf/helpers": "^7.2.0",
+    "@types/lodash": "^4.17.14",
+    "axios": "^1.7.9",
     "lodash": "^4.17.21",
     "map-transform": "^0.3.12",
-    "moment": "^2.29.4",
-    "nodemon": "^2.0.7",
+    "moment": "^2.30.1",
+    "nodemon": "^3.1.9",
     "querystring": "^0.2.1",
-    "tslib": "^2.3.1"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@loopback/build": "^8.0.1",
-    "@loopback/eslint-config": "^12.0.1",
-    "@loopback/testlab": "^4.0.1",
-    "@types/node": "^10.17.60",
-    "eslint": "^8.6.0",
+    "@loopback/build": "^11.0.9",
+    "@loopback/eslint-config": "^15.0.5",
+    "@loopback/testlab": "^7.0.9",
+    "@types/node": "^22.10.7",
+    "eslint": "^9.18.0",
     "source-map-support": "^0.5.21",
-    "typescript": "~4.5.4"
+    "typescript": "~5.7.3"
   }
 }
