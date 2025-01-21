@@ -1,6 +1,7 @@
 {
   "name": "data-explorer-server",
   "version": "1.0.0",
+  "private": true,
   "description": "data-explorer-server",
   "license": "MIT",
   "keywords": [
