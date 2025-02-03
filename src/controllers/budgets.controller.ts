@@ -75,6 +75,7 @@ export class BudgetsController {
       `implementationPeriod/grant/${componentField}/name`,
       'budget',
     );
+
     const url = `${urls.FINANCIAL_INDICATORS}/${filterString}`;
 
     return axios
@@ -179,11 +180,12 @@ export class BudgetsController {
       .catch(handleDataApiError);
   }
 
-  @get('/budgets/treemap/{componentField}/{geographyGrouping}')
+  @get('/budgets/treemap/{componentField}/{geographyGrouping}/{treesOption}')
   @response(200)
   async treemap(
     @param.path.string('componentField') componentField: string,
     @param.path.string('geographyGrouping') geographyGrouping: string,
+    @param.path.string('treesOption') treesOption: string,
   ) {
     let geographyMappings = 'implementationPeriod/grant/geography/code';
     if (geographyGrouping === 'Portfolio View') {
@@ -195,19 +197,31 @@ export class BudgetsController {
     }
     const filterString1 = await filterFinancialIndicators(
       this.req.query,
-      BudgetsTreemapFieldsMapping.urlParams1.replace(
-        '<componentField>',
-        componentField,
-      ),
+      BudgetsTreemapFieldsMapping.urlParams1
+        .replace(
+          '<groupByField>',
+          _.get(
+            BudgetsTreemapFieldsMapping.groubByItems,
+            treesOption ?? 'Component',
+            BudgetsTreemapFieldsMapping.groubByItems.Component,
+          ),
+        )
+        .replace('<componentField>', componentField),
       geographyMappings,
       `implementationPeriod/grant/${componentField}/name`,
       'budget',
     );
     const url1 = `${urls.FINANCIAL_INDICATORS}/${filterString1}`;
-    const nameField1 = BudgetsTreemapFieldsMapping.name.replace(
-      '<componentField>',
-      componentField,
-    );
+    const nameField1 = BudgetsTreemapFieldsMapping.name
+      .replace(
+        '<groupByField>',
+        _.get(
+          BudgetsTreemapFieldsMapping.groubByItems,
+          treesOption ?? 'Component',
+          BudgetsTreemapFieldsMapping.groubByItems.Component,
+        ),
+      )
+      .replace('<componentField>', componentField);
 
     let filterString2 = '';
     let url2 = '';

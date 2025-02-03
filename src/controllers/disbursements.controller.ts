@@ -135,10 +135,16 @@ export class DisbursementsController {
 
     let filterString2 = '';
     let url2 = '';
-    const nameField2 = BarChartFieldsMapping.name.replace(
-      '<componentField>',
-      `${componentField}.parent`,
-    );
+    const nameField2 = BarChartFieldsMapping.name
+      .replace(
+        '<groubByField>',
+        _.get(
+          BarChartFieldsMapping.groubByItems,
+          xAxisVariable ?? 'Component',
+          BarChartFieldsMapping.groubByItems.Component,
+        ).replace(/\//g, '.'),
+      )
+      .replace('<componentField>', `${componentField}.parent`);
 
     if (componentField === 'activityAreaGroup') {
       filterString2 = await filterFinancialIndicators(
@@ -153,7 +159,6 @@ export class DisbursementsController {
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
-
     return axios
       .all(
         _.filter([url1, url2], url => url !== '').map((url: string) =>
@@ -243,9 +248,9 @@ export class DisbursementsController {
         .replace(
           '<groubByField>',
           _.get(
-            BarChartFieldsMapping.groubByItems,
+            LineChartFieldsMapping.groubByItems,
             xAxisLine ?? 'Component',
-            BarChartFieldsMapping.groubByItems.Component,
+            LineChartFieldsMapping.groubByItems.Component,
           ),
         )
         .replace('<componentField>', componentField),
@@ -258,13 +263,12 @@ export class DisbursementsController {
       .replace(
         '<groubByField>',
         _.get(
-          BarChartFieldsMapping.groubByItems,
+          LineChartFieldsMapping.groubByItems,
           xAxisLine ?? 'Component',
-          BarChartFieldsMapping.groubByItems.Component,
+          LineChartFieldsMapping.groubByItems.Component,
         ).replace(/\//g, '.'),
       )
       .replace('<componentField>', componentField);
-
     let filterString2 = '';
     let url2 = '';
     const nameField2 = LineChartFieldsMapping.line.replace(
@@ -285,7 +289,6 @@ export class DisbursementsController {
       );
       url2 = `${urls.FINANCIAL_INDICATORS}/${filterString2}`;
     }
-
     return axios
       .all(
         _.filter([url1, url2], url => url !== '').map((url: string) =>
@@ -316,7 +319,6 @@ export class DisbursementsController {
           const years1 = Object.keys(
             _.groupBy(rawData1, LineChartFieldsMapping.cycle),
           );
-
           const groupedByLine2 = _.groupBy(rawData2, nameField2);
           const lines2 = Object.keys(groupedByLine2);
           const years2 = Object.keys(

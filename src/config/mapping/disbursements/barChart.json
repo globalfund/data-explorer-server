@@ -12,6 +12,5 @@
     "Geography": "implementationPeriod/grant/geography/name",
     "PrincipalRecipientType": "implementationPeriod/grant/principalRecipient/type/parent/name",
     "PrincipalRecipient": "implementationPeriod/grant/principalRecipient/name"
-
   }
 }

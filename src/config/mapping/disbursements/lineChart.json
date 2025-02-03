@@ -3,10 +3,16 @@
   "count": "@odata.count",
   "cycle": "periodFrom",
   "value": "value",
-  "line": "implementationPeriod.grant.<componentField>.name",
-  "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((periodFrom,implementationPeriod/grant/<componentField>/name),aggregate(actualAmount with sum as value))",
+  "line": "<groubByField>",
+  "urlParams1": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((periodFrom,<groubByField>),aggregate(actualAmount with sum as value))",
   "urlParams2": "?$apply=filter(contains(indicatorName, 'reference') AND financialDataSet eq 'Disbursement_ReferenceRate'<filterString>)/groupby((periodFrom,implementationPeriod/grant/<componentField>/parent/name),aggregate(actualAmount with sum as value))",
   "url1Items": ["Malaria", "Tuberculosis"],
   "url2Items": ["HIV", "Other"],
-  "colors": ["#0A2840", "#DEE1E7", "#013E77", "#00B5AE", "#C3EDFD", "#D9D9D9"]
+  "colors": ["#0A2840", "#DEE1E7", "#013E77", "#00B5AE", "#C3EDFD", "#D9D9D9"],
+  "groubByItems":{
+    "Component": "implementationPeriod/grant/<componentField>/name",
+    "Geography": "implementationPeriod/grant/geography/name",
+    "PrincipalRecipientType": "implementationPeriod/grant/principalRecipient/type/parent/name",
+    "PrincipalRecipient": "implementationPeriod/grant/principalRecipient/name"
+  }
 }
