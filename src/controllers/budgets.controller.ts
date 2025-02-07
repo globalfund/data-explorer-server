@@ -173,6 +173,7 @@ export class BudgetsController {
           },
           'desc',
         );
+        data.links = _.filter(data.links, link => link.source !== link.target);
         data.links = _.orderBy(data.links, 'value', 'desc');
         return {data};
       })

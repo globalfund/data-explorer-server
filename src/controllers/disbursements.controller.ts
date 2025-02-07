@@ -604,6 +604,7 @@ export class DisbursementsController {
         data.nodes[rootNodeIndex].value = _.sumBy(data.nodes, node =>
           node.level === 1 && node.value ? node.value : 0,
         );
+        data.nodes = _.uniqBy(data.nodes, 'name');
         data.nodes = _.orderBy(
           data.nodes,
           node => {
@@ -620,6 +621,7 @@ export class DisbursementsController {
           ['desc', 'desc'],
         );
         data.nodes = _.orderBy(data.nodes, 'level', 'asc');
+        data.links = _.filter(data.links, link => link.source !== link.target);
         data.links = _.orderBy(data.links, 'value', 'desc');
         return {data};
       })
