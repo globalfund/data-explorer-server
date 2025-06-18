@@ -289,10 +289,14 @@ export class FilteroptionsController {
           const typeOptions: FilterGroupOption = {
             name: type,
             value: type,
-            options: donors.map((donor: any) => ({
-              name: donor[DonorMapping.label],
-              value: donor[DonorMapping.value],
-            })),
+            options: _.orderBy(
+              donors.map((donor: any) => ({
+                name: donor[DonorMapping.label],
+                value: donor[DonorMapping.value],
+              })),
+              'name',
+              'asc',
+            ),
           };
 
           options.push(typeOptions);
