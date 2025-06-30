@@ -1064,8 +1064,16 @@
     "value": "MCEECAAPH"
   },
   {
+    "name": "Multicountry HIV Latin America",
+    "value": "MCHIVLA"
+  },
+  {
     "name": "Multicountry HIV Latin America ALEP",
     "value": "MCALEP"
+  },
+  {
+    "name": "Multicountry HIV MENA",
+    "value": "MCHIVMENA"
   },
   {
     "name": "Multicountry HIV SEA AFAO",
