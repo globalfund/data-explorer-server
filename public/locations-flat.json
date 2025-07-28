@@ -480,6 +480,10 @@
     "value": "MCHIVLAC"
   },
   {
+    "name": "Multicountry HIV Latin America",
+    "value": "MCHIVLA"
+  },
+  {
     "name": "Multicountry South-Eastern Asia HIV",
     "value": "MCSAHIV"
   },
@@ -1062,10 +1066,6 @@
   {
     "name": "Multicountry HIV EECA APH",
     "value": "MCEECAAPH"
-  },
-  {
-    "name": "Multicountry HIV Latin America",
-    "value": "MCHIVLA"
   },
   {
     "name": "Multicountry HIV Latin America ALEP",
