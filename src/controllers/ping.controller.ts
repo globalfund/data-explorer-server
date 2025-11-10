@@ -6,6 +6,7 @@ import {
   ResponseObject,
   RestBindings,
 } from '@loopback/rest';
+import {Logger} from 'winston';
 
 /**
  * OpenAPI response for ping()
@@ -38,12 +39,16 @@ const PING_RESPONSE: ResponseObject = {
  * A simple controller to bounce back http requests
  */
 export class PingController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+  constructor(
+    @inject(RestBindings.Http.REQUEST) private req: Request,
+    @inject('services.logger') private logger: Logger,
+  ) {}
 
   // Map to `GET /ping`
   @get('/ping')
   @response(200, PING_RESPONSE)
   ping(): object {
+    this.logger.info('PingController - ping - Ping endpoint called');
     // Reply with a greeting, the current time, the url, and request headers
     return {
       greeting: 'Hello from LoopBack',

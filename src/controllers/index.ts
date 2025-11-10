@@ -12,4 +12,7 @@ export * from './latestupdate.controller';
 export * from './location.controller';
 export * from './ping.controller';
 export * from './pledgescontributions.controller';
+export * from './report-builder/chart.controller';
+export * from './report-builder/dataset.controller';
+export * from './report-builder/report.controller';
 export * from './results.controller';
