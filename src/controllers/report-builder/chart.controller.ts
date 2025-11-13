@@ -46,6 +46,7 @@ export class ChartController {
       updatedDate: new Date().toISOString(),
       createdDate: new Date().toISOString(),
       nameLower: 'dummy chart',
+      settings: {},
       getId: function () {
         return '';
       },

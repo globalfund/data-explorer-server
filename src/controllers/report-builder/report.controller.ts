@@ -26,6 +26,48 @@ export class ReportController {
     @inject('services.ReportService') private reportService: ReportService,
   ) {}
 
+  @get('/report/dummy')
+  @response(200)
+  async dummy() {
+    this.logger.info('ReportController - dummy - Dummy endpoint called');
+    return this.reportService.create('dummy-user', {
+      name: 'Dummy Report',
+      title: 'Dummy Report Title',
+      description: 'This is a dummy report',
+      rows: [],
+      public: false,
+      baseline: false,
+      backgroundColor: '#FFFFFF',
+      owner: 'dummy-user',
+      updatedDate: new Date().toISOString(),
+      createdDate: new Date().toISOString(),
+      settings: {
+        width: 800,
+        height: 600,
+        paddingLeft: 10,
+        paddingTop: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        stroke: 0,
+        strokeColor: '#000000',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 0,
+      },
+      getId: function () {
+        return '';
+      },
+      getIdObject: function () {
+        return {};
+      },
+      toJSON: function () {
+        return {};
+      },
+      toObject: function () {
+        return {};
+      },
+    });
+  }
+
   @post('/report')
   @response(200, {
     description: 'ReportModel instance',
