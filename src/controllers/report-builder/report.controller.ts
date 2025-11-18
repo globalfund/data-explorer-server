@@ -142,33 +142,6 @@ export class ReportController {
     return this.reportService.findById([userId], id, filter);
   }
 
-  @post('/report/{id}/render')
-  @response(200, {
-    description: 'ReportModel instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(ReportModel, {includeRelations: true}),
-      },
-    },
-  })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
-  async renderReport(
-    @param.path.string('id') id: string,
-    @requestBody() body: any,
-  ): Promise<ReportModel | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
-    this.logger.info(
-      `ReportController - renderReport - Rendering report ${id} for user ${userId}`,
-    );
-    // logger.info(`route</report/{id}/render> Rendering report- ${id}`);
-    return this.reportService.renderById(
-      id,
-      body,
-      [userId],
-      process.env.BACKEND_API_BASE_URL ?? 'http://localhost:4004',
-    );
-  }
-
   @patch('/report/{id}')
   @response(204, {
     description: 'Report PATCH success',
