@@ -32,6 +32,7 @@
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "yarn run clean && yarn run build",
     "dev": "nodemon server.js",
+    "dev:all": "pm2-runtime pm2.dev.config.js",
     "worker:dev": "nodemon --watch src --ext ts,json --exec ts-node src/workers/report.worker.ts",
     "deploy": "yarn prestart && pm2 start pm2.config.js --env production",
     "docker": "yarn prestart && pm2-runtime start pm2.config.js --env production"
@@ -86,6 +87,7 @@
     "nodemon": "^3.1.9",
     "puppeteer": "^24.42.0",
     "querystring": "^0.2.1",
+    "sharp": "^0.34.5",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
@@ -94,7 +96,9 @@
     "@loopback/testlab": "^7.0.9",
     "@types/node": "^22.10.7",
     "eslint": "^9.18.0",
+    "pm2": "^7.0.1",
     "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.2",
     "typescript": "~5.7.3",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0"

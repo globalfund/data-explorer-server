@@ -31,5 +31,24 @@ module.exports = {
         'tsconfig.json',
       ],
     },
+    {
+      name: 'the-data-explorer-worker',
+      script: 'dist/workers/report.worker.js',
+      node_args: '-r source-map-support/register',
+      instances: 1,
+      exec_mode: 'fork',
+      max_memory_restart: '1G',
+      env: {
+        NODE_ENV: 'development',
+      },
+      env_production: {
+        NODE_ENV: 'production',
+      },
+      autorestart: true,
+      restart_delay: 100,
+      out_file: '/home/zim/app-logs/the-data-explorer-worker/out.log',
+      error_file: '/home/zim/app-logs/the-data-explorer-worker/error.log',
+      watch: false,
+    },
   ],
 };
