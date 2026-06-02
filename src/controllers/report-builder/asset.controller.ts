@@ -15,8 +15,8 @@ import {
   RestBindings,
 } from '@loopback/rest';
 import _ from 'lodash';
-import {AssetModel} from 'rb-core-middleware/dist/models';
-import {AssetService} from 'rb-core-middleware/dist/services';
+import {AssetModel, FolderModel} from 'rb-core-middleware/dist/models';
+import {AssetService, FolderService} from 'rb-core-middleware/dist/services';
 import {Logger} from 'winston';
 
 export class AssetController {
@@ -24,6 +24,7 @@ export class AssetController {
     @inject(RestBindings.Http.REQUEST) private req: Request,
     @inject('services.logger') private logger: Logger,
     @inject('services.AssetService') private assetService: AssetService,
+    @inject('services.FolderService') private folderService: FolderService,
   ) {}
 
   @post('/asset')
@@ -67,12 +68,100 @@ export class AssetController {
   // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
   async find(
     @param.filter(AssetModel) filter?: Filter<AssetModel>,
-  ): Promise<AssetModel[]> {
+    @param.query.string('folderFilter') folderFilter?: string,
+    @param.query.string('onlyRootLevel') onlyRootLevel?: boolean,
+    @param.query.string('includeFolders') includeFolders?: boolean,
+  ): Promise<
+    {
+      id: string;
+      name: string;
+      owner: string;
+      public: boolean;
+      description: string;
+      createdDate: string;
+      updatedDate: string;
+      isFolder?: boolean;
+      assetCount?: number;
+      folderCount?: number;
+      locationPath: string;
+    }[]
+  > {
     const userId = _.get(this.req, 'user.sub', 'anonymous');
     this.logger.info(
       `AssetController - find - Fetching assets for user ${userId}`,
     );
-    return this.assetService.find(userId, filter);
+    const assets = await this.assetService.find(userId, filter);
+    const allFolders = await this.folderService.find(
+      userId,
+      JSON.parse(folderFilter || '{}') as Filter<FolderModel>,
+    );
+
+    const folderById = new Map<string, FolderModel>(
+      allFolders.map(f => [f.id, f]),
+    );
+    const pathCache = new Map<string, string>();
+    const buildFolderPath = (folderId: string | undefined): string => {
+      if (!folderId) return 'My Workspace';
+      const cached = pathCache.get(folderId);
+      if (cached !== undefined) return cached;
+      const folder = folderById.get(folderId);
+      if (!folder) return 'My Workspace';
+      const parentPath = buildFolderPath(folder.parentId);
+      const path =
+        parentPath === 'My Workspace'
+          ? `My Workspace > ${folder.name}`
+          : `${parentPath} > ${folder.name}`;
+      pathCache.set(folderId, path);
+      return path;
+    };
+
+    const assetsWithPath = _.filter(
+      assets,
+      asset => !onlyRootLevel || !asset.folderId,
+    ).map(asset => {
+      const locationPath = buildFolderPath(asset.folderId);
+      return {
+        ..._.omit(asset, ['folderId']),
+        locationPath,
+      };
+    });
+
+    const foldersWithPath = _.filter(
+      allFolders,
+      folder => !onlyRootLevel || !folder.parentId,
+    ).map(folder => {
+      const locationPath = buildFolderPath(folder.parentId);
+      return {
+        ..._.omit(folder, ['parentId']),
+        locationPath,
+      };
+    });
+
+    if (includeFolders) {
+      const orderFilter = _.get(filter, 'order[0]', 'createdDate DESC');
+      const [orderByField, orderByDirection] = orderFilter.split(' ');
+      return _.orderBy(
+        [
+          ...assetsWithPath,
+          ...foldersWithPath.map(folder => ({
+            id: folder.id,
+            name: folder.name,
+            public: false,
+            owner: folder.owner,
+            createdDate: folder.createdDate,
+            updatedDate: folder.updatedDate,
+            description: '',
+            isFolder: true,
+            assetCount: folder.assets ? folder.assets.length : 0,
+            folderCount: folder.children ? folder.children.length : 0,
+            locationPath: folder.locationPath,
+          })),
+        ],
+        [orderByField],
+        [orderByDirection.toLowerCase() as 'asc' | 'desc'],
+      );
+    }
+    return assetsWithPath;
   }
 
   @get('/asset/{id}')

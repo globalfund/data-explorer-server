@@ -100,8 +100,8 @@ export class ReportController {
   // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
   async find(
     @param.filter(ReportModel) filter?: Filter<ReportModel>,
+    @param.query.string('folderFilter') folderFilter?: string,
     @param.query.string('onlyRootLevel') onlyRootLevel?: boolean,
-    @param.filter(FolderModel) folderFilter?: Filter<FolderModel>,
     @param.query.string('includeFolders') includeFolders?: boolean,
   ): Promise<
     {
@@ -113,8 +113,8 @@ export class ReportController {
       createdDate: string;
       updatedDate: string;
       isFolder?: boolean;
-      assetCount?: number;
       reportCount?: number;
+      folderCount?: number;
       locationPath: string;
     }[]
   > {
@@ -123,7 +123,11 @@ export class ReportController {
       `ReportController - find - Fetching reports for user ${userId}`,
     );
     const reports = await this.reportService.find(userId, filter);
-    const allFolders = await this.folderService.find(userId, folderFilter);
+    const allFolders = await this.folderService.find(
+      userId,
+      JSON.parse(folderFilter || '{}') as Filter<FolderModel>,
+    );
+    console.log('All folders (type): ', allFolders.map(f => f.type).join(', '));
 
     const folderById = new Map<string, FolderModel>(
       allFolders.map(f => [f.id, f]),
@@ -181,7 +185,6 @@ export class ReportController {
             updatedDate: folder.updatedDate,
             description: '',
             isFolder: true,
-            assetCount: folder.assets ? folder.assets.length : 0,
             reportCount: folder.reports ? folder.reports.length : 0,
             folderCount: folder.children ? folder.children.length : 0,
             locationPath: folder.locationPath,

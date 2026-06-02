@@ -110,29 +110,6 @@ export class FolderController {
     }
   }
 
-  @get('/folders-structure')
-  @response(200, {
-    description: 'Array of FolderModel instances',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: getModelSchemaRef(FolderModel, {includeRelations: true}),
-        },
-      },
-    },
-  })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
-  async getFoldersStructure(
-    @param.filter(FolderModel) filter?: Filter<FolderModel>,
-  ): Promise<FolderModel[]> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
-    this.logger.info(
-      `FolderController - getFoldersStructure - Fetching folder structure for user ${userId}`,
-    );
-    return this.folderService.getFolderTree(userId);
-  }
-
   @get('/folder/{id}')
   @response(200, {
     description: 'FolderModel instance',
