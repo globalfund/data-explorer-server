@@ -127,7 +127,6 @@ export class ReportController {
       userId,
       JSON.parse(folderFilter || '{}') as Filter<FolderModel>,
     );
-    console.log('All folders (type): ', allFolders.map(f => f.type).join(', '));
 
     const folderById = new Map<string, FolderModel>(
       allFolders.map(f => [f.id, f]),
