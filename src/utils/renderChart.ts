@@ -13,10 +13,12 @@ import {
   echartsSankey,
   echartsBubblechart,
   echartsTreemap,
+  bigNumber,
   // @ts-expect-error untyped module
 } from 'rb-core.charts';
 
 const charts: {[key: string]: any} = {
+  bigNumber: bigNumber,
   bar: echartsBarchart,
   geomap: echartsGeomap,
   heatmap: echartsHeatmap,
