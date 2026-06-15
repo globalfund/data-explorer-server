@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const DbDataSourceConfig = {
-  name: 'DbDataSource',
+  name: 'db',
   connector: 'mongodb',
   url: '',
   host: process.env.DB_HOST || 'localhost',
@@ -26,11 +26,11 @@ export class DbDataSource
   extends juggler.DataSource
   implements LifeCycleObserver
 {
-  static dataSourceName = 'DbDataSource';
+  static dataSourceName = 'db';
   static readonly defaultConfig = DbDataSourceConfig;
 
   constructor(
-    @inject('datasources.config.DbDataSource', {optional: true})
+    @inject('datasources.config.db', {optional: true})
     dsConfig: object = DbDataSourceConfig,
   ) {
     super(dsConfig);

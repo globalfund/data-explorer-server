@@ -177,7 +177,7 @@ export async function renderChartData(chartData: {
     const filePath =
       process.env.PARSED_DATA_FILES_PATH ||
       `../data-explorer.backend/parsed-data-files/`;
-    const parsedData = fs.readFileSync(
+    const parsedData = await fs.promises.readFile(
       `${filePath}${chartData?.datasetId}.json`,
     );
 

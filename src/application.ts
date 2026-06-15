@@ -39,7 +39,6 @@ const RbCoreMiddlewareComponentConfig: RbCoreMiddlewareComponentOptions = {
   REDIS_HOST: process.env.REDIS_HOST,
   REDIS_PASSWORD: process.env.REDIS_PASSWORD,
   REDIS_USERNAME: process.env.REDIS_USERNAME,
-  datasourceDB: new DbDataSource(),
 };
 
 export class ApiApplication extends BootMixin(
@@ -64,7 +63,7 @@ export class ApiApplication extends BootMixin(
     this.static('/', path.join(__dirname, '../public'));
 
     this.bind('datasources.config.db').to(DbDataSourceConfig);
-    this.bind('datasources.db').toClass(DbDataSource);
+    this.dataSource(DbDataSource, 'db');
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
