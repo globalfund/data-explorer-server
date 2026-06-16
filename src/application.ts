@@ -34,14 +34,6 @@ dotenv.config();
 
 export {ApplicationConfig};
 
-const RbCoreMiddlewareComponentConfig: RbCoreMiddlewareComponentOptions = {
-  REDIS_PORT: process.env.REDIS_PORT,
-  REDIS_HOST: process.env.REDIS_HOST,
-  REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-  REDIS_USERNAME: process.env.REDIS_USERNAME,
-  datasourceDB: new DbDataSource(),
-};
-
 export class ApiApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
@@ -72,6 +64,14 @@ export class ApiApplication extends BootMixin(
       indexTitle: 'The Data Explorer API',
     });
     this.component(RestExplorerComponent);
+
+    const RbCoreMiddlewareComponentConfig: RbCoreMiddlewareComponentOptions = {
+      REDIS_PORT: process.env.REDIS_PORT,
+      REDIS_HOST: process.env.REDIS_HOST,
+      REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+      REDIS_USERNAME: process.env.REDIS_USERNAME,
+    };
+
     this.component(
       RbCoreMiddlewareComponent,
       RbCoreMiddlewareComponentConfig as BindingFromClassOptions,

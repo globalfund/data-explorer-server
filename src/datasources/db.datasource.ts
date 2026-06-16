@@ -15,6 +15,7 @@ export const DbDataSourceConfig = {
   database: process.env.DB_NAME || 'data-explorer-rb-db',
   useNewUrlParser: true,
   authSource: process.env.DB_AUTHSOURCE || 'admin',
+  maxPoolSize: 10,
 };
 
 // Observe application's life cycle to disconnect the datasource when
