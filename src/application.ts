@@ -3,7 +3,11 @@ import {
   registerAuthenticationStrategy,
 } from '@loopback/authentication';
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig, BindingFromClassOptions} from '@loopback/core';
+import {
+  ApplicationConfig,
+  BindingFromClassOptions,
+  BindingScope,
+} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {
@@ -56,7 +60,9 @@ export class ApiApplication extends BootMixin(
     this.static('/', path.join(__dirname, '../public'));
 
     this.bind('datasources.config.db').to(DbDataSourceConfig);
-    this.bind('datasources.db').toClass(DbDataSource);
+    this.bind('datasources.db')
+      .toClass(DbDataSource)
+      .inScope(BindingScope.SINGLETON);
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
