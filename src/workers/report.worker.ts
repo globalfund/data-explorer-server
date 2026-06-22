@@ -12,6 +12,10 @@ export const reportWorker = new Worker(
       const {reportId} = job.data;
       console.log('Generating report screenshot for:', reportId);
       await screenshotReport(reportId);
+    } else if (job.name === 'screenshot-asset') {
+      const {assetId} = job.data;
+      console.log('Generating asset screenshot for:', assetId);
+      await screenshotReport(assetId, true);
     }
   },
   {

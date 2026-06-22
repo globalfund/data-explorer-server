@@ -11,6 +11,7 @@ type ExportResult = {
 export const exportReport = async (
   reportId: string,
   format: ExportFormat,
+  asset: boolean = false,
 ): Promise<ExportResult> => {
   const frontendUrl = process.env.FRONTEND_URL;
 
@@ -19,7 +20,7 @@ export const exportReport = async (
   }
 
   const url = new URL(
-    `/report-builder/reports/${reportId}/export`,
+    `/report-builder/${asset ? 'assets' : 'reports'}/${reportId}/export`,
     frontendUrl,
   ).toString();
 
@@ -59,7 +60,7 @@ export const exportReport = async (
       return {
         data: Buffer.from(screenshot),
         mimeType: 'image/png',
-        fileName: `report-${reportId}.png`,
+        fileName: `${asset ? 'asset' : 'report'}-${reportId}.png`,
       };
     }
 
@@ -79,7 +80,7 @@ export const exportReport = async (
       return {
         data: Buffer.from(pdf),
         mimeType: 'application/pdf',
-        fileName: `report-${reportId}.pdf`,
+        fileName: `${asset ? 'asset' : 'report'}-${reportId}.pdf`,
       };
     }
 
@@ -106,7 +107,7 @@ export const exportReport = async (
       return {
         data: Buffer.from(svg, 'utf-8'),
         mimeType: 'image/svg+xml',
-        fileName: `report-${reportId}.svg`,
+        fileName: `${asset ? 'asset' : 'report'}-${reportId}.svg`,
       };
     }
 
