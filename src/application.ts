@@ -3,7 +3,11 @@ import {
   registerAuthenticationStrategy,
 } from '@loopback/authentication';
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig, BindingFromClassOptions} from '@loopback/core';
+import {
+  ApplicationConfig,
+  BindingFromClassOptions,
+  BindingScope,
+} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {
@@ -34,14 +38,6 @@ dotenv.config();
 
 export {ApplicationConfig};
 
-const RbCoreMiddlewareComponentConfig: RbCoreMiddlewareComponentOptions = {
-  REDIS_PORT: process.env.REDIS_PORT,
-  REDIS_HOST: process.env.REDIS_HOST,
-  REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-  REDIS_USERNAME: process.env.REDIS_USERNAME,
-  datasourceDB: new DbDataSource(),
-};
-
 export class ApiApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
@@ -64,7 +60,9 @@ export class ApiApplication extends BootMixin(
     this.static('/', path.join(__dirname, '../public'));
 
     this.bind('datasources.config.db').to(DbDataSourceConfig);
-    this.bind('datasources.db').toClass(DbDataSource);
+    this.bind('datasources.db')
+      .toClass(DbDataSource)
+      .inScope(BindingScope.SINGLETON);
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
@@ -72,6 +70,14 @@ export class ApiApplication extends BootMixin(
       indexTitle: 'The Data Explorer API',
     });
     this.component(RestExplorerComponent);
+
+    const RbCoreMiddlewareComponentConfig: RbCoreMiddlewareComponentOptions = {
+      REDIS_PORT: process.env.REDIS_PORT,
+      REDIS_HOST: process.env.REDIS_HOST,
+      REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+      REDIS_USERNAME: process.env.REDIS_USERNAME,
+    };
+
     this.component(
       RbCoreMiddlewareComponent,
       RbCoreMiddlewareComponentConfig as BindingFromClassOptions,

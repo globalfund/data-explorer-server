@@ -15,6 +15,7 @@ export const DbDataSourceConfig = {
   database: process.env.DB_NAME || 'data-explorer-rb-db',
   useNewUrlParser: true,
   authSource: process.env.DB_AUTHSOURCE || 'admin',
+  maxPoolSize: 10,
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -26,11 +27,11 @@ export class DbDataSource
   extends juggler.DataSource
   implements LifeCycleObserver
 {
-  static dataSourceName = 'DbDataSource';
+  static dataSourceName = 'db';
   static readonly defaultConfig = DbDataSourceConfig;
 
   constructor(
-    @inject('datasources.config.DbDataSource', {optional: true})
+    @inject('datasources.config.db', {optional: true})
     dsConfig: object = DbDataSourceConfig,
   ) {
     super(dsConfig);
