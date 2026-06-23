@@ -37,3 +37,36 @@ export const queueReportThumbnailGeneration = async (reportId: string) => {
     },
   );
 };
+
+export const queueAssetThumbnailGeneration = async (assetId: string) => {
+  const jobId = `asset-thumbnail-${assetId}`;
+
+  const existingJob = await reportQueue.getJob(jobId);
+
+  if (existingJob) {
+    const state = await existingJob.getState();
+
+    if (state === 'waiting' || state === 'delayed') {
+      await existingJob.remove();
+    }
+  }
+
+  return reportQueue.add(
+    'screenshot-asset',
+    {
+      assetId,
+      requestedAt: new Date().toISOString(),
+    },
+    {
+      jobId,
+      delay: 500,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 5000,
+      },
+      removeOnComplete: true,
+      removeOnFail: false,
+    },
+  );
+};

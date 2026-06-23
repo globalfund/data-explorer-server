@@ -1,7 +1,10 @@
 import puppeteer from 'puppeteer';
 import sharp from 'sharp';
 
-export const screenshotReport = async (reportId: string) => {
+export const screenshotReport = async (
+  reportId: string,
+  asset: boolean = false,
+) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -12,7 +15,7 @@ export const screenshotReport = async (reportId: string) => {
   });
 
   await page.goto(
-    `${process.env.FRONTEND_URL}/report-builder/reports/${reportId}/export?screenshot=true`,
+    `${process.env.FRONTEND_URL}/report-builder/${asset ? 'assets' : 'reports'}/${reportId}/export?screenshot=true`,
     {
       waitUntil: 'networkidle0',
     },
@@ -32,7 +35,7 @@ export const screenshotReport = async (reportId: string) => {
       compressionLevel: 9,
       palette: true,
     })
-    .toFile(`public/report-thumbnail/${reportId}.png`);
+    .toFile(`public/${asset ? 'asset' : 'report'}-thumbnail/${reportId}.png`);
 
   await browser.close();
 };

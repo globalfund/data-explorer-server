@@ -18,6 +18,7 @@ import _ from 'lodash';
 import {AssetModel, FolderModel} from 'rb-core-middleware/dist/models';
 import {AssetService, FolderService} from 'rb-core-middleware/dist/services';
 import {Logger} from 'winston';
+import {queueAssetThumbnailGeneration} from '../../queues/report.queue';
 
 export class AssetController {
   constructor(
@@ -50,7 +51,10 @@ export class AssetController {
     this.logger.info(
       `AssetController - create - Creating asset for user ${userId}`,
     );
-    return this.assetService.create(userId, asset);
+    const result = await this.assetService.create(userId, asset);
+
+    await queueAssetThumbnailGeneration((result as AssetModel)?.id);
+    return result;
   }
 
   @get('/assets')

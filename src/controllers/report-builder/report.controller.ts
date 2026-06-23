@@ -373,8 +373,9 @@ export class ReportController {
   async exportReport(
     @param.path.string('id') id: string,
     @param.path.string('format') format: ExportFormat,
+    @param.query.boolean('asset') asset: boolean = false,
   ) {
-    const result = await exportReport(id, format);
+    const result = await exportReport(id, format, asset);
 
     this.response.setHeader('Content-Type', result.mimeType);
     this.response.setHeader(
