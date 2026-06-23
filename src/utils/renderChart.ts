@@ -15,7 +15,7 @@ import {
   echartsTreemap,
   bigNumber,
   // @ts-expect-error untyped module
-} from 'rb-core.charts';
+} from 'rb-core.charts/lib/index.es.js';
 
 const charts: {[key: string]: any} = {
   bigNumber: bigNumber,
