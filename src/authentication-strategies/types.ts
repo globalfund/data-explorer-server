@@ -12,7 +12,7 @@ export interface Auth0Config {
   algorithms: string[];
 }
 
-export const JWT_SERVICE = BindingKey.create<RequestHandler>(
+export const JWT_SERVICE: BindingKey<RequestHandler> = BindingKey.create(
   'services.JWTService',
 );
 

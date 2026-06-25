@@ -40,12 +40,16 @@ export class FileUploadController {
     @inject(RestBindings.Http.RESPONSE) response: Response,
   ): Promise<object> {
     return new Promise<object>((resolve, reject) => {
-      this.handler(request, response, (err: unknown) => {
-        if (err) reject(err);
-        else {
-          resolve(FileUploadController.getFilesAndFields(request));
-        }
-      });
+      this.handler(
+        request as Parameters<FileUploadHandler>[0],
+        response as Parameters<FileUploadHandler>[1],
+        (err: unknown) => {
+          if (err) reject(err);
+          else {
+            resolve(FileUploadController.getFilesAndFields(request));
+          }
+        },
+      );
     });
   }
 
