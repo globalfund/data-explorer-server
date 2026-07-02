@@ -1,20 +1,69 @@
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import fs from 'fs';
 import _ from 'lodash';
+
+dayjs.extend(customParseFormat);
 
 export type SortOption = {
   column: string;
   order: 'asc' | 'desc';
 };
 
-function sortData(parsedDataset: any[], sortOptions: SortOption[]) {
+type DataType =
+  | 'string'
+  | 'number'
+  | {
+      type: 'date';
+      dateFormat: string;
+    };
+
+type DataTypes = Record<string, DataType>;
+
+function getSortableValue(
+  item: Record<string, any>,
+  column: string,
+  dataTypes: DataTypes,
+) {
+  const value = item[column];
+  const dataType = dataTypes[column];
+
+  if (value == null) return null;
+
+  if (dataType === 'number') {
+    const numberValue = Number(value);
+    return Number.isNaN(numberValue) ? null : numberValue;
+  }
+
+  if (dataType === 'string') {
+    return String(value).toLowerCase();
+  }
+
+  if (typeof dataType === 'object' && dataType.type === 'date') {
+    const parsedDate = dayjs(String(value), dataType.dateFormat, true);
+
+    return parsedDate.isValid() ? parsedDate.valueOf() : null;
+  }
+
+  return value;
+}
+
+function sortData(
+  parsedDataset: Record<string, any>[],
+  sortOptions: SortOption[],
+  dataTypes: DataTypes,
+) {
   if (!Array.isArray(sortOptions) || sortOptions.length === 0) {
     return parsedDataset;
   }
 
-  const columns = sortOptions.map(option => option.column);
-  const orders = sortOptions.map(option => option.order);
-
-  return _.orderBy(parsedDataset, columns, orders);
+  return _.orderBy(
+    parsedDataset,
+    sortOptions.map(option => {
+      return item => getSortableValue(item, option.column, dataTypes);
+    }),
+    sortOptions.map(option => option.order),
+  );
 }
 
 function filterData(
@@ -48,15 +97,16 @@ function filterAndSortData(
   parsedDataset: any[],
   appliedFilters: Record<string, any[]>,
   sortOptions: SortOption[],
+  dataTypes: DataTypes,
 ) {
   const filteredData = filterData(parsedDataset, appliedFilters);
 
-  return sortData(filteredData, sortOptions);
+  return sortData(filteredData, sortOptions, dataTypes);
 }
 
 function getDatasetFilterOptions(
   dataset: any[],
-  dataTypes: any,
+  dataTypes: DataTypes,
   onlyKeys: boolean,
   appliedFilters: any,
 ) {
@@ -177,11 +227,15 @@ export async function filterDataset(datasetDetails: {
     const initialParsedDataset = parsed.dataset;
     let filteredDataset = initialParsedDataset;
 
-    if (!_.isEmpty(datasetDetails.appliedFilters)) {
+    if (
+      !_.isEmpty(datasetDetails.appliedFilters) ||
+      !_.isEmpty(datasetDetails.sortOptions)
+    ) {
       filteredDataset = filterAndSortData(
         initialParsedDataset,
         datasetDetails.appliedFilters,
         datasetDetails.sortOptions,
+        parsed.dataTypes,
       );
     }
     const page = datasetDetails.page ? parseInt(datasetDetails.page, 10) : 1;
