@@ -212,12 +212,47 @@ export async function getFilterOptions(datasetDetails: {
   }
 }
 
+const limitToTop = (
+  dataset: Record<string, any>[],
+  limitToTopValue: number,
+  dataTypes: DataTypes,
+  groupRemainderAsOther: boolean,
+) => {
+  if (dataset.length <= limitToTopValue) {
+    return dataset;
+  }
+
+  const topItems = dataset.slice(0, limitToTopValue);
+  const otherItems = dataset.slice(limitToTopValue);
+
+  const otherItem: Record<string, any> = {};
+
+  if (groupRemainderAsOther) {
+    Object.keys(dataTypes).forEach(key => {
+      if (dataTypes[key] === 'number') {
+        otherItem[key] = otherItems.reduce(
+          (sum, item) => sum + (item[key] || 0),
+          0,
+        );
+      } else {
+        otherItem[key] = 'Other';
+      }
+    });
+
+    return [...topItems, otherItem];
+  }
+  return topItems;
+};
+
 export async function filterDataset(datasetDetails: {
   appliedFilters: Record<string, any[]>;
   sortOptions: SortOption[];
   datasetId: string;
   page?: string;
   pageSize?: string;
+  limitToTop?: boolean;
+  limitToTopValue?: string;
+  groupRemainderAsOther?: boolean;
 }) {
   try {
     const parsed = await getDataset(datasetDetails.datasetId);
@@ -246,8 +281,17 @@ export async function filterDataset(datasetDetails: {
     const start = pageSize ? (page - 1) * pageSize : 0;
     const end = pageSize ? start + pageSize : undefined;
 
+    const resultDataset = datasetDetails.limitToTop
+      ? limitToTop(
+          filteredDataset,
+          parseInt(datasetDetails.limitToTopValue || '0', 10),
+          parsed.dataTypes,
+          datasetDetails.groupRemainderAsOther || false,
+        )
+      : filteredDataset.slice(start, end);
+
     return {
-      result: filteredDataset.slice(start, end),
+      result: resultDataset,
       count: filteredDataset.length,
     };
   } catch (e) {

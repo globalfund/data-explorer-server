@@ -60,6 +60,9 @@ export class ReportController {
       filters: Record<string, any[]>;
       sorting: SortOption[];
       datasetId: string;
+      limitToTop: boolean;
+      limitToTopValue: string;
+      groupRemainderAsOther: boolean;
     },
   ) {
     try {
@@ -69,6 +72,9 @@ export class ReportController {
         datasetId: body.datasetId,
         page: page,
         pageSize: pageSize,
+        limitToTop: body.limitToTop,
+        limitToTopValue: body.limitToTopValue,
+        groupRemainderAsOther: body.groupRemainderAsOther,
       });
     } catch (e) {
       handleDataApiError(e);
