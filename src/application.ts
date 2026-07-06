@@ -23,11 +23,7 @@ import {
   RbCoreMiddlewareComponentOptions,
 } from 'rb-core-middleware';
 import {Logger} from 'winston';
-import {
-  JWTAuthenticationStrategy,
-  JWTServiceProvider,
-  KEY,
-} from './authentication-strategies';
+import {Auth0Strategy} from './authentication-strategies';
 import {DbDataSource, DbDataSourceConfig} from './datasources';
 import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './keys';
 import {LoggerProvider} from './providers/logger.provider';
@@ -46,15 +42,7 @@ export class ApiApplication extends BootMixin(
 
     this.component(AuthenticationComponent);
 
-    this.service(JWTServiceProvider);
-
-    registerAuthenticationStrategy(this, JWTAuthenticationStrategy);
-    this.configure(KEY).to({
-      jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
-      audience: process.env.AUTH0_AUDIENCE,
-      issuer: `https://${process.env.AUTH0_DOMAIN}/`,
-      algorithms: ['RS256'],
-    });
+    registerAuthenticationStrategy(this, Auth0Strategy);
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
