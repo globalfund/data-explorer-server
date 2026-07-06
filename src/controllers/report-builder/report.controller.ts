@@ -24,6 +24,11 @@ import {Logger} from 'winston';
 import {queueReportThumbnailGeneration} from '../../queues/report.queue';
 import {handleDataApiError} from '../../utils/dataApiError';
 import {ExportFormat, exportReport} from '../../utils/exportReport';
+import {
+  filterDataset,
+  getFilterOptions,
+  SortOption,
+} from '../../utils/filterDataset';
 import {renderChartData} from '../../utils/renderChart';
 
 export class ReportController {
@@ -40,6 +45,52 @@ export class ReportController {
   async renderChart(@requestBody() body: any) {
     try {
       return await renderChartData(body);
+    } catch (e) {
+      handleDataApiError(e);
+    }
+  }
+
+  @post('/report/filter-dataset')
+  @response(200)
+  async filterDataset(
+    @param.query.string('page') page: string,
+    @param.query.string('pageSize') pageSize: string,
+    @requestBody()
+    body: {
+      filters: Record<string, any[]>;
+      sorting: SortOption[];
+      datasetId: string;
+      limitToTop: boolean;
+      limitToTopValue: string;
+      groupRemainderAsOther: boolean;
+    },
+  ) {
+    try {
+      return await filterDataset({
+        appliedFilters: body.filters,
+        sortOptions: body.sorting,
+        datasetId: body.datasetId,
+        page: page,
+        pageSize: pageSize,
+        limitToTop: body.limitToTop,
+        limitToTopValue: body.limitToTopValue,
+        groupRemainderAsOther: body.groupRemainderAsOther,
+      });
+    } catch (e) {
+      handleDataApiError(e);
+    }
+  }
+
+  @post('/report/filter-options')
+  @response(200)
+  async getFilterOptions(
+    @requestBody() body: {filters: any; datasetId: string},
+  ) {
+    try {
+      return await getFilterOptions({
+        appliedFilters: body.filters,
+        datasetId: body.datasetId,
+      });
     } catch (e) {
       handleDataApiError(e);
     }
