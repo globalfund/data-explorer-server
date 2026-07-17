@@ -30,6 +30,7 @@ import {
   SortOption,
 } from '../../utils/filterDataset';
 import {renderChartData} from '../../utils/renderChart';
+import {sendErrorReportToSlack} from '../../utils/slackWebhook';
 
 export class ReportController {
   constructor(
@@ -438,5 +439,29 @@ export class ReportController {
     this.response.send(result.data);
 
     return this.response;
+  }
+
+  @post('/report/report-an-error')
+  @response(200, {
+    description: 'ReportModel instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(ReportModel, {includeRelations: true}),
+      },
+    },
+  })
+  async reportError(
+    @requestBody()
+    body: {
+      reportId: string;
+      reportName: string;
+      errorMessage: string;
+      details: string;
+      action: string;
+    },
+  ): Promise<{message: string}> {
+    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    await sendErrorReportToSlack({...body, userId});
+    return {message: 'Error reported successfully'};
   }
 }
