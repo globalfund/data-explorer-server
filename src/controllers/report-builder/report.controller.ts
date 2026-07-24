@@ -1,4 +1,4 @@
-// import {authenticate} from '@loopback/authentication';
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {Filter, FilterExcludingWhere} from '@loopback/filter/dist/query';
 import {
@@ -9,12 +9,12 @@ import {
   patch,
   post,
   put,
-  Request,
   requestBody,
   Response,
   response,
   RestBindings,
 } from '@loopback/rest';
+import {securityId, UserProfile} from '@loopback/security';
 import axios, {AxiosResponse} from 'axios';
 import fs from 'fs/promises';
 import _ from 'lodash';
@@ -34,15 +34,30 @@ import {sendErrorReportToSlack} from '../../utils/slackWebhook';
 
 export class ReportController {
   constructor(
-    @inject(RestBindings.Http.REQUEST) private req: Request,
     @inject(RestBindings.Http.RESPONSE) private response: Response,
     @inject('services.logger') private logger: Logger,
     @inject('services.ReportService') private reportService: ReportService,
     @inject('services.FolderService') private folderService: FolderService,
+    @inject(AuthenticationBindings.CURRENT_USER, {optional: true})
+    private currentUserProfile?: UserProfile,
   ) {}
+
+  private getCurrentUser() {
+    return this.currentUserProfile;
+  }
+
+  private getCurrentUserId(): string {
+    const user = this.getCurrentUser();
+    return (
+      user?.id ??
+      (typeof user?.[securityId] === 'string' ? user[securityId] : undefined) ??
+      'anonymous'
+    );
+  }
 
   @post('/report/render-chart-data')
   @response(200)
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async renderChart(@requestBody() body: any) {
     try {
       return await renderChartData(body);
@@ -53,6 +68,7 @@ export class ReportController {
 
   @post('/report/filter-dataset')
   @response(200)
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async filterDataset(
     @param.query.string('page') page: string,
     @param.query.string('pageSize') pageSize: string,
@@ -84,6 +100,7 @@ export class ReportController {
 
   @post('/report/filter-options')
   @response(200)
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async getFilterOptions(
     @requestBody() body: {filters: any; datasetId: string},
   ) {
@@ -102,7 +119,7 @@ export class ReportController {
     description: 'ReportModel instance',
     content: {'application/json': {schema: getModelSchemaRef(ReportModel)}},
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async create(
     @requestBody({
       content: {
@@ -116,7 +133,7 @@ export class ReportController {
     })
     report: Omit<ReportModel, 'id'>,
   ): Promise<ReportModel | {error: string; errorType: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `ReportController - create - Creating report for user ${userId}`,
     );
@@ -149,7 +166,7 @@ export class ReportController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async find(
     @param.filter(ReportModel) filter?: Filter<ReportModel>,
     @param.query.string('folderFilter') folderFilter?: string,
@@ -170,7 +187,8 @@ export class ReportController {
       locationPath: string;
     }[]
   > {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
+    console.log(userId);
     this.logger.info(
       `ReportController - find - Fetching reports for user ${userId}`,
     );
@@ -257,13 +275,13 @@ export class ReportController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async findById(
     @param.path.string('id') id: string,
     @param.filter(ReportModel, {exclude: 'where'})
     filter?: FilterExcludingWhere<ReportModel>,
   ): Promise<ReportModel | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     // const orgMembers = await getUsersOrganizationMembers(userId);
     // logger.info(`route</report/{id}> Fetching report- ${id}`);
     // logger.debug(`Finding report- ${id} with filter- ${JSON.stringify(filter)}`);
@@ -277,7 +295,7 @@ export class ReportController {
   @response(204, {
     description: 'Report PATCH success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async updateById(
     @param.path.string('id') id: string,
     @requestBody({
@@ -289,7 +307,7 @@ export class ReportController {
     })
     report: ReportModel,
   ): Promise<void | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `ReportController - updateById - Updating report ${id} for user ${userId}`,
     );
@@ -306,12 +324,12 @@ export class ReportController {
   @response(204, {
     description: 'Report PUT success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async replaceById(
     @param.path.string('id') id: string,
     @requestBody() report: ReportModel,
   ): Promise<void | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `ReportController - replaceById - Replacing report ${id} for user ${userId}`,
     );
@@ -322,11 +340,11 @@ export class ReportController {
   @response(204, {
     description: 'Report DELETE success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async deleteById(
     @param.path.string('id') id: string,
   ): Promise<void | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `ReportController - deleteById - Deleting report ${id} for user ${userId}`,
     );
@@ -349,11 +367,11 @@ export class ReportController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async duplicate(
     @param.path.string('id') id: string,
   ): Promise<ReportModel | {error: string; errorType: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `ReportController - duplicate - Duplicating report ${id} for user ${userId}`,
     );
@@ -376,6 +394,7 @@ export class ReportController {
 
   @get('/report-builder/gf-sample-dataset/{datasetId}')
   @response(200)
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async getSampleGFDataset(@param.path.string('datasetId') datasetId: string) {
     return axios
       .get(`${process.env.BACKEND_API_BASE_URL}/sample-data/${datasetId}`, {
@@ -391,6 +410,7 @@ export class ReportController {
 
   @get('/report-builder/gf-dataset/{datasetId}')
   @response(200)
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async getGFDataset(
     @param.path.string('datasetId') datasetId: string,
     @param.query.number('pageSize') pageSize: number,
@@ -421,7 +441,7 @@ export class ReportController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async exportReport(
     @param.path.string('id') id: string,
     @param.path.string('format') format: ExportFormat,
@@ -450,6 +470,7 @@ export class ReportController {
       },
     },
   })
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async reportError(
     @requestBody()
     body: {
@@ -460,8 +481,12 @@ export class ReportController {
       action: string;
     },
   ): Promise<{message: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const user = this.getCurrentUser();
+    const userId = this.getCurrentUserId();
     await sendErrorReportToSlack({...body, userId});
+    this.logger.info(
+      `ReportController - reportError - Error report submitted by ${userId} (${user?.email ?? 'no-email'})`,
+    );
     return {message: 'Error reported successfully'};
   }
 }

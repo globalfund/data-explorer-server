@@ -27,10 +27,26 @@ export class Auth0Strategy implements AuthenticationStrategy {
     if (!auth || !auth.startsWith('Bearer ')) {
       throw new HttpErrors.Unauthorized('Missing Bearer token');
     }
-    return auth.slice(7);
+
+    // Normalize possible quoted/space-padded bearer values before decoding.
+    const token = auth
+      .slice(7)
+      .trim()
+      .replace(/^['\"]|['\"]$/g, '');
+    if (!token) {
+      throw new HttpErrors.Unauthorized('Missing token value');
+    }
+
+    return token;
   }
 
   private async verifyToken(token: string): Promise<jwt.JwtPayload> {
+    if (token.split('.').length !== 3) {
+      throw new HttpErrors.Unauthorized(
+        'Invalid JWT format (expected header.payload.signature)',
+      );
+    }
+
     const decoded = jwt.decode(token, {complete: true});
     if (!decoded || typeof decoded === 'string') {
       throw new HttpErrors.Unauthorized('Invalid token');

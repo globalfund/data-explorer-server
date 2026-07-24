@@ -32,7 +32,7 @@ export class DatasetController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async find(
     @param.filter(DatasetModel) filter?: Filter<DatasetModel>,
   ): Promise<DatasetModel[]> {
@@ -49,7 +49,7 @@ export class DatasetController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async datasetContent(
     @param.path.string('id') id: string,
     @param.query.string('page') page: string,

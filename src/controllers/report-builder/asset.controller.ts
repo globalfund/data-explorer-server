@@ -1,4 +1,4 @@
-// import {authenticate} from '@loopback/authentication';
+import {authenticate, AuthenticationBindings} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {Filter, FilterExcludingWhere} from '@loopback/filter/dist/query';
 import {
@@ -9,11 +9,10 @@ import {
   patch,
   post,
   put,
-  Request,
   requestBody,
   response,
-  RestBindings,
 } from '@loopback/rest';
+import {securityId, UserProfile} from '@loopback/security';
 import _ from 'lodash';
 import {AssetModel, FolderModel} from 'rb-core-middleware/dist/models';
 import {AssetService, FolderService} from 'rb-core-middleware/dist/services';
@@ -22,18 +21,29 @@ import {queueAssetThumbnailGeneration} from '../../queues/report.queue';
 
 export class AssetController {
   constructor(
-    @inject(RestBindings.Http.REQUEST) private req: Request,
     @inject('services.logger') private logger: Logger,
     @inject('services.AssetService') private assetService: AssetService,
     @inject('services.FolderService') private folderService: FolderService,
+    @inject(AuthenticationBindings.CURRENT_USER, {optional: true})
+    private currentUserProfile?: UserProfile,
   ) {}
+
+  private getCurrentUserId(): string {
+    return (
+      this.currentUserProfile?.id ??
+      (typeof this.currentUserProfile?.[securityId] === 'string'
+        ? this.currentUserProfile[securityId]
+        : undefined) ??
+      'anonymous'
+    );
+  }
 
   @post('/asset')
   @response(200, {
     description: 'AssetModel instance',
     content: {'application/json': {schema: getModelSchemaRef(AssetModel)}},
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async create(
     @requestBody({
       content: {
@@ -47,7 +57,7 @@ export class AssetController {
     })
     asset: Omit<AssetModel, 'id'>,
   ): Promise<AssetModel | {error: string; errorType: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `AssetController - create - Creating asset for user ${userId}`,
     );
@@ -69,7 +79,7 @@ export class AssetController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async find(
     @param.filter(AssetModel) filter?: Filter<AssetModel>,
     @param.query.string('folderFilter') folderFilter?: string,
@@ -90,7 +100,7 @@ export class AssetController {
       locationPath: string;
     }[]
   > {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `AssetController - find - Fetching assets for user ${userId}`,
     );
@@ -177,13 +187,13 @@ export class AssetController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async findById(
     @param.path.string('id') id: string,
     @param.filter(AssetModel, {exclude: 'where'})
     filter?: FilterExcludingWhere<AssetModel>,
   ): Promise<AssetModel | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     // const orgMembers = await getUsersOrganizationMembers(userId);
     // logger.info(`route</asset/{id}> Fetching asset- ${id}`);
     // logger.debug(`Finding asset- ${id} with filter- ${JSON.stringify(filter)}`);
@@ -197,7 +207,7 @@ export class AssetController {
   @response(204, {
     description: 'Asset PATCH success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async updateById(
     @param.path.string('id') id: string,
     @requestBody({
@@ -209,7 +219,7 @@ export class AssetController {
     })
     asset: AssetModel,
   ): Promise<void | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `AssetController - updateById - Updating asset ${id} for user ${userId}`,
     );
@@ -220,12 +230,12 @@ export class AssetController {
   @response(204, {
     description: 'Asset PUT success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async replaceById(
     @param.path.string('id') id: string,
     @requestBody() asset: AssetModel,
   ): Promise<void | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `AssetController - replaceById - Replacing asset ${id} for user ${userId}`,
     );
@@ -236,11 +246,11 @@ export class AssetController {
   @response(204, {
     description: 'Asset DELETE success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async deleteById(
     @param.path.string('id') id: string,
   ): Promise<void | {error: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `AssetController - deleteById - Deleting asset ${id} for user ${userId}`,
     );
@@ -256,11 +266,11 @@ export class AssetController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async duplicate(
     @param.path.string('id') id: string,
   ): Promise<AssetModel | {error: string; errorType: string}> {
-    const userId = _.get(this.req, 'user.sub', 'anonymous');
+    const userId = this.getCurrentUserId();
     this.logger.info(
       `AssetController - duplicate - Duplicating asset ${id} for user ${userId}`,
     );

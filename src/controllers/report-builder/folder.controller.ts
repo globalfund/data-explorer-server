@@ -32,7 +32,7 @@ export class FolderController {
     description: 'FolderModel instance',
     content: {'application/json': {schema: getModelSchemaRef(FolderModel)}},
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async create(
     @requestBody({
       content: {
@@ -65,7 +65,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async find(
     @param.filter(FolderModel) filter?: Filter<FolderModel>,
     @param.query.string('includeSubFolders') includeSubFolders?: string,
@@ -119,7 +119,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async findById(
     @param.path.string('id') id: string,
     @param.filter(FolderModel, {exclude: 'where'})
@@ -139,7 +139,7 @@ export class FolderController {
   @response(204, {
     description: 'Folder PATCH success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async updateById(
     @param.path.string('id') id: string,
     @requestBody({
@@ -162,7 +162,7 @@ export class FolderController {
   @response(204, {
     description: 'Folder PUT success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async replaceById(
     @param.path.string('id') id: string,
     @requestBody() folder: FolderModel,
@@ -178,7 +178,7 @@ export class FolderController {
   @response(204, {
     description: 'Folder DELETE success',
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async deleteById(
     @param.path.string('id') id: string,
   ): Promise<void | {error: string}> {
@@ -198,7 +198,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async duplicate(
     @param.path.string('id') id: string,
   ): Promise<FolderModel | {error: string; errorType: string}> {
@@ -218,7 +218,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async addAssetToFolder(
     @param.path.string('id') id: string,
     @param.query.string('assetId') assetId: string,
@@ -239,7 +239,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async removeAssetFromFolder(
     @param.path.string('id') id: string,
     @param.query.string('assetId') assetId: string,
@@ -260,7 +260,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async addReportToFolder(
     @param.path.string('id') id: string,
     @param.query.string('reportId') reportId: string,
@@ -291,7 +291,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async removeReportFromFolder(
     @param.path.string('id') id: string,
     @param.query.string('reportId') reportId: string,
@@ -312,7 +312,7 @@ export class FolderController {
       },
     },
   })
-  // @authenticate({strategy: 'auth0-jwt', options: {scopes: ['greet']}})
+  // @authenticate({strategy: 'auth0', options: {scopes: ['greet']}})
   async addFolderToFolder(
     @param.path.string('id') id: string,
     @param.query.string('folderId') folderId: string,
