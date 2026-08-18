@@ -9,7 +9,9 @@ import {
   patch,
   post,
   put,
+  Request,
   requestBody,
+  RestBindings,
   response,
 } from '@loopback/rest';
 import {securityId, UserProfile} from '@loopback/security';
@@ -19,8 +21,23 @@ import {AssetService, FolderService} from 'rb-core-middleware/dist/services';
 import {Logger} from 'winston';
 import {queueAssetThumbnailGeneration} from '../../queues/report.queue';
 
+const getRequestOrigin = (request: Request) => {
+  const host = request.headers.host;
+  if (!host) return undefined;
+
+  const forwardedProto = request.headers['x-forwarded-proto'];
+  const protocol =
+    (typeof forwardedProto === 'string'
+      ? forwardedProto.split(',')[0].trim()
+      : undefined) ??
+    ((request.socket as {encrypted?: boolean}).encrypted ? 'https' : 'http');
+
+  return `${protocol}://${host}`;
+};
+
 export class AssetController {
   constructor(
+    @inject(RestBindings.Http.REQUEST) private request: Request,
     @inject('services.logger') private logger: Logger,
     @inject('services.AssetService') private assetService: AssetService,
     @inject('services.FolderService') private folderService: FolderService,
@@ -63,7 +80,10 @@ export class AssetController {
     );
     const result = await this.assetService.create(userId, asset);
 
-    await queueAssetThumbnailGeneration((result as AssetModel)?.id);
+    await queueAssetThumbnailGeneration((result as AssetModel)?.id, {
+      authorization: this.request.headers.authorization,
+      apiOrigin: getRequestOrigin(this.request),
+    });
     return result;
   }
 
@@ -223,7 +243,12 @@ export class AssetController {
     this.logger.info(
       `AssetController - updateById - Updating asset ${id} for user ${userId}`,
     );
-    return this.assetService.updateById(userId, id, asset);
+    const result = await this.assetService.updateById(userId, id, asset);
+    await queueAssetThumbnailGeneration(id, {
+      authorization: this.request.headers.authorization,
+      apiOrigin: getRequestOrigin(this.request),
+    });
+    return result;
   }
 
   @put('/asset/{id}')
@@ -239,7 +264,12 @@ export class AssetController {
     this.logger.info(
       `AssetController - replaceById - Replacing asset ${id} for user ${userId}`,
     );
-    return this.assetService.replaceById(id, userId, asset);
+    const result = await this.assetService.replaceById(id, userId, asset);
+    await queueAssetThumbnailGeneration(id, {
+      authorization: this.request.headers.authorization,
+      apiOrigin: getRequestOrigin(this.request),
+    });
+    return result;
   }
 
   @del('/asset/{id}')

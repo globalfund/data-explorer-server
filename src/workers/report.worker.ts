@@ -9,13 +9,13 @@ export const reportWorker = new Worker(
   'report-queue',
   async job => {
     if (job.name === 'screenshot-report') {
-      const {reportId} = job.data;
+      const {reportId, authorization, apiOrigin} = job.data;
       console.log('Generating report screenshot for:', reportId);
-      await screenshotReport(reportId);
+      await screenshotReport(reportId, false, {authorization, apiOrigin});
     } else if (job.name === 'screenshot-asset') {
-      const {assetId} = job.data;
+      const {assetId, authorization, apiOrigin} = job.data;
       console.log('Generating asset screenshot for:', assetId);
-      await screenshotReport(assetId, true);
+      await screenshotReport(assetId, true, {authorization, apiOrigin});
     }
   },
   {

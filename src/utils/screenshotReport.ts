@@ -1,12 +1,16 @@
 import puppeteer from 'puppeteer';
 import sharp from 'sharp';
+import {attachPuppeteerAuthorization, PuppeteerAuth} from './puppeteerAuth';
 
 export const screenshotReport = async (
   reportId: string,
   asset: boolean = false,
+  auth: PuppeteerAuth = {},
 ) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
+
+  await attachPuppeteerAuthorization(page, auth);
 
   await page.setViewport({
     width: 1227,

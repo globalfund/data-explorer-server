@@ -10,6 +10,7 @@ import {
   post,
   put,
   requestBody,
+  Request,
   Response,
   response,
   RestBindings,
@@ -32,8 +33,23 @@ import {
 import {renderChartData} from '../../utils/renderChart';
 import {sendErrorReportToSlack} from '../../utils/slackWebhook';
 
+const getRequestOrigin = (request: Request) => {
+  const host = request.headers.host;
+  if (!host) return undefined;
+
+  const forwardedProto = request.headers['x-forwarded-proto'];
+  const protocol =
+    (typeof forwardedProto === 'string'
+      ? forwardedProto.split(',')[0].trim()
+      : undefined) ??
+    ((request.socket as {encrypted?: boolean}).encrypted ? 'https' : 'http');
+
+  return `${protocol}://${host}`;
+};
+
 export class ReportController {
   constructor(
+    @inject(RestBindings.Http.REQUEST) private request: Request,
     @inject(RestBindings.Http.RESPONSE) private response: Response,
     @inject('services.logger') private logger: Logger,
     @inject('services.ReportService') private reportService: ReportService,
@@ -316,7 +332,10 @@ export class ReportController {
       id,
       report,
     );
-    await queueReportThumbnailGeneration(id);
+    await queueReportThumbnailGeneration(id, {
+      authorization: this.request.headers.authorization,
+      apiOrigin: getRequestOrigin(this.request),
+    });
     return updateResult;
   }
 
@@ -447,7 +466,10 @@ export class ReportController {
     @param.path.string('format') format: ExportFormat,
     @param.query.boolean('asset') asset: boolean = false,
   ) {
-    const result = await exportReport(id, format, asset);
+    const result = await exportReport(id, format, asset, {
+      authorization: this.request.headers.authorization,
+      apiOrigin: getRequestOrigin(this.request),
+    });
 
     this.response.setHeader('Content-Type', result.mimeType);
     this.response.setHeader(

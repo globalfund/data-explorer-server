@@ -1,11 +1,15 @@
 import {Queue} from 'bullmq';
 import {redisConnection} from './redis.connection';
+import {PuppeteerAuth} from '../utils/puppeteerAuth';
 
 export const reportQueue = new Queue('report-queue', {
   connection: redisConnection,
 });
 
-export const queueReportThumbnailGeneration = async (reportId: string) => {
+export const queueReportThumbnailGeneration = async (
+  reportId: string,
+  auth: PuppeteerAuth = {},
+) => {
   const jobId = `report-thumbnail-${reportId}`;
 
   const existingJob = await reportQueue.getJob(jobId);
@@ -13,7 +17,7 @@ export const queueReportThumbnailGeneration = async (reportId: string) => {
   if (existingJob) {
     const state = await existingJob.getState();
 
-    if (state === 'waiting' || state === 'delayed') {
+    if (state !== 'active') {
       await existingJob.remove();
     }
   }
@@ -22,6 +26,7 @@ export const queueReportThumbnailGeneration = async (reportId: string) => {
     'screenshot-report',
     {
       reportId,
+      ...auth,
       requestedAt: new Date().toISOString(),
     },
     {
@@ -38,7 +43,10 @@ export const queueReportThumbnailGeneration = async (reportId: string) => {
   );
 };
 
-export const queueAssetThumbnailGeneration = async (assetId: string) => {
+export const queueAssetThumbnailGeneration = async (
+  assetId: string,
+  auth: PuppeteerAuth = {},
+) => {
   const jobId = `asset-thumbnail-${assetId}`;
 
   const existingJob = await reportQueue.getJob(jobId);
@@ -46,7 +54,7 @@ export const queueAssetThumbnailGeneration = async (assetId: string) => {
   if (existingJob) {
     const state = await existingJob.getState();
 
-    if (state === 'waiting' || state === 'delayed') {
+    if (state !== 'active') {
       await existingJob.remove();
     }
   }
@@ -55,6 +63,7 @@ export const queueAssetThumbnailGeneration = async (assetId: string) => {
     'screenshot-asset',
     {
       assetId,
+      ...auth,
       requestedAt: new Date().toISOString(),
     },
     {

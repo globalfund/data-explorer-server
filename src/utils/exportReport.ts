@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import {attachPuppeteerAuthorization, PuppeteerAuth} from './puppeteerAuth';
 
 export type ExportFormat = 'pdf' | 'png' | 'svg';
 
@@ -12,6 +13,7 @@ export const exportReport = async (
   reportId: string,
   format: ExportFormat,
   asset: boolean = false,
+  auth: PuppeteerAuth = {},
 ): Promise<ExportResult> => {
   const frontendUrl = process.env.FRONTEND_URL;
 
@@ -30,6 +32,8 @@ export const exportReport = async (
 
   try {
     const page = await browser.newPage();
+
+    await attachPuppeteerAuthorization(page, auth);
 
     await page.setViewport({
       width: 1227,
