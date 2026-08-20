@@ -528,11 +528,11 @@ export class LocationController {
         if (valid) {
           return {data: {valid: true}};
         } else {
-          throw new HttpErrors.NotFound(`Location with code ${code} not found`);
+          throw new HttpErrors[403](`Location with code ${code} not found`);
         }
       })
       .catch(() => {
-        throw new HttpErrors.NotFound(`Location with code ${code} not found`);
+        throw new HttpErrors[403](`Location with code ${code} not found`);
       });
   }
 }

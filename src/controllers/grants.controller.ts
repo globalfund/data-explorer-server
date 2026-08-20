@@ -811,11 +811,11 @@ export class GrantsController {
         if (valid) {
           return {data: {valid: true}};
         } else {
-          throw new HttpErrors.NotFound(`Grant with id ${id} not found`);
+          throw new HttpErrors[403](`Grant with id ${id} not found`);
         }
       })
       .catch(() => {
-        throw new HttpErrors.NotFound(`Grant with id ${id} not found`);
+        throw new HttpErrors[403](`Grant with id ${id} not found`);
       });
   }
 }
