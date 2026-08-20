@@ -1,5 +1,12 @@
 import {inject} from '@loopback/core';
-import {get, param, Request, response, RestBindings} from '@loopback/rest';
+import {
+  get,
+  HttpErrors,
+  param,
+  Request,
+  response,
+  RestBindings,
+} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import {mapTransform} from 'map-transform';
@@ -787,5 +794,28 @@ export class GrantsController {
         };
       })
       .catch(handleDataApiError);
+  }
+
+  @get('/grant/{id}/valid')
+  @response(200)
+  async grantValid(@param.path.string('id') id: string) {
+    const url = `${urls.GRANTS}/${GrantMapping.urlParams.replace(
+      '<code>',
+      id,
+    )}`;
+
+    return axios
+      .get(url)
+      .then(resp => {
+        const valid = _.get(resp.data, `${GrantMapping.dataPath}.code`, null);
+        if (valid) {
+          return {data: {valid: true}};
+        } else {
+          throw new HttpErrors.NotFound(`Grant with id ${id} not found`);
+        }
+      })
+      .catch(() => {
+        throw new HttpErrors.NotFound(`Grant with id ${id} not found`);
+      });
   }
 }
