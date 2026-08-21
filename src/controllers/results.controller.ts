@@ -131,14 +131,31 @@ export class ResultsController {
         const raw = ResultsStatsMappingFields.dataPath
           ? _.get(resp.data, ResultsStatsMappingFields.dataPath, [])
           : resp.data;
+
+        const groupedByIndicator = _.groupBy(
+          raw,
+          ResultsStatsMappingFields.name,
+        );
+
+        const data = _.map(groupedByIndicator, (indicatorData, indicator) => {
+          const totalValue = _.sumBy(
+            indicatorData,
+            ResultsStatsMappingFields.value,
+          );
+          return {
+            name: indicator,
+            value: totalValue,
+            geographies: Object.keys(
+              _.groupBy(indicatorData, ResultsStatsMappingFields.geography),
+            ).length,
+          };
+        });
+
         return {
-          stats: raw.map((item: any) => ({
-            label: `${_.get(
-              item,
-              ResultsStatsMappingFields.name,
-              '',
-            )} in ${cycle}`,
-            value: _.get(item, ResultsStatsMappingFields.value, 0),
+          stats: data.map((item: any) => ({
+            label: item.name,
+            value: item.value,
+            geographies: item.geographies,
           })),
         };
       })
