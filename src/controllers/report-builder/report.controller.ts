@@ -29,6 +29,7 @@ import {
   getFilterOptions,
   SortOption,
 } from '../../utils/filterDataset';
+import {rateLimitErrorReport} from '../../utils/rateLimit';
 import {renderChartData} from '../../utils/renderChart';
 import {sendErrorReportToSlack} from '../../utils/slackWebhook';
 
@@ -483,6 +484,7 @@ export class ReportController {
   ): Promise<{message: string}> {
     const user = this.getCurrentUser();
     const userId = this.getCurrentUserId();
+    await rateLimitErrorReport(userId);
     await sendErrorReportToSlack({...body, userId});
     this.logger.info(
       `ReportController - reportError - Error report submitted by ${userId} (${user?.email ?? 'no-email'})`,

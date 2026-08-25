@@ -10,7 +10,7 @@ type ReportBody = {
 };
 
 function escapeSlackMarkdown(value: string): string {
-  return value
+  return (value ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
