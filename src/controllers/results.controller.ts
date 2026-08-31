@@ -3,6 +3,7 @@ import {get, param, Request, response, RestBindings} from '@loopback/rest';
 import axios, {AxiosResponse} from 'axios';
 import _ from 'lodash';
 import ResultsCyclesMappingFields from '../config/mapping/results/cycles.json';
+import ResultsGroupedByComponentMappingFields from '../config/mapping/results/groupedByComponent.json';
 import ResultsTableLocationMappingFields from '../config/mapping/results/location-table.json';
 import ResultsPolylineMappingFields from '../config/mapping/results/polyline.json';
 import ResultsStatsMappingFields from '../config/mapping/results/stats-home.json';
@@ -110,6 +111,78 @@ export class ResultsController {
               ),
             };
           }).reverse(),
+        };
+      })
+      .catch(handleDataApiError);
+  }
+
+  @get('/results/grouped-by-component/{cycle}')
+  @response(200)
+  async groupedByComponent(@param.path.string('cycle') cycle: string) {
+    const filterString = await filterProgrammaticIndicators(
+      {
+        ...this.req.query,
+        years: this.req.query.years
+          ? `${this.req.query.years},${cycle}`
+          : cycle,
+      },
+      ResultsGroupedByComponentMappingFields.urlParams,
+    );
+    const url = `${urls.PROGRAMMATIC_INDICATORS}/${filterString}`;
+
+    return axios
+      .get(url)
+      .then((resp: AxiosResponse) => {
+        const raw = ResultsGroupedByComponentMappingFields.dataPath
+          ? _.get(
+              resp.data,
+              ResultsGroupedByComponentMappingFields.dataPath,
+              [],
+            )
+          : resp.data;
+
+        const groupedByComponent = _.groupBy(
+          raw,
+          ResultsGroupedByComponentMappingFields.component,
+        );
+
+        return {
+          data: _.map(groupedByComponent, (componentData, component) => ({
+            name: component,
+            indicators: Object.keys(
+              _.groupBy(
+                componentData,
+                ResultsGroupedByComponentMappingFields.name,
+              ),
+            ).map(name => {
+              const items = _.filter(
+                componentData,
+                item =>
+                  _.get(
+                    item,
+                    ResultsGroupedByComponentMappingFields.name,
+                    '',
+                  ) === name,
+              );
+              const value = _.sumBy(
+                items,
+                ResultsGroupedByComponentMappingFields.value,
+              );
+              const numOfCountries = Object.keys(
+                _.groupBy(
+                  items,
+                  ResultsGroupedByComponentMappingFields.geography,
+                ),
+              ).length;
+              return {name, value, numOfCountries};
+            }),
+            numOfCountries: Object.keys(
+              _.groupBy(
+                componentData,
+                ResultsGroupedByComponentMappingFields.geography,
+              ),
+            ).length,
+          })),
         };
       })
       .catch(handleDataApiError);
